@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+import Sidebar from '@/components/Sidebar';
+
 export const metadata: Metadata = {
     title: 'Admin | Stock App',
     description: 'Administrador para gestionar los productos del cliente',
@@ -14,5 +16,10 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return <>{children}</>;
+    return (
+        <div className="flex min-h-screen flex-col md:flex-row">
+            <Sidebar />
+            <div className="flex-1 p-4 md:p-8 bg-main text-white">{children}</div>
+        </div>
+    );
 }
