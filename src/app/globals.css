@@ -1,1 +1,41 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@theme {
+    --color-main: #0a0a0a;
+    --color-surface: #1a1a1a;
+    --color-border: #2a2a2a;
+    --color-text: #f9fafb;
+    --color-muted: #a3a3a3;
+    --color-accent: #3b82f6;
+    --color-accent-hover: #2563eb;
+}
+
+@layer utilities {
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out both;
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out both;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
