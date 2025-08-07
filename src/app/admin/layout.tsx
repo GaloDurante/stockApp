@@ -19,7 +19,7 @@ export default function RootLayout({
     return (
         <div className="flex min-h-screen flex-col md:flex-row">
             <Sidebar />
-            <div className="flex-1 p-4 md:p-8 bg-main text-white">{children}</div>
+            <div className="flex-1 p-4 md:p-8 bg-main text-text">{children}</div>
         </div>
     );
 }
