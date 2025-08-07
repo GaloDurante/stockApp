@@ -16,3 +16,33 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Product {
+  id            Int      @id @default(autoincrement())
+  name          String
+  description   String?
+  category      Category?
+  stock         Int
+  price         Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum Category {
+  VINOS_TINTOS    @map("Vinos Tintos")
+  VINOS_BLANCOS   @map("Vinos Blancos")
+  VINOS_ROSADOS   @map("Vinos Rosados")
+  RON             @map("Ron")
+  LICORES         @map("Licores")
+  SIDRAS          @map("Sidras")
+  CHAMPAGNES      @map("Champagnes")
+  CERVEZAS        @map("Cervezas")
+  VODKA           @map("Vodka")
+  WHISKIES        @map("Whiskies")
+  GASEOSAS        @map("Gaseosas")
+  APERITIVOS      @map("Aperitivos")
+  GIN             @map("Gin")
+  ACCESORIOS      @map("Accesorios")
+  ALMACEN         @map("Almacén")
+}
+

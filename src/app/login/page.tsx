@@ -54,6 +54,7 @@ export default function LoginPage() {
                     alt="Decoración login"
                     width={20}
                     height={20}
+                    priority
                     className="w-3/4 max-w-md z-20 animate-fade-in-up"
                 />
             </div>
