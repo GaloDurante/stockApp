@@ -3,8 +3,21 @@ import Filters from '@/components/Filters';
 import ProductsTable from '@/components/products/ProductsTable';
 import Link from 'next/link';
 
-export default async function ProductsPage() {
-    const products = await getProductsByCategory();
+interface ProductsPageType {
+    searchParams: Promise<{
+        search?: string;
+        filterByCategory?: string;
+        sortOrder?: 'asc' | 'desc' | 'price_asc' | 'price_desc';
+    }>;
+}
+
+export default async function ProductsPage({ searchParams }: ProductsPageType) {
+    const { search, filterByCategory, sortOrder } = await searchParams;
+    const products = await getProductsByCategory({
+        search,
+        filterByCategory,
+        sortOrder,
+    });
     return (
         <div>
             <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-2">
@@ -15,8 +28,8 @@ export default async function ProductsPage() {
                         withCategories
                         sortOrder="asc"
                         searchPlaceholder={'Buscar por nombre del producto'}
-                        search={undefined}
-                        selectedCategory={undefined}
+                        search={search}
+                        selectedCategory={filterByCategory}
                         showAllCategory
                     />
                 </div>
