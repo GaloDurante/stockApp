@@ -24,7 +24,7 @@ export default function Sidebar() {
             <Link
                 href="/admin/sells"
                 className={`flex items-center gap-2 px-3 py-2 rounded transition-colors hover:bg-border hover:text-accent ${
-                    pathname.startsWith('/admin/sells') ? 'text-accent' : 'text-white'
+                    pathname.startsWith('/admin/sells') && 'text-accent'
                 }`}
             >
                 <span>
@@ -35,7 +35,7 @@ export default function Sidebar() {
             <Link
                 href="/admin/products"
                 className={`flex items-center gap-2 px-3 py-2 rounded transition-colors hover:bg-border hover:text-accent ${
-                    pathname.startsWith('/admin/products') ? 'text-accent' : 'text-white'
+                    pathname.startsWith('/admin/products') && 'text-accent'
                 }`}
             >
                 <span>
@@ -46,7 +46,7 @@ export default function Sidebar() {
             <Link
                 href="/admin/stats"
                 className={`flex items-center gap-2 px-3 py-2 rounded transition-colors hover:bg-border hover:text-accent ${
-                    pathname.startsWith('/admin/stats') ? 'text-accent' : 'text-white'
+                    pathname.startsWith('/admin/stats') && 'text-accent'
                 }`}
             >
                 <span>
@@ -57,7 +57,7 @@ export default function Sidebar() {
             <Link
                 href="/admin/wallet"
                 className={`flex items-center gap-2 px-3 py-2 rounded transition-colors hover:bg-border hover:text-accent ${
-                    pathname.startsWith('/admin/wallet') ? 'text-accent' : 'text-white'
+                    pathname.startsWith('/admin/wallet') && 'text-accent'
                 }`}
             >
                 <span>
@@ -72,25 +72,25 @@ export default function Sidebar() {
                 <span>
                     <LogOut size={18} />
                 </span>
-                Logout
+                Cerrar sesión
             </button>
         </>
     );
 
     return (
         <>
-            <aside className="hidden md:flex w-40 xl:w-64 flex-col bg-surface border-r border-border text-white">
+            <aside className="hidden lg:flex w-40 xl:w-64 flex-col bg-surface border-r border-border">
                 <nav className="flex flex-col gap-1 p-4 text-sm">{renderNavLinks()}</nav>
             </aside>
 
-            <header className="md:hidden flex items-center justify-between px-4 py-3 bg-surface text-white border-b border-border shadow-md">
-                <button onClick={toggleMenu} className="text-white focus:outline-none cursor-pointer">
+            <header className="lg:hidden flex items-center justify-between px-4 py-3 bg-surface border-b border-border shadow-md">
+                <button onClick={toggleMenu} className="focus:outline-none cursor-pointer">
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </header>
 
             <div
-                className={`md:hidden bg-surface text-white transition-all duration-300 ease-in-out overflow-hidden ${
+                className={`lg:hidden bg-surface transition-all duration-300 ease-in-out overflow-hidden ${
                     isOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'
                 }`}
             >
