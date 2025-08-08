@@ -66,8 +66,8 @@ export default function ConfirmModal({
                 <button
                     type="button"
                     className={`transition-all shadow-md p-3 rounded-md ${
-                        isDelete ? 'bg-red-700 hover:bg-red-800' : 'bg-apur-green hover:bg-apur-green-hover'
-                    } text-white font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
+                        isDelete ? 'bg-red-700 hover:bg-red-800' : 'bg-secondary hover:bg-muted text-main'
+                    } font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
                     onClick={onTrigger}
                     disabled={!isConfirmEnabled}
                 >

@@ -125,18 +125,21 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                     <label>
                         Precio <span className="text-red-700">*</span>
                     </label>
-                    <input
-                        type="number"
-                        {...register('price', {
-                            required: 'El precio es obligatorio',
-                            valueAsNumber: true,
-                            min: {
-                                value: 0,
-                                message: 'El precio no puede ser menor a 0',
-                            },
-                        })}
-                        className={`p-2 border rounded-md no-spinner ${errors.price ? 'border-red-700' : 'border-border'}`}
-                    />
+                    <div className="relative">
+                        <span className="absolute left-2 top-1/2 -translate-y-1/2">$</span>
+                        <input
+                            type="number"
+                            {...register('price', {
+                                required: 'El precio es obligatorio',
+                                valueAsNumber: true,
+                                min: {
+                                    value: 0,
+                                    message: 'El precio no puede ser menor a 0',
+                                },
+                            })}
+                            className={`p-2 pl-6 border rounded-md no-spinner w-full ${errors.price ? 'border-red-700' : 'border-border'}`}
+                        />
+                    </div>
                     {errors.price && <p className="text-red-700 text-sm">{errors.price.message}</p>}
                 </div>
             </div>
