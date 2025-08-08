@@ -64,10 +64,10 @@ export default function CustomSelect({
                 singleValue: () => 'truncate',
                 input: () => 'text-white cursor-pointer',
                 dropdownIndicator: () =>
-                    'text-neutral-500 mx-1 p-1 rounded-full cursor-pointer hover:bg-border transition-all',
-                indicatorSeparator: () => 'bg-gray-300',
-                clearIndicator: () => 'text-neutral-500 mx-1 p-1 rounded-full hover:bg-border cursor-pointer',
-                loadingIndicator: () => 'mr-3! text-neutral-500',
+                    'text-muted mx-1 p-1 rounded-full cursor-pointer hover:bg-border transition-all',
+                indicatorSeparator: () => 'bg-muted',
+                clearIndicator: () => 'text-muted mx-1 p-1 rounded-full hover:bg-border cursor-pointer',
+                loadingIndicator: () => 'mr-3! text-muted',
             }}
         />
     );

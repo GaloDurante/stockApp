@@ -1,10 +1,11 @@
 'use client';
-
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 
 import { ProductFormType } from '@/types/form';
 import { Category } from '@/generated/prisma';
+import { LoaderCircle } from 'lucide-react';
 
 import { createProductAction } from '@/lib/actions/product';
 
@@ -12,6 +13,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { showSuccessToast, showErrorToast } from '@/components/Toast';
 
 export default function ProductForm() {
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const {
         register,
@@ -26,12 +28,15 @@ export default function ProductForm() {
     }));
 
     const onSubmit = async (data: ProductFormType) => {
+        setIsLoading(true);
         try {
             await createProductAction(data);
             showSuccessToast('Producto creado con éxito');
             router.push('/admin/products');
         } catch {
             showErrorToast('No se pudo crear el producto');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -136,9 +141,10 @@ export default function ProductForm() {
             <div className="flex w-full justify-end">
                 <button
                     type="submit"
-                    className="font-semibold cursor-pointer bg-secondary text-main border border-border py-2 px-4 rounded-md hover:bg-muted transition-all"
+                    disabled={isLoading}
+                    className={`font-semibold ${isLoading ? 'cursor-not-allowed bg-muted' : 'cursor-pointer bg-secondary hover:bg-muted'} text-main border border-border py-2 px-4 rounded-md transition-all`}
                 >
-                    Guardar
+                    {isLoading ? <LoaderCircle className="animate-spin" /> : 'Guardar'}
                 </button>
             </div>
         </form>
