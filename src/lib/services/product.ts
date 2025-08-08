@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { Category } from '@/generated/prisma';
 
+import { ProductFormType } from '@/types/form';
+
 export const getProductsByCategory = async ({
     search,
     filterByCategory,
@@ -35,5 +37,11 @@ export const getProductsByCategory = async ({
 export async function deleteProductById(id: number) {
     return await prisma.product.delete({
         where: { id },
+    });
+}
+
+export async function createProduct(data: ProductFormType) {
+    return await prisma.product.create({
+        data,
     });
 }

@@ -12,7 +12,7 @@ interface ProductsPageType {
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageType) {
-    const { search, filterByCategory, sortOrder } = await searchParams;
+    const { search, filterByCategory, sortOrder = 'asc' } = await searchParams;
     const products = await getProductsByCategory({
         search,
         filterByCategory,

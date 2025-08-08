@@ -21,7 +21,7 @@ model Product {
   id            Int      @id @default(autoincrement())
   name          String
   description   String?
-  category      Category?
+  category      Category
   stock         Int
   price         Int
   createdAt     DateTime @default(now())
