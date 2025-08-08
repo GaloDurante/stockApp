@@ -13,6 +13,7 @@ interface CustomSelectProps {
     placeholder?: string;
     isError?: boolean;
     isLoading?: boolean;
+    menuPlacement?: 'auto' | 'bottom' | 'top';
 }
 
 export default function CustomSelect({
@@ -25,6 +26,7 @@ export default function CustomSelect({
     placeholder,
     isError = false,
     isLoading = false,
+    menuPlacement = 'auto',
 }: CustomSelectProps) {
     return (
         <Select
@@ -35,13 +37,13 @@ export default function CustomSelect({
             isMulti={isMulti}
             placeholder={placeholder}
             closeMenuOnSelect={!isMulti}
-            menuPlacement="auto"
+            menuPlacement={menuPlacement}
             isLoading={isLoading}
             onChange={onChange}
             unstyled
             classNames={{
                 control: ({ isFocused, isDisabled }) => {
-                    const baseClasses = `${isDisabled && 'opacity-30'} rounded-md ${isError ? 'bg-red-50' : 'bg-surface'} border py-2 pl-4 pr-2 flex gap-1 focus-within:ring-1 focus-within:ring-border`;
+                    const baseClasses = `${isDisabled && 'opacity-30'} rounded-md bg-surface border py-2 pl-4 pr-2 flex gap-1 focus-within:ring-1 focus-within:ring-border`;
                     const borderColor = isError
                         ? 'border-red-700 focus-within:ring-red-700 focus-within:border-red-700'
                         : isFocused
@@ -62,10 +64,10 @@ export default function CustomSelect({
                 singleValue: () => 'truncate',
                 input: () => 'text-white cursor-pointer',
                 dropdownIndicator: () =>
-                    'text-neutral-500 mx-1 p-1 rounded-full cursor-pointer hover:bg-border transition-all',
-                indicatorSeparator: () => 'bg-gray-300',
-                clearIndicator: () => 'text-neutral-500 mx-1 p-1 rounded-full hover:bg-border cursor-pointer',
-                loadingIndicator: () => 'mr-3! text-neutral-500',
+                    'text-muted mx-1 p-1 rounded-full cursor-pointer hover:bg-border transition-all',
+                indicatorSeparator: () => 'bg-muted',
+                clearIndicator: () => 'text-muted mx-1 p-1 rounded-full hover:bg-border cursor-pointer',
+                loadingIndicator: () => 'mr-3! text-muted',
             }}
         />
     );

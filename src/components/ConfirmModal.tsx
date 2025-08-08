@@ -28,7 +28,7 @@ export default function ConfirmModal({
             <div className="text-sm p-4 border-b border-border bg-main rounded-t-xl flex items-center justify-between">
                 <h3 className="font-semibold">{isDelete ? `Eliminar ${entityItem}` : 'Confirmar'}</h3>
                 <button type="button" onClick={onClose}>
-                    <X className="h-7 w-7 p-1 hover:bg-border rounded-full cursor-pointer" />
+                    <X className="h-7 w-7 p-1 hover:bg-border rounded-full cursor-pointer transition-all" />
                 </button>
             </div>
 
@@ -58,14 +58,14 @@ export default function ConfirmModal({
             <div className="p-4 border-t border-border flex justify-between gap-4 text-sm">
                 <button
                     type="button"
-                    className="font-semibold shadow-md p-3 rounded-md cursor-pointer border border-border hover:bg-border-dark"
+                    className="font-semibold shadow-md p-3 rounded-md cursor-pointer border border-border hover:bg-border-dark transition-all"
                     onClick={onClose}
                 >
                     Cancelar
                 </button>
                 <button
                     type="button"
-                    className={`shadow-md p-3 rounded-md ${
+                    className={`transition-all shadow-md p-3 rounded-md ${
                         isDelete ? 'bg-red-700 hover:bg-red-800' : 'bg-apur-green hover:bg-apur-green-hover'
                     } text-white font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
                     onClick={onTrigger}
