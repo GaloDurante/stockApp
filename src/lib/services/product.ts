@@ -34,6 +34,12 @@ export const getProductsByCategory = async ({
     });
 };
 
+export async function getProductById(id: number) {
+    return await prisma.product.findFirst({
+        where: { id },
+    });
+}
+
 export async function deleteProductById(id: number) {
     return await prisma.product.delete({
         where: { id },
@@ -42,6 +48,13 @@ export async function deleteProductById(id: number) {
 
 export async function createProduct(data: ProductFormType) {
     return await prisma.product.create({
+        data,
+    });
+}
+
+export async function updateProduct(data: ProductFormType, id: number) {
+    return await prisma.product.update({
+        where: { id },
         data,
     });
 }
