@@ -4,23 +4,40 @@ import { useForm, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 
 import { ProductFormType } from '@/types/form';
+import { ProductType } from '@/types/product';
 import { Category } from '@/generated/prisma';
 import { LoaderCircle } from 'lucide-react';
 
-import { createProductAction } from '@/lib/actions/product';
+import { createProductAction, updateProductAction } from '@/lib/actions/product';
 
 import CustomSelect from '@/components/CustomSelect';
 import { showSuccessToast, showErrorToast } from '@/components/Toast';
 
-export default function ProductForm() {
+interface ProductFormTypeProp {
+    selectedProduct?: ProductType;
+    isEdit?: boolean;
+}
+
+export default function ProductForm({ selectedProduct, isEdit = false }: ProductFormTypeProp) {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const {
         register,
         handleSubmit,
         control,
-        formState: { errors },
-    } = useForm<ProductFormType>();
+        formState: { errors, isDirty },
+    } = useForm<ProductFormType>({
+        defaultValues:
+            isEdit && selectedProduct
+                ? {
+                      name: selectedProduct.name,
+                      description: selectedProduct.description ?? undefined,
+                      stock: selectedProduct.stock,
+                      price: selectedProduct.price,
+                      category: selectedProduct.category,
+                  }
+                : undefined,
+    });
 
     const categoriesOptions = Object.entries(Category).map(([key, value]) => ({
         value: key,
@@ -29,14 +46,27 @@ export default function ProductForm() {
 
     const onSubmit = async (data: ProductFormType) => {
         setIsLoading(true);
-        try {
-            await createProductAction(data);
-            showSuccessToast('Producto creado con éxito');
-            router.push('/admin/products');
-        } catch {
-            showErrorToast('No se pudo crear el producto');
-        } finally {
-            setIsLoading(false);
+
+        if (isEdit && selectedProduct) {
+            try {
+                await updateProductAction(data, selectedProduct.id);
+                showSuccessToast('Producto actualizado con éxito');
+                router.refresh();
+            } catch {
+                showErrorToast('No se pudo actualizar el producto');
+            } finally {
+                setIsLoading(false);
+            }
+        } else {
+            try {
+                await createProductAction(data);
+                showSuccessToast('Producto creado con éxito');
+                router.push('/admin/products');
+            } catch {
+                showErrorToast('No se pudo crear el producto');
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
 
@@ -71,42 +101,44 @@ export default function ProductForm() {
                 {errors.description && <p className="text-red-700 text-sm">{errors.description.message}</p>}
             </div>
 
-            <div className="flex flex-col gap-1 mb-4">
-                <label>
-                    Stock <span className="text-red-700">*</span>
-                </label>
-                <input
-                    type="number"
-                    {...register('stock', {
-                        required: 'El stock es obligatorio',
-                        valueAsNumber: true,
-                        min: {
-                            value: 0,
-                            message: 'El stock no puede ser menor a 0',
-                        },
-                    })}
-                    className={`p-2 border rounded-md no-spinner ${errors.stock ? 'border-red-700' : 'border-border'}`}
-                />
-                {errors.stock && <p className="text-red-700 text-sm">{errors.stock.message}</p>}
-            </div>
+            <div className="flex flex-col justify-between gap-0 md:flex-row md:gap-4">
+                <div className="flex flex-col gap-1 mb-4 w-full">
+                    <label>
+                        Stock <span className="text-red-700">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        {...register('stock', {
+                            required: 'El stock es obligatorio',
+                            valueAsNumber: true,
+                            min: {
+                                value: 0,
+                                message: 'El stock no puede ser menor a 0',
+                            },
+                        })}
+                        className={`p-2 border rounded-md no-spinner ${errors.stock ? 'border-red-700' : 'border-border'}`}
+                    />
+                    {errors.stock && <p className="text-red-700 text-sm">{errors.stock.message}</p>}
+                </div>
 
-            <div className="flex flex-col gap-1 mb-4">
-                <label>
-                    Precio <span className="text-red-700">*</span>
-                </label>
-                <input
-                    type="number"
-                    {...register('price', {
-                        required: 'El precio es obligatorio',
-                        valueAsNumber: true,
-                        min: {
-                            value: 0,
-                            message: 'El precio no puede ser menor a 0',
-                        },
-                    })}
-                    className={`p-2 border rounded-md no-spinner ${errors.price ? 'border-red-700' : 'border-border'}`}
-                />
-                {errors.price && <p className="text-red-700 text-sm">{errors.price.message}</p>}
+                <div className="flex flex-col gap-1 mb-4 w-full">
+                    <label>
+                        Precio <span className="text-red-700">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        {...register('price', {
+                            required: 'El precio es obligatorio',
+                            valueAsNumber: true,
+                            min: {
+                                value: 0,
+                                message: 'El precio no puede ser menor a 0',
+                            },
+                        })}
+                        className={`p-2 border rounded-md no-spinner ${errors.price ? 'border-red-700' : 'border-border'}`}
+                    />
+                    {errors.price && <p className="text-red-700 text-sm">{errors.price.message}</p>}
+                </div>
             </div>
 
             <div className="flex flex-col gap-1 mb-4">
@@ -141,8 +173,8 @@ export default function ProductForm() {
             <div className="flex w-full justify-end">
                 <button
                     type="submit"
-                    disabled={isLoading}
-                    className={`font-semibold ${isLoading ? 'cursor-not-allowed bg-muted' : 'cursor-pointer bg-secondary hover:bg-muted'} text-main border border-border py-2 px-4 rounded-md transition-all`}
+                    disabled={isLoading || !isDirty}
+                    className={`font-semibold ${isLoading || !isDirty ? 'cursor-not-allowed bg-muted' : 'cursor-pointer bg-secondary hover:bg-muted'} text-main border border-border py-2 px-4 rounded-md transition-all`}
                 >
                     {isLoading ? <LoaderCircle className="animate-spin" /> : 'Guardar'}
                 </button>
