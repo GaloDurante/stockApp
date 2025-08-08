@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { createProductAction } from '@/lib/actions/product';
+import { createProductAction, deleteProductByIdAction } from '@/lib/actions/product';
 
 import { ProductType } from '@/types/product';
 
@@ -16,6 +16,7 @@ interface DuplicateButtonType {
 
 export default function DuplicateButton({ baseProduct }: DuplicateButtonType) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDelete, setIsDelete] = useState(false);
 
     const router = useRouter();
     const handleSubmit = async () => {
@@ -37,14 +38,39 @@ export default function DuplicateButton({ baseProduct }: DuplicateButtonType) {
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            await deleteProductByIdAction(baseProduct.id);
+            showSuccessToast('Producto eliminado con éxito');
+            router.push('/admin/products');
+        } catch {
+            showErrorToast('No se pudo eliminar el producto');
+        } finally {
+            setIsModalOpen(false);
+        }
+    };
+
     return (
         <>
             <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                    setIsDelete(false);
+                    setIsModalOpen(true);
+                }}
                 type="button"
                 className="cursor-pointer border border-border p-2 rounded-md mb-4 bg-surface hover:bg-border-dark transition-all"
             >
-                Duplicar producto
+                Duplicar
+            </button>
+            <button
+                onClick={() => {
+                    setIsDelete(true);
+                    setIsModalOpen(true);
+                }}
+                type="button"
+                className="ml-4 cursor-pointer p-2 rounded-md mb-4 transition-all bg-red-700 hover:bg-red-900"
+            >
+                Eliminar
             </button>
             {isModalOpen && (
                 <Modal
@@ -53,11 +79,15 @@ export default function DuplicateButton({ baseProduct }: DuplicateButtonType) {
                     }}
                 >
                     <ConfirmModal
-                        isDelete={false}
-                        customMessage={`Estas seguro de que deseas duplicar el producto ${baseProduct.name}? Esto creará un nuevo producto identico con el stock y precio en 0`}
+                        isDelete={isDelete}
+                        customMessage={
+                            !isDelete
+                                ? `Estas seguro de que deseas duplicar el producto ${baseProduct.name}? Esto creará un nuevo producto identico con el stock y precio en 0`
+                                : undefined
+                        }
                         entityItem={baseProduct.name}
                         onClose={() => setIsModalOpen(false)}
-                        onTrigger={handleSubmit}
+                        onTrigger={isDelete ? handleDelete : handleSubmit}
                     />
                 </Modal>
             )}

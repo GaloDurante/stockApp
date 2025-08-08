@@ -31,7 +31,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
             isEdit && selectedProduct
                 ? {
                       name: selectedProduct.name,
-                      description: selectedProduct.description ?? undefined,
+                      description: selectedProduct.description ?? '',
                       stock: selectedProduct.stock,
                       price: selectedProduct.price,
                       category: selectedProduct.category,
