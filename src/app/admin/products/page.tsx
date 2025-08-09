@@ -13,18 +13,17 @@ interface ProductsPageType {
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageType) {
-    const { search, filterByCategory, sortOrder = 'asc', page = '1' } = await searchParams;
-    const pageNumber = Number(page) || 1;
-    const perPage = 25;
-    const { products, total } = await getProductsByCategory({
+    const { search, filterByCategory, sortOrder = 'asc' } = await searchParams;
+    const pageNumber = 1;
+    const perPage = 20;
+
+    const { products: initialProducts, total } = await getProductsByCategory({
         search,
         filterByCategory,
         sortOrder,
         page: pageNumber,
         perPage,
     });
-
-    const totalPages = perPage > 0 ? Math.ceil(total / perPage) : 1;
 
     return (
         <div>
@@ -34,7 +33,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageType) {
                         withSort
                         withSearch
                         withCategories
-                        sortOrder="asc"
+                        sortOrder={sortOrder}
                         searchPlaceholder={'Buscar por nombre del producto'}
                         search={search}
                         selectedCategory={filterByCategory}
@@ -49,7 +48,14 @@ export default async function ProductsPage({ searchParams }: ProductsPageType) {
                 </Link>
             </div>
             <div className="mt-4 lg:mt-8">
-                <ProductsTable products={products} page={pageNumber} totalPages={totalPages} />
+                <ProductsTable
+                    initialProducts={initialProducts}
+                    totalCount={total}
+                    search={search ?? ''}
+                    filterByCategory={filterByCategory ?? ''}
+                    sortOrder={sortOrder}
+                    perPage={perPage}
+                />
             </div>
         </div>
     );

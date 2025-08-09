@@ -33,10 +33,10 @@ export const getProductsByCategory = async ({
             where,
             orderBy: sortOrder
                 ? sortOrder === 'asc' || sortOrder === 'desc'
-                    ? { name: sortOrder }
+                    ? [{ name: sortOrder }, { id: 'asc' }]
                     : sortOrder === 'price_asc'
-                      ? { price: 'asc' }
-                      : { price: 'desc' }
+                      ? [{ price: 'asc' }, { id: 'asc' }]
+                      : [{ price: 'desc' }, { id: 'asc' }]
                 : {},
             skip: (page - 1) * perPage,
             take: perPage,

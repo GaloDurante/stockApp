@@ -1,41 +1,109 @@
-import { ProductType } from '@/types/product';
+'use client';
 
+import { useState, useEffect, useRef, useCallback } from 'react';
 import TableActionsButtons from '@/components/products/TableActionsButtons';
-import Pagination from '@/components/Pagination';
+import { ProductType } from '@/types/product';
+import { loadMoreProductsAction } from '@/lib/actions/product';
 
-interface TableProps {
-    products: ProductType[];
-    page: number;
-    totalPages: number;
+import { showErrorToast } from '@/components/Toast';
+
+interface ProductsTableProps {
+    initialProducts: ProductType[];
+    totalCount: number;
+    search: string;
+    filterByCategory: string;
+    sortOrder: 'asc' | 'desc' | 'price_asc' | 'price_desc';
+    perPage: number;
 }
 
-export default function ProductsTable({ products, page, totalPages }: TableProps) {
+export default function ProductsTable({
+    initialProducts,
+    totalCount,
+    search,
+    filterByCategory,
+    sortOrder,
+    perPage,
+}: ProductsTableProps) {
+    const [products, setProducts] = useState<ProductType[]>(initialProducts);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(initialProducts.length < totalCount);
+
+    const loader = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        setProducts(initialProducts);
+        setPage(1);
+        setHasMore(initialProducts.length < totalCount);
+    }, [initialProducts, totalCount, search, filterByCategory, sortOrder]);
+
+    const loadMoreProducts = useCallback(async () => {
+        if (loading || !hasMore) return;
+
+        setLoading(true);
+        try {
+            const nextPage = page + 1;
+            const { products: newProducts } = await loadMoreProductsAction({
+                search,
+                filterByCategory,
+                sortOrder,
+                page: nextPage,
+                perPage,
+            });
+            setProducts((prev) => [...prev, ...newProducts]);
+            setPage(nextPage);
+            setHasMore(products.length + newProducts.length < totalCount);
+        } catch {
+            showErrorToast('Error cargando más productos');
+        } finally {
+            setLoading(false);
+        }
+    }, [loading, hasMore, page, search, filterByCategory, sortOrder, perPage, totalCount, products.length]);
+
+    const handleObserver = useCallback(
+        (entries: IntersectionObserverEntry[]) => {
+            const target = entries[0];
+            if (target.isIntersecting && !loading && hasMore) {
+                loadMoreProducts();
+            }
+        },
+        [loading, hasMore, loadMoreProducts]
+    );
+
+    useEffect(() => {
+        const options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1,
+        };
+        const currentLoader = loader.current;
+        const observer = new IntersectionObserver(handleObserver, options);
+        if (currentLoader && hasMore) observer.observe(currentLoader);
+        return () => {
+            if (currentLoader) observer.unobserve(currentLoader);
+            observer.disconnect();
+        };
+    }, [handleObserver, hasMore]);
+
     const formatCategory = (category: string | null) => {
         if (!category) return '';
         return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase().replace('_', ' ');
     };
     const formatPrice = (price: number) => price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
-    const renderStock = (stock: number) => {
-        if (stock < 1) {
-            return <span>Sin stock</span>;
-        } else {
-            return <span>{stock} en stock</span>;
-        }
-    };
+    const renderStock = (stock: number) => (stock < 1 ? <span>Sin stock</span> : <span>{stock} en stock</span>);
 
     return (
-        <div className="w-full max-h-[700px] overflow-auto relative">
-            <table className="min-w-full border border-border rounded-lg bg-surface text-sm">
-                <thead className="bg-border sticky top-0 z-10">
+        <div className="relative w-full overflow-auto rounded-lg max-h-[calc(100vh-22rem)] md:max-h-[calc(100vh-24rem)] lg:max-h-[calc(100vh-12rem)] custom-scrollbar">
+            <table className="min-w-full border-t-2 border border-border bg-surface text-sm">
+                <thead className="bg-border sticky -top-[1px]">
                     <tr className="text-left uppercase text-xs tracking-wider">
-                        <th className="px-4 py-3 w-[1%]">Acciones</th>
-                        <th className="px-4 py-3">Producto</th>
-                        <th className="px-4 py-3">Categoría</th>
-                        <th className="px-4 py-3">Inventario</th>
-                        <th className="px-4 py-3">Precio</th>
+                        <th className="p-4 w-[1%]">Acciones</th>
+                        <th className="p-4">Producto</th>
+                        <th className="p-4">Categoría</th>
+                        <th className="p-4">Inventario</th>
+                        <th className="p-4">Precio</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     {products.length === 0 ? (
                         <tr>
@@ -66,19 +134,11 @@ export default function ProductsTable({ products, page, totalPages }: TableProps
                         ))
                     )}
                 </tbody>
-
-                {products.length > 0 && (
-                    <tfoot className="bg-surface sticky bottom-0 z-10">
-                        <tr>
-                            <td colSpan={5} className="px-4 py-3 border-t border-border">
-                                <div className="flex justify-center">
-                                    <Pagination page={page} totalPages={totalPages} />
-                                </div>
-                            </td>
-                        </tr>
-                    </tfoot>
-                )}
             </table>
+            <div ref={loader} className="h-10 flex justify-center items-center">
+                {loading && <span>Cargando más productos...</span>}
+                {!hasMore && products.length > 0 && <span className="text-muted">Todos los productos cargados.</span>}
+            </div>
         </div>
     );
 }
