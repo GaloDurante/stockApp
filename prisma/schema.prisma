@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -18,31 +18,66 @@ model User {
 }
 
 model Product {
-  id            Int      @id @default(autoincrement())
-  name          String
-  description   String?
-  category      Category
-  stock         Int
-  price         Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  category    Category
+  stock       Int
+  price       Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  sellItems   SellItem[]
 }
 
 enum Category {
-  VINOS_TINTOS    @map("Vinos Tintos")
-  VINOS_BLANCOS   @map("Vinos Blancos")
-  VINOS_ROSADOS   @map("Vinos Rosados")
-  RON             @map("Ron")
-  LICORES         @map("Licores")
-  SIDRAS          @map("Sidras")
-  CHAMPAGNES      @map("Champagnes")
-  CERVEZAS        @map("Cervezas")
-  VODKA           @map("Vodka")
-  WHISKIES        @map("Whiskies")
-  GASEOSAS        @map("Gaseosas")
-  APERITIVOS      @map("Aperitivos")
-  GIN             @map("Gin")
-  ACCESORIOS      @map("Accesorios")
-  ALMACEN         @map("Almacén")
+  VINOS_TINTOS  @map("Vinos Tintos")
+  VINOS_BLANCOS @map("Vinos Blancos")
+  VINOS_ROSADOS @map("Vinos Rosados")
+  RON           @map("Ron")
+  LICORES       @map("Licores")
+  SIDRAS        @map("Sidras")
+  CHAMPAGNES    @map("Champagnes")
+  CERVEZAS      @map("Cervezas")
+  VODKA         @map("Vodka")
+  WHISKIES      @map("Whiskies")
+  GASEOSAS      @map("Gaseosas")
+  APERITIVOS    @map("Aperitivos")
+  GIN           @map("Gin")
+  ACCESORIOS    @map("Accesorios")
+  ALMACEN       @map("Almacén")
 }
 
+model Sell {
+  id            Int           @id @default(autoincrement())
+  date          DateTime
+  paymentMethod PaymentMethod
+  receiver      Receiver?
+  totalPrice    Int
+  note          String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  items         SellItem[]
+}
+
+model SellItem {
+  id          Int       @id @default(autoincrement())
+  sellId      Int
+  productId   Int?
+  productName String
+  quantity    Int
+  unitPrice   Int
+
+  sell        Sell      @relation(fields: [sellId], references: [id])
+  product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+}
+
+enum PaymentMethod {
+  Cash
+  Transfer
+}
+
+enum Receiver {
+  Walter
+  Yanina
+}
