@@ -1,12 +1,15 @@
 import { ProductType } from '@/types/product';
 
 import TableActionsButtons from '@/components/products/TableActionsButtons';
+import Pagination from '@/components/Pagination';
 
 interface TableProps {
     products: ProductType[];
+    page: number;
+    totalPages: number;
 }
 
-export default function ProductsTable({ products }: TableProps) {
+export default function ProductsTable({ products, page, totalPages }: TableProps) {
     const formatCategory = (category: string | null) => {
         if (!category) return '';
         return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase().replace('_', ' ');
@@ -21,10 +24,10 @@ export default function ProductsTable({ products }: TableProps) {
     };
 
     return (
-        <div className="w-full overflow-x-auto">
-            <table className="min-w-full border border-border rounded-lg overflow-hidden bg-surface text-sm">
-                <thead>
-                    <tr className="bg-border text-left uppercase text-xs tracking-wider">
+        <div className="w-full max-h-[700px] overflow-auto relative">
+            <table className="min-w-full border border-border rounded-lg bg-surface text-sm">
+                <thead className="bg-border sticky top-0 z-10">
+                    <tr className="text-left uppercase text-xs tracking-wider">
                         <th className="px-4 py-3 w-[1%]">Acciones</th>
                         <th className="px-4 py-3">Producto</th>
                         <th className="px-4 py-3">Categoría</th>
@@ -32,6 +35,7 @@ export default function ProductsTable({ products }: TableProps) {
                         <th className="px-4 py-3">Precio</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {products.length === 0 ? (
                         <tr>
@@ -62,6 +66,18 @@ export default function ProductsTable({ products }: TableProps) {
                         ))
                     )}
                 </tbody>
+
+                {products.length > 0 && (
+                    <tfoot className="bg-surface sticky bottom-0 z-10">
+                        <tr>
+                            <td colSpan={5} className="px-4 py-3 border-t border-border">
+                                <div className="flex justify-center">
+                                    <Pagination page={page} totalPages={totalPages} />
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                )}
             </table>
         </div>
     );

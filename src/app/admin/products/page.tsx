@@ -8,16 +8,24 @@ interface ProductsPageType {
         search?: string;
         filterByCategory?: string;
         sortOrder?: 'asc' | 'desc' | 'price_asc' | 'price_desc';
+        page?: string;
     }>;
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageType) {
-    const { search, filterByCategory, sortOrder = 'asc' } = await searchParams;
-    const products = await getProductsByCategory({
+    const { search, filterByCategory, sortOrder = 'asc', page = '1' } = await searchParams;
+    const pageNumber = Number(page) || 1;
+    const perPage = 25;
+    const { products, total } = await getProductsByCategory({
         search,
         filterByCategory,
         sortOrder,
+        page: pageNumber,
+        perPage,
     });
+
+    const totalPages = perPage > 0 ? Math.ceil(total / perPage) : 1;
+
     return (
         <div>
             <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-2">
@@ -41,7 +49,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageType) {
                 </Link>
             </div>
             <div className="mt-4 lg:mt-8">
-                <ProductsTable products={products} />
+                <ProductsTable products={products} page={pageNumber} totalPages={totalPages} />
             </div>
         </div>
     );
