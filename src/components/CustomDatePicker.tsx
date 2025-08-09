@@ -6,9 +6,14 @@ import DatePicker from 'react-datepicker';
 interface CustomDatePickerProps {
     dateRange: [Date | null, Date | null];
     setDateRange: (dateRange: [Date | null, Date | null]) => void;
+    customPlaceholder?: string;
 }
 
-export default function CustomDatePicker({ dateRange, setDateRange }: CustomDatePickerProps) {
+export default function CustomDatePicker({
+    dateRange,
+    setDateRange,
+    customPlaceholder = 'Selecciona un rango de fechas',
+}: CustomDatePickerProps) {
     const [startDate, endDate] = dateRange;
 
     return (
@@ -25,7 +30,7 @@ export default function CustomDatePicker({ dateRange, setDateRange }: CustomDate
                 endDate={endDate}
                 onChange={(update: [Date | null, Date | null]) => setDateRange(update)}
                 isClearable
-                placeholderText="Selecciona un rango de fechas"
+                placeholderText={customPlaceholder}
                 className="bg-surface px-8! py-2.5! border rounded-md border-border focus:outline-none focus:ring-1 focus:ring-gray-200 w-full"
             />
         </div>

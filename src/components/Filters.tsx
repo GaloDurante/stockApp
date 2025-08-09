@@ -3,14 +3,16 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
-import { Category } from '@/generated/prisma';
+import { format } from '@formkit/tempo';
 
+import { Category } from '@/generated/prisma';
 import { OptionType } from '@/types/form';
 
 import { getSelectedOption, buildQueryParams } from '@/lib/helpers/utils';
 
 import CustomSelect from '@/components/CustomSelect';
 import Search from '@/components/Search';
+import CustomDatePicker from '@/components/CustomDatePicker';
 
 interface FiltersProps {
     withSearch?: boolean;
@@ -22,6 +24,9 @@ interface FiltersProps {
     withSort?: boolean;
     sortOrder?: string;
     baseSortOptions?: { value: string; label: string }[];
+    withDateRange?: boolean;
+    startDate?: string;
+    endDate?: string;
 }
 
 export default function Filters({
@@ -34,6 +39,9 @@ export default function Filters({
     withSort = false,
     sortOrder: sortOrderProp,
     baseSortOptions,
+    withDateRange = false,
+    startDate,
+    endDate,
 }: FiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -63,6 +71,10 @@ export default function Filters({
     const [search, setSearch] = useState(searchProp ?? '');
     const [selectedCategory, setSelectedCategory] = useState(selectedCategoryProp ?? '');
     const [sortOrder, setSortOrder] = useState<string | undefined>(withSort ? (sortOrderProp ?? 'asc') : undefined);
+    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+        startDate ? new Date(startDate) : null,
+        endDate ? new Date(endDate) : null,
+    ]);
 
     const selectedCategoryOption = useMemo(() => {
         if (!withCategories || !categoriesOptions) return null;
@@ -80,6 +92,8 @@ export default function Filters({
                 ...(withSearch ? { search } : {}),
                 ...(withCategories ? { filterByCategory: selectedCategory } : {}),
                 ...(withSort && sortOrder ? { sortOrder } : {}),
+                ...(withDateRange && dateRange[0] ? { startDate: format(dateRange[0], 'YYYY-MM-DD', 'en') } : {}),
+                ...(withDateRange && dateRange[1] ? { endDate: format(dateRange[1], 'YYYY-MM-DD', 'en') } : {}),
             };
 
             const queryString = buildQueryParams(queryParams);
@@ -88,7 +102,18 @@ export default function Filters({
         }, 300);
 
         return () => clearTimeout(timeout);
-    }, [search, selectedCategory, sortOrder, pathname, router, withSearch, withCategories, withSort]);
+    }, [
+        search,
+        selectedCategory,
+        sortOrder,
+        pathname,
+        router,
+        withSearch,
+        withCategories,
+        withSort,
+        withDateRange,
+        dateRange,
+    ]);
 
     return (
         <>
@@ -119,6 +144,14 @@ export default function Filters({
                         }}
                     />
                 </div>
+            )}
+
+            {withDateRange && (
+                <CustomDatePicker
+                    dateRange={dateRange}
+                    setDateRange={setDateRange}
+                    customPlaceholder="Filtrar por fechas"
+                />
             )}
         </>
     );
