@@ -20,7 +20,8 @@ interface FiltersProps {
     showAllCategory?: boolean;
     selectedCategory?: string;
     withSort?: boolean;
-    sortOrder?: 'asc' | 'desc' | 'price_asc' | 'price_desc';
+    sortOrder?: string;
+    baseSortOptions?: { value: string; label: string }[];
 }
 
 export default function Filters({
@@ -32,6 +33,7 @@ export default function Filters({
     selectedCategory: selectedCategoryProp,
     withSort = false,
     sortOrder: sortOrderProp,
+    baseSortOptions,
 }: FiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -55,19 +57,12 @@ export default function Filters({
 
     const sortOrderOptions = useMemo(() => {
         if (!withSort) return null;
-        return [
-            { value: 'asc', label: 'Ordenar: A-Z' },
-            { value: 'desc', label: 'Ordenar: Z-A' },
-            { value: 'price_asc', label: 'Precio: menor a mayor' },
-            { value: 'price_desc', label: 'Precio: mayor a menor' },
-        ];
-    }, [withSort]);
+        return baseSortOptions;
+    }, [withSort, baseSortOptions]);
 
     const [search, setSearch] = useState(searchProp ?? '');
     const [selectedCategory, setSelectedCategory] = useState(selectedCategoryProp ?? '');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'price_asc' | 'price_desc' | undefined>(
-        withSort ? (sortOrderProp ?? 'asc') : undefined
-    );
+    const [sortOrder, setSortOrder] = useState<string | undefined>(withSort ? (sortOrderProp ?? 'asc') : undefined);
 
     const selectedCategoryOption = useMemo(() => {
         if (!withCategories || !categoriesOptions) return null;

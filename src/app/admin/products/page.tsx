@@ -25,6 +25,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageType) {
         perPage,
     });
 
+    const sortOptions = [
+        { value: 'asc', label: 'Ordenar: A-Z' },
+        { value: 'desc', label: 'Ordenar: Z-A' },
+        { value: 'price_asc', label: 'Precio: menor a mayor' },
+        { value: 'price_desc', label: 'Precio: mayor a menor' },
+    ];
+
     return (
         <div>
             <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-2">
@@ -34,6 +41,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageType) {
                         withSearch
                         withCategories
                         sortOrder={sortOrder}
+                        baseSortOptions={sortOptions}
                         searchPlaceholder={'Buscar por nombre del producto'}
                         search={search}
                         selectedCategory={filterByCategory}
