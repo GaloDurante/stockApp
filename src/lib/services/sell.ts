@@ -7,14 +7,14 @@ export const getAllSells = async ({
     paymentMethod,
     sortOrder,
     page = 1,
-    pageSize = 20,
+    perPage = 20,
 }: {
     startDate?: string;
     endDate?: string;
     paymentMethod?: 'Cash' | 'Transfer';
     sortOrder?: 'id_asc' | 'id_desc' | 'date_asc' | 'date_desc' | 'price_asc' | 'price_desc';
     page?: number;
-    pageSize?: number;
+    perPage?: number;
 }) => {
     const where: Prisma.SellWhereInput = {};
 
@@ -38,11 +38,16 @@ export const getAllSells = async ({
 
     const orderBy = orderByMap[sortOrder ?? 'id_asc'] ?? { id: 'asc' };
 
-    return await prisma.sell.findMany({
-        where,
-        include: { items: true },
-        orderBy,
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-    });
+    const [sells, total] = await Promise.all([
+        prisma.sell.findMany({
+            where,
+            include: { items: true },
+            orderBy,
+            skip: (page - 1) * perPage,
+            take: perPage,
+        }),
+        prisma.sell.count({ where }),
+    ]);
+
+    return { sells, total };
 };

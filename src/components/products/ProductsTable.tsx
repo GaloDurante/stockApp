@@ -1,11 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import TableActionsButtons from '@/components/products/TableActionsButtons';
+
 import { ProductType } from '@/types/product';
 import { loadMoreProductsAction } from '@/lib/actions/product';
 
+import { formatCategory, formatPrice, renderStock } from '@/lib/helpers/components/utils';
+
 import { showErrorToast } from '@/components/Toast';
+import TableActionsButtons from '@/components/products/TableActionsButtons';
+import ProductCard from '@/components/products/ProductCard';
 
 interface ProductsTableProps {
     initialProducts: ProductType[];
@@ -85,16 +89,9 @@ export default function ProductsTable({
         };
     }, [handleObserver, hasMore]);
 
-    const formatCategory = (category: string | null) => {
-        if (!category) return '';
-        return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase().replace('_', ' ');
-    };
-    const formatPrice = (price: number) => price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
-    const renderStock = (stock: number) => (stock < 1 ? <span>Sin stock</span> : <span>{stock} en stock</span>);
-
     return (
         <div className="relative w-full overflow-auto rounded-lg max-h-[calc(100vh-22rem)] md:max-h-[calc(100vh-24rem)] lg:max-h-[calc(100vh-12rem)] custom-scrollbar">
-            <table className="min-w-full border-t-2 border border-border bg-surface text-sm">
+            <table className="hidden md:table min-w-full border-t-2 border border-border bg-surface text-sm">
                 <thead className="bg-border sticky -top-[1px]">
                     <tr className="text-left uppercase text-xs tracking-wider">
                         <th className="p-4 w-[1%]">Acciones</th>
@@ -135,6 +132,27 @@ export default function ProductsTable({
                     )}
                 </tbody>
             </table>
+            <div className="md:hidden">
+                {products.length === 0 ? (
+                    <div>
+                        <div className="text-center py-6 text-muted">No hay productos para mostrar.</div>
+                    </div>
+                ) : (
+                    <div className="border border-border rounded-lg">
+                        {products.map((product, index) => (
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                className={`
+                        ${index === 0 ? 'rounded-t-lg' : ''}
+                        ${index === products.length - 1 ? 'rounded-b-lg' : ''}
+                        ${index !== products.length - 1 ? 'border-b border-border' : ''}
+                    `}
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
             <div ref={loader} className="h-10 flex justify-center items-center">
                 {loading && <span>Cargando más productos...</span>}
                 {!hasMore && products.length > 0 && <span className="text-muted">Todos los productos cargados.</span>}

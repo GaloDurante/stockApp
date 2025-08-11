@@ -1,0 +1,30 @@
+import { ProductType } from '@/types/product';
+import { formatCategory, formatPrice, renderStock } from '@/lib/helpers/components/utils';
+
+import TableActionsButtons from '@/components/products/TableActionsButtons';
+
+interface ProductCardType {
+    product: ProductType;
+    className?: string;
+}
+
+export default function ProductCard({ product, className }: ProductCardType) {
+    return (
+        <div className={`bg-surface p-4 flex items-start justify-between ${className || ''}`}>
+            <div className="flex flex-col gap-1">
+                <span className="text-base font-medium">{product.name}</span>
+
+                <div className="flex gap-3 text-sm text-muted">
+                    <span>{renderStock(product.stock)}</span>
+                    <span>•</span>
+                    <span>{formatCategory(product.category)}</span>
+                </div>
+
+                <span className="text-sm font-semibold">{formatPrice(product.price)}</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <TableActionsButtons row={product} />
+            </div>
+        </div>
+    );
+}
