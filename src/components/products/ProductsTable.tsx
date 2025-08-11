@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { ProductType } from '@/types/product';
-import { loadMoreProductsAction } from '@/lib/actions/product';
+import { loadMoreProductsAction, deleteProductByIdAction } from '@/lib/actions/product';
 
 import { formatCategory, formatPrice, renderStock } from '@/lib/helpers/components/utils';
 
-import { showErrorToast } from '@/components/Toast';
+import { showErrorToast, showSuccessToast } from '@/components/Toast';
 import TableActionsButtons from '@/components/products/TableActionsButtons';
 import ProductCard from '@/components/products/ProductCard';
 
@@ -32,6 +33,8 @@ export default function ProductsTable({
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(initialProducts.length < totalCount);
+    const [deleteModalId, setDeleteModalId] = useState<number | null>(null);
+    const router = useRouter();
 
     const loader = useRef<HTMLDivElement | null>(null);
 
@@ -89,6 +92,18 @@ export default function ProductsTable({
         };
     }, [handleObserver, hasMore]);
 
+    const handleDelete = async () => {
+        if (!deleteModalId) return;
+        setDeleteModalId(null);
+        try {
+            await deleteProductByIdAction(deleteModalId);
+            showSuccessToast('Producto eliminado con éxito');
+            router.refresh();
+        } catch {
+            showErrorToast('No se pudo eliminar el producto');
+        }
+    };
+
     return (
         <div className="relative w-full overflow-auto rounded-lg max-h-[calc(100vh-22rem)] md:max-h-[calc(100vh-24rem)] lg:max-h-[calc(100vh-12rem)] custom-scrollbar">
             <table className="hidden md:table min-w-full border-t-2 border border-border bg-surface text-sm">
@@ -116,7 +131,14 @@ export default function ProductsTable({
                             >
                                 <td className="px-4 py-3 w-[1%]">
                                     <div className="flex gap-2">
-                                        <TableActionsButtons row={product} />
+                                        <TableActionsButtons
+                                            redirect={`/admin/products/${product.id}`}
+                                            handleDelete={handleDelete}
+                                            label={`${product.name}`}
+                                            isModalOpen={deleteModalId === product.id}
+                                            openModal={() => setDeleteModalId(product.id)}
+                                            closeModal={() => setDeleteModalId(null)}
+                                        />
                                     </div>
                                 </td>
                                 <td className="px-4 py-3 w-[30%]">
@@ -141,6 +163,9 @@ export default function ProductsTable({
                     <div className="border border-border rounded-lg">
                         {products.map((product, index) => (
                             <ProductCard
+                                deleteModalId={deleteModalId}
+                                handleDelete={handleDelete}
+                                setDeleteModalId={setDeleteModalId}
                                 key={product.id}
                                 product={product}
                                 className={`
