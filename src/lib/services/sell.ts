@@ -51,3 +51,9 @@ export const getAllSells = async ({
 
     return { sells, total };
 };
+
+export async function deleteSellById(id: number) {
+    return await prisma.sell.delete({
+        where: { id },
+    });
+}

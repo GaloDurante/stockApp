@@ -13,6 +13,8 @@ interface TableActionsButtonsType {
     closeModal: () => void;
     label: string;
     redirect: string;
+    isTwoStep?: boolean;
+    confirmationText?: string;
 }
 
 export default function TableActionsButtons({
@@ -22,6 +24,8 @@ export default function TableActionsButtons({
     openModal,
     closeModal,
     redirect,
+    isTwoStep = false,
+    confirmationText,
 }: TableActionsButtonsType) {
     return (
         <>
@@ -38,7 +42,13 @@ export default function TableActionsButtons({
 
             {isModalOpen && (
                 <Modal onClose={closeModal}>
-                    <ConfirmModal entityItem={label || ''} onClose={closeModal} onTrigger={handleDelete} />
+                    <ConfirmModal
+                        isTwoStep={isTwoStep}
+                        confirmationText={confirmationText}
+                        entityItem={label || ''}
+                        onClose={closeModal}
+                        onTrigger={handleDelete}
+                    />
                 </Modal>
             )}
         </>
