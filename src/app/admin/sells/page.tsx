@@ -1,5 +1,4 @@
 import { dayStart, dayEnd } from '@formkit/tempo';
-
 import { getAllSells } from '@/lib/services/sell';
 import Filters from '@/components/Filters';
 import Link from 'next/link';
@@ -17,11 +16,16 @@ interface SellsPageType {
 export default async function SellsPage({ searchParams }: SellsPageType) {
     const { startDate, endDate, paymentMethod, sortOrder = 'date_desc' } = await searchParams;
 
-    const sells = await getAllSells({
+    const pageNumber = 1;
+    const perPage = 20;
+
+    const { sells: initialSells, total } = await getAllSells({
         startDate: startDate ? dayStart(startDate).toISOString() : undefined,
         endDate: endDate ? dayEnd(endDate).toISOString() : undefined,
         paymentMethod: paymentMethod === '' ? undefined : (paymentMethod as 'Cash' | 'Transfer' | undefined),
         sortOrder,
+        page: pageNumber,
+        perPage: perPage,
     });
 
     const sortOptions = [
@@ -53,8 +57,9 @@ export default async function SellsPage({ searchParams }: SellsPageType) {
                     Registrar nueva venta
                 </Link>
             </div>
+
             <div className="mt-4 lg:mt-8">
-                <SellsTable sells={sells} />
+                <SellsTable initialSells={initialSells} totalCount={total} sortOrder={sortOrder} perPage={perPage} />
             </div>
         </div>
     );
