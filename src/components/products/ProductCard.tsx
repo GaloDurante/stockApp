@@ -1,5 +1,5 @@
 import { ProductType } from '@/types/product';
-import { formatCategory, formatPrice, renderStock } from '@/lib/helpers/product/utils';
+import { formatCategory, formatPrice, renderStock } from '@/lib/helpers/components/utils';
 
 import TableActionsButtons from '@/components/products/TableActionsButtons';
 

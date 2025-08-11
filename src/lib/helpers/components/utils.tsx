@@ -5,3 +5,6 @@ export const formatCategory = (category: string | null) => {
 export const formatPrice = (price: number) => price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
 export const renderStock = (stock: number) =>
     stock < 1 ? <span className="text-red-700">Sin stock</span> : <span>{stock} en stock</span>;
+
+export const formatQuantity = (quantity: number) =>
+    quantity > 1 ? <span>{quantity} items</span> : <span>{quantity} item</span>;

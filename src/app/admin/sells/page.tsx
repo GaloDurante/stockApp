@@ -15,7 +15,7 @@ interface SellsPageType {
 }
 
 export default async function SellsPage({ searchParams }: SellsPageType) {
-    const { startDate, endDate, paymentMethod, sortOrder = 'id_asc' } = await searchParams;
+    const { startDate, endDate, paymentMethod, sortOrder = 'date_desc' } = await searchParams;
 
     const sells = await getAllSells({
         startDate: startDate ? dayStart(startDate).toISOString() : undefined,
@@ -25,12 +25,12 @@ export default async function SellsPage({ searchParams }: SellsPageType) {
     });
 
     const sortOptions = [
-        { value: 'id_asc', label: 'ID: menor a mayor' },
-        { value: 'id_desc', label: 'ID: mayor a menor' },
-        { value: 'date_asc', label: 'Fecha: antigua a reciente' },
-        { value: 'date_desc', label: 'Fecha: reciente a antigua' },
+        { value: 'date_desc', label: 'Fecha: más reciente' },
+        { value: 'date_asc', label: 'Fecha: más antigua' },
         { value: 'price_asc', label: 'Precio: menor a mayor' },
         { value: 'price_desc', label: 'Precio: mayor a menor' },
+        { value: 'id_asc', label: 'ID: menor a mayor' },
+        { value: 'id_desc', label: 'ID: mayor a menor' },
     ];
 
     return (

@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { ProductType } from '@/types/product';
 import { loadMoreProductsAction } from '@/lib/actions/product';
 
-import { formatCategory, formatPrice, renderStock } from '@/lib/helpers/product/utils';
+import { formatCategory, formatPrice, renderStock } from '@/lib/helpers/components/utils';
 
 import { showErrorToast } from '@/components/Toast';
 import TableActionsButtons from '@/components/products/TableActionsButtons';
