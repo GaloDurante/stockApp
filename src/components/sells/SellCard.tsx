@@ -3,14 +3,17 @@ import { format } from '@formkit/tempo';
 import { SellType } from '@/types/sell';
 import { formatPrice, formatQuantity } from '@/lib/helpers/components/utils';
 
-// import TableActionsButtons from '@/components/products/TableActionsButtons';
+import TableActionsButtons from '@/components/products/TableActionsButtons';
 
 interface SellCardType {
     sell: SellType;
     className?: string;
+    handleDelete: () => void;
+    deleteModalId: number | null;
+    setDeleteModalId: (id: number | null) => void;
 }
 
-export default function SellCard({ sell, className }: SellCardType) {
+export default function SellCard({ sell, className, handleDelete, deleteModalId, setDeleteModalId }: SellCardType) {
     return (
         <div className={`bg-surface p-4 flex items-start justify-between ${className || ''}`}>
             <div className="flex flex-col gap-2">
@@ -29,9 +32,18 @@ export default function SellCard({ sell, className }: SellCardType) {
 
                 <span className="text-sm font-semibold">{formatPrice(sell.totalPrice)}</span>
             </div>
-            {/* <div className="flex items-center gap-2">
-                <TableActionsButtons row={sell} />
-            </div> */}
+            <div className="flex items-center gap-2">
+                <TableActionsButtons
+                    redirect={`/admin/sells/${sell.id}`}
+                    handleDelete={handleDelete}
+                    label={`la venta ID #${sell.id}`}
+                    isModalOpen={deleteModalId === sell.id}
+                    openModal={() => setDeleteModalId(sell.id)}
+                    closeModal={() => setDeleteModalId(null)}
+                    isTwoStep
+                    confirmationText={`Venta-ID-${sell.id}`}
+                />
+            </div>
         </div>
     );
 }

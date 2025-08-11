@@ -148,6 +148,9 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                     <div className="border border-border rounded-lg">
                         {sells.map((sell, index) => (
                             <SellCard
+                                deleteModalId={deleteModalId}
+                                handleDelete={handleDelete}
+                                setDeleteModalId={setDeleteModalId}
                                 key={sell.id}
                                 sell={sell}
                                 className={`
