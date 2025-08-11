@@ -1,5 +1,5 @@
 'use server';
-import { getAllSells } from '@/lib/services/sell';
+import { getAllSells, deleteSellById } from '@/lib/services/sell';
 
 export async function loadMoreSellsAction({
     sortOrder,
@@ -20,5 +20,13 @@ export async function loadMoreSellsAction({
         return { sells, total };
     } catch {
         throw new Error('No se pudieron cargar más productos');
+    }
+}
+
+export async function deleteSellByIdAction(id: number) {
+    try {
+        return await deleteSellById(id);
+    } catch {
+        throw new Error('No se pudo eliminar la venta');
     }
 }

@@ -6,9 +6,18 @@ import TableActionsButtons from '@/components/products/TableActionsButtons';
 interface ProductCardType {
     product: ProductType;
     className?: string;
+    handleDelete: () => void;
+    deleteModalId: number | null;
+    setDeleteModalId: (id: number | null) => void;
 }
 
-export default function ProductCard({ product, className }: ProductCardType) {
+export default function ProductCard({
+    product,
+    className,
+    handleDelete,
+    deleteModalId,
+    setDeleteModalId,
+}: ProductCardType) {
     return (
         <div className={`bg-surface p-4 flex items-start justify-between ${className || ''}`}>
             <div className="flex flex-col gap-1">
@@ -23,7 +32,14 @@ export default function ProductCard({ product, className }: ProductCardType) {
                 <span className="text-sm font-semibold">{formatPrice(product.price)}</span>
             </div>
             <div className="flex items-center gap-2">
-                <TableActionsButtons row={product} />
+                <TableActionsButtons
+                    redirect={`/admin/products/${product.id}`}
+                    handleDelete={handleDelete}
+                    label={`${product.name}`}
+                    isModalOpen={deleteModalId === product.id}
+                    openModal={() => setDeleteModalId(product.id)}
+                    closeModal={() => setDeleteModalId(null)}
+                />
             </div>
         </div>
     );

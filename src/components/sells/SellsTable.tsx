@@ -1,14 +1,16 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { format } from '@formkit/tempo';
 
 import { SellType } from '@/types/sell';
 import { formatQuantity, formatPrice } from '@/lib/helpers/components/utils';
-import { loadMoreSellsAction } from '@/lib/actions/sell';
-import { showErrorToast } from '@/components/Toast';
+import { loadMoreSellsAction, deleteSellByIdAction } from '@/lib/actions/sell';
+import { showErrorToast, showSuccessToast } from '@/components/Toast';
 
 import SellCard from '@/components/sells/SellCard';
+import TableActionsButtons from '@/components/products/TableActionsButtons';
 
 interface SellsTableProps {
     initialSells: SellType[];
@@ -22,6 +24,8 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(initialSells.length < totalCount);
+    const [deleteModalId, setDeleteModalId] = useState<number | null>(null);
+    const router = useRouter();
 
     const loader = useRef<HTMLDivElement | null>(null);
 
@@ -73,11 +77,24 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
         };
     }, [handleObserver, hasMore]);
 
+    const handleDelete = async () => {
+        if (!deleteModalId) return;
+        setDeleteModalId(null);
+        try {
+            await deleteSellByIdAction(deleteModalId);
+            showSuccessToast('Venta eliminada con éxito');
+            router.refresh();
+        } catch {
+            showErrorToast('No se pudo eliminar la venta');
+        }
+    };
+
     return (
         <div className="relative w-full overflow-auto rounded-lg max-h-[calc(100vh-22rem)] md:max-h-[calc(100vh-24rem)] lg:max-h-[calc(100vh-12rem)] custom-scrollbar">
             <table className="hidden md:table min-w-full border-t-2 border border-border bg-surface text-sm">
                 <thead className="bg-border sticky -top-[1px]">
                     <tr className="text-left uppercase text-xs tracking-wider">
+                        <th className="p-4 w-[1%]">Acciones</th>
                         <th className="p-4 w-[5%]">ID</th>
                         <th className="p-4 w-[20%]">Fecha</th>
                         <th className="p-4 w-[15%]">Precio Total</th>
@@ -96,6 +113,20 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                     ) : (
                         sells.map((sell) => (
                             <tr key={sell.id} className="border-t border-border hover:bg-border-dark transition-colors">
+                                <td className="px-4 py-3 w-[1%]">
+                                    <div className="flex gap-2">
+                                        <TableActionsButtons
+                                            redirect={`/admin/sells/${sell.id}`}
+                                            handleDelete={handleDelete}
+                                            label={`la venta ID #${sell.id}`}
+                                            isModalOpen={deleteModalId === sell.id}
+                                            openModal={() => setDeleteModalId(sell.id)}
+                                            closeModal={() => setDeleteModalId(null)}
+                                            isTwoStep
+                                            confirmationText={`Venta-ID-${sell.id}`}
+                                        />
+                                    </div>
+                                </td>
                                 <td className="px-4 py-3 whitespace-nowrap">#{sell.id}</td>
                                 <td className="px-4 py-3 whitespace-nowrap">
                                     {format({ date: sell.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
@@ -117,6 +148,9 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                     <div className="border border-border rounded-lg">
                         {sells.map((sell, index) => (
                             <SellCard
+                                deleteModalId={deleteModalId}
+                                handleDelete={handleDelete}
+                                setDeleteModalId={setDeleteModalId}
                                 key={sell.id}
                                 sell={sell}
                                 className={`
