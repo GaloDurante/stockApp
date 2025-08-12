@@ -1,6 +1,20 @@
 import SellForm from '@/components/sells/SellForm';
+import { getProductsByCategory } from '@/lib/services/product';
 
-export default function CreateSellPage() {
+interface CreateSellPageType {
+    searchParams: Promise<{
+        filterByCategory?: string;
+        search?: string;
+    }>;
+}
+
+export default async function CreateSellPage({ searchParams }: CreateSellPageType) {
+    const { filterByCategory, search } = await searchParams;
+    const { products: initialProducts, total } = await getProductsByCategory({
+        filterByCategory,
+        search,
+    });
+
     return (
         <div>
             <h1 className="text-4xl font-bold tracking-tight text-center">Crear Venta</h1>
@@ -9,7 +23,7 @@ export default function CreateSellPage() {
             </p>
             <div className="flex justify-center">
                 <div className="mt-6 w-full md:w-7/10 2xl:w-5/10">
-                    <SellForm />
+                    <SellForm allProducts={initialProducts} search={search} filterByCategory={filterByCategory} />
                 </div>
             </div>
         </div>
