@@ -11,6 +11,7 @@ import { showErrorToast, showSuccessToast } from '@/components/Toast';
 
 import SellCard from '@/components/sells/SellCard';
 import TableActionsButtons from '@/components/products/TableActionsButtons';
+import ItemsMenu from '@/components/sells/ItemsMenu';
 
 interface SellsTableProps {
     initialSells: SellType[];
@@ -132,7 +133,13 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                                     {format({ date: sell.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">{formatPrice(sell.totalPrice)}</td>
-                                <td className="px-4 py-3 whitespace-nowrap">{formatQuantity(sell.items.length)}</td>
+                                {sell.items.length > 0 ? (
+                                    <td className="px-2 py-1 whitespace-nowrap relative">
+                                        <ItemsMenu items={sell.items} />
+                                    </td>
+                                ) : (
+                                    <td className="px-4 py-3 whitespace-nowrap">{formatQuantity(sell.items.length)}</td>
+                                )}
                                 <td className="px-4 py-3 whitespace-nowrap">{sell.paymentMethod}</td>
                                 <td className="px-4 py-3 whitespace-nowrap">{sell.receiver}</td>
                             </tr>
