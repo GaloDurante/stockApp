@@ -1,20 +1,90 @@
-import { ProductType } from '@/types/product';
+'use client';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
+import { ProductType } from '@/types/product';
+import { loadMoreProductsAction } from '@/lib/actions/product';
 import { formatPrice } from '@/lib/helpers/components/utils';
 
 import { Search } from 'lucide-react';
+import { showErrorToast } from '@/components/Toast';
 import Filters from '@/components/Filters';
 
 interface SelectProductsType {
-    allProducts: ProductType[];
+    initialProducts: ProductType[];
+    totalCount: number;
     search?: string;
     filterByCategory?: string;
+    perPage: number;
 }
 
-export default function SelectProducts({ allProducts, search, filterByCategory }: SelectProductsType) {
+export default function SelectProducts({
+    initialProducts,
+    totalCount,
+    search,
+    filterByCategory,
+    perPage,
+}: SelectProductsType) {
+    const [products, setProducts] = useState<ProductType[]>(initialProducts);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(initialProducts.length < totalCount);
+
+    const loader = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        setProducts(initialProducts);
+        setPage(1);
+        setHasMore(initialProducts.length < totalCount);
+    }, [initialProducts, totalCount, search, filterByCategory]);
+
+    const loadMoreProducts = useCallback(async () => {
+        if (loading || !hasMore) return;
+        setLoading(true);
+        try {
+            const nextPage = page + 1;
+            const { products: newProducts } = await loadMoreProductsAction({
+                search,
+                filterByCategory,
+                page: nextPage,
+                perPage,
+            });
+            setProducts((prev) => [...prev, ...newProducts]);
+            setPage(nextPage);
+            setHasMore(products.length + newProducts.length < totalCount);
+        } catch {
+            showErrorToast('Error cargando más productos');
+        } finally {
+            setLoading(false);
+        }
+    }, [loading, hasMore, page, search, filterByCategory, perPage, totalCount, products.length]);
+
+    const handleObserver = useCallback(
+        (entries: IntersectionObserverEntry[]) => {
+            const target = entries[0];
+            if (target.isIntersecting && !loading && hasMore) {
+                loadMoreProducts();
+            }
+        },
+        [loading, hasMore, loadMoreProducts]
+    );
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(handleObserver, {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1,
+        });
+        const currentLoader = loader.current;
+        if (currentLoader && hasMore) observer.observe(currentLoader);
+        return () => {
+            if (currentLoader) observer.unobserve(currentLoader);
+            observer.disconnect();
+        };
+    }, [handleObserver, hasMore]);
+
     return (
         <div className="min-h-[60vh]">
-            <div className="flex gap-4 p-4 border-b border-border">
+            <div className="flex flex-col md:flex-row gap-4 p-4 border-b border-border">
                 <Filters
                     withSearch
                     withCategories
@@ -24,7 +94,8 @@ export default function SelectProducts({ allProducts, search, filterByCategory }
                     showAllCategory
                 />
             </div>
-            {allProducts.length === 0 ? (
+
+            {products.length === 0 ? (
                 <div className="py-6 px-4 min-h-[calc(60vh-5.5rem)] flex flex-col justify-center items-center">
                     <Search />
                     <div className="text-center font-semibold mt-2">No se encontró ningun producto.</div>
@@ -40,20 +111,35 @@ export default function SelectProducts({ allProducts, search, filterByCategory }
                         <span>Precio</span>
                     </div>
 
-                    {allProducts.map((product, index) => (
+                    {products.map((product, index) => (
                         <div
                             key={product.id}
-                            className={`grid grid-cols-[2fr_1fr_1fr] gap-4 p-4 ${index !== allProducts.length - 1 ? 'border-b border-border' : ''}`}
+                            className={`grid grid-cols-[2fr_1fr_1fr] gap-4 p-4 ${
+                                index !== products.length - 1 ? 'border-b border-border' : ''
+                            }`}
                         >
-                            <div>{product.name}</div>
+                            <div className="truncate">{product.name}</div>
                             <div
-                                className={`${product.stock == 0 ? 'text-red-700' : product.stock > 0 && product.stock < 8 ? 'text-yellow-600' : ''}`}
+                                className={`${
+                                    product.stock === 0
+                                        ? 'text-red-700'
+                                        : product.stock > 0 && product.stock < 8
+                                          ? 'text-yellow-600'
+                                          : ''
+                                }`}
                             >
                                 {product.stock}
                             </div>
                             <div>{formatPrice(product.price)}</div>
                         </div>
                     ))}
+
+                    <div ref={loader} className="h-10 flex justify-center items-center">
+                        {loading && <span>Cargando más productos...</span>}
+                        {!hasMore && products.length > 0 && (
+                            <span className="text-muted">Todos los productos cargados.</span>
+                        )}
+                    </div>
                 </div>
             )}
         </div>

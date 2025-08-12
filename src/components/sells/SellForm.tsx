@@ -14,12 +14,20 @@ import Modal from '@/components/Modal';
 import SelectProducts from '@/components/sells/SelectProducts';
 
 interface SellFormProductsType {
-    allProducts: ProductType[];
+    initialProducts: ProductType[];
     search?: string;
     filterByCategory?: string;
+    perPage: number;
+    totalCount: number;
 }
 
-export default function SellForm({ allProducts, search, filterByCategory }: SellFormProductsType) {
+export default function SellForm({
+    initialProducts,
+    search,
+    filterByCategory,
+    perPage,
+    totalCount,
+}: SellFormProductsType) {
     const {
         register,
         handleSubmit,
@@ -202,7 +210,13 @@ export default function SellForm({ allProducts, search, filterByCategory }: Sell
                             <X className="h-7 w-7 p-1 hover:bg-border rounded-full cursor-pointer transition-all" />
                         </button>
                     </div>
-                    <SelectProducts allProducts={allProducts} search={search} filterByCategory={filterByCategory} />
+                    <SelectProducts
+                        perPage={perPage}
+                        totalCount={totalCount}
+                        initialProducts={initialProducts}
+                        search={search}
+                        filterByCategory={filterByCategory}
+                    />
                 </Modal>
             )}
         </form>

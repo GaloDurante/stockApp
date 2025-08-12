@@ -10,9 +10,14 @@ interface CreateSellPageType {
 
 export default async function CreateSellPage({ searchParams }: CreateSellPageType) {
     const { filterByCategory, search } = await searchParams;
+    const pageNumber = 1;
+    const perPage = 20;
+
     const { products: initialProducts, total } = await getProductsByCategory({
         filterByCategory,
         search,
+        page: pageNumber,
+        perPage,
     });
 
     return (
@@ -23,7 +28,13 @@ export default async function CreateSellPage({ searchParams }: CreateSellPageTyp
             </p>
             <div className="flex justify-center">
                 <div className="mt-6 w-full md:w-7/10 2xl:w-5/10">
-                    <SellForm allProducts={initialProducts} search={search} filterByCategory={filterByCategory} />
+                    <SellForm
+                        perPage={perPage}
+                        totalCount={total}
+                        initialProducts={initialProducts}
+                        search={search}
+                        filterByCategory={filterByCategory}
+                    />
                 </div>
             </div>
         </div>
