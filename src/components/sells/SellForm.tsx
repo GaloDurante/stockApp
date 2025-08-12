@@ -8,6 +8,7 @@ import { Receiver, PaymentMethod } from '@/generated/prisma';
 
 import { LoaderCircle } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
+import CustomDatePicker from '@/components/CustomDatePicker';
 
 export default function SellForm() {
     const {
@@ -51,6 +52,29 @@ export default function SellForm() {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="bg-surface border border-border rounded-lg p-4 md:p-8">
+            <div className="flex flex-col gap-1 mb-4">
+                <label>
+                    Fecha <span className="text-red-700">*</span>
+                </label>
+                <Controller
+                    name="date"
+                    control={control}
+                    rules={{ required: 'Debe seleccionar una fecha' }}
+                    render={({ field }) => {
+                        return (
+                            <CustomDatePicker
+                                mode="single"
+                                value={field.value}
+                                onChange={field.onChange}
+                                customPlaceholder="Selecciona una fecha"
+                                isError={!!errors.date}
+                            />
+                        );
+                    }}
+                />
+                {errors.date && <p className="text-red-700 text-sm">{errors.date.message}</p>}
+            </div>
+
             <div className="flex flex-col gap-1 mb-4">
                 <label>
                     Método de Pago <span className="text-red-700">*</span>

@@ -148,8 +148,9 @@ export default function Filters({
 
             {withDateRange && (
                 <CustomDatePicker
-                    dateRange={dateRange}
-                    setDateRange={setDateRange}
+                    mode="range"
+                    value={dateRange}
+                    onChange={setDateRange}
                     customPlaceholder="Filtrar por fechas"
                 />
             )}
