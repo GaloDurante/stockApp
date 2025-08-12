@@ -13,3 +13,8 @@ export type ProductFormType = {
     price: number;
     category: Category;
 };
+
+export type LoginFormType = {
+    username: string;
+    password: string;
+};

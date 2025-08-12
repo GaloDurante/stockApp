@@ -1,38 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+
+import { LoginFormType } from '@/types/form';
 
 import { showErrorToast } from '@/components/Toast';
 import Image from 'next/image';
 
 export default function LoginPage() {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<LoginFormType>();
     const router = useRouter();
-    const [data, setData] = useState({
-        username: '',
-        password: '',
-    });
-    const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const newErrors: { username?: string; password?: string } = {};
-        if (!data.username.trim()) newErrors.username = 'El usuario es obligatorio';
-        if (!data.password.trim()) {
-            newErrors.password = 'La contraseña es obligatoria';
-        } else if (data.password.length < 8) {
-            newErrors.password = 'La contraseña debe tener al menos 8 caracteres';
-        }
-
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
-            return;
-        }
-
-        setErrors({});
-
+    const onSubmit = async (data: LoginFormType) => {
         const res = await signIn('credentials', {
             username: data.username,
             password: data.password,
@@ -41,7 +26,7 @@ export default function LoginPage() {
         if (!res?.ok) {
             showErrorToast(String(res?.error));
         } else {
-            router.push('/admin');
+            router.push('/admin/sells');
         }
     };
 
@@ -64,16 +49,15 @@ export default function LoginPage() {
                     <h1 className="text-3xl font-bold mb-2 text-center text-accent">Iniciar sesión</h1>
                     <p className="text-sm mb-6 text-center text-muted">Ingresá tus credenciales para continuar</p>
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                         <div>
                             <label htmlFor="username" className="block text-sm font-medium">
                                 Usuario
                             </label>
                             <input
-                                onChange={(e) => {
-                                    setData({ ...data, username: e.target.value });
-                                    if (errors.username) setErrors({ ...errors, username: undefined });
-                                }}
+                                {...register('username', {
+                                    required: 'El usuario es obligatorio',
+                                })}
                                 type="text"
                                 id="username"
                                 name="username"
@@ -82,7 +66,7 @@ export default function LoginPage() {
                                     errors.username ? 'border-red-500' : 'border-border'
                                 } text-secondary focus:outline-none focus:border-accent transition-all`}
                             />
-                            {errors.username && <p className="mt-1 text-sm text-red-500">{errors.username}</p>}
+                            {errors.username && <p className="mt-1 text-sm text-red-500">{errors.username.message}</p>}
                         </div>
 
                         <div>
@@ -90,10 +74,13 @@ export default function LoginPage() {
                                 Contraseña
                             </label>
                             <input
-                                onChange={(e) => {
-                                    setData({ ...data, password: e.target.value });
-                                    if (errors.password) setErrors({ ...errors, password: undefined });
-                                }}
+                                {...register('password', {
+                                    required: 'La contraseña es obligatoria',
+                                    minLength: {
+                                        value: 8,
+                                        message: 'La contraseña debe tener al menos 8 caracteres',
+                                    },
+                                })}
                                 type="password"
                                 id="password"
                                 name="password"
@@ -102,7 +89,7 @@ export default function LoginPage() {
                                     errors.password ? 'border-red-500' : 'border-border'
                                 } text-secondary focus:outline-none focus:border-accent transition-all`}
                             />
-                            {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
+                            {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>}
                         </div>
 
                         <button
