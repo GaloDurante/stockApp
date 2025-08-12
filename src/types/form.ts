@@ -1,4 +1,5 @@
-import { Category } from '@/generated/prisma';
+import { Category, PaymentMethod, Receiver } from '@/generated/prisma';
+import { ProductType } from '@/types/product';
 
 export type OptionType = {
     label: string;
@@ -17,4 +18,13 @@ export type ProductFormType = {
 export type LoginFormType = {
     username: string;
     password: string;
+};
+
+export type SellFormType = {
+    items: ProductType[];
+    date: Date;
+    paymentMethod: PaymentMethod;
+    receiver?: Receiver | null;
+    totalPrice: number;
+    note?: string | null;
 };
