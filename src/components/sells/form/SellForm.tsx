@@ -81,13 +81,8 @@ export default function SellForm({
     }, [items, clearErrors]);
 
     const onSubmit = async (data: SellFormType) => {
-        const formData = {
-            ...data,
-            date: new Date(data.date).toISOString(),
-        };
-
         try {
-            await createSellAction(formData);
+            await createSellAction(data);
             showSuccessToast('Venta creada con éxito');
             router.push('/admin/sells');
         } catch (error: unknown) {

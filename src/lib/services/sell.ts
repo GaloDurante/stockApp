@@ -79,9 +79,13 @@ export async function deleteSellAndRestoreStock(id: number) {
 
 export async function createSellAndSellItems(data: SellFormType) {
     const { items, ...restData } = data;
+    const formData = {
+        ...restData,
+        date: new Date(restData.date).toISOString(),
+    };
 
     return prisma.$transaction(async (tx) => {
-        const newSell = await tx.sell.create({ data: restData });
+        const newSell = await tx.sell.create({ data: formData });
 
         await tx.sellItem.createMany({
             data: items.map((item) => ({

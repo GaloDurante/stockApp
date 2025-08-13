@@ -54,7 +54,7 @@ export default function SellFormDetails({ control, errors, register, resetField,
                     render={({ field }) => (
                         <CustomDatePicker
                             mode="single"
-                            value={new Date(field.value)}
+                            value={field.value}
                             onChange={field.onChange}
                             customPlaceholder="Selecciona una fecha"
                             isError={!!errors.date}
