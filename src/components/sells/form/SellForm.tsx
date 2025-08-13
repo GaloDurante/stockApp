@@ -55,7 +55,11 @@ export default function SellForm({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const items = watch('items') || [];
-    const totalVenta = items.reduce((acc, item) => acc + (item.quantity ?? 1) * item.price, 0);
+    const totalVenta = items.reduce((acc, item) => {
+        const qty = Number(item.quantity) || 1;
+        const price = Number(item.price) || 0;
+        return acc + qty * price;
+    }, 0);
 
     useEffect(() => {
         setValue('totalPrice', totalVenta);

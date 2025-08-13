@@ -131,13 +131,19 @@ export default function SelectProducts({
                     {products.map((product, index) => {
                         const isChecked = selectedItems.some((item) => item.id === product.id);
                         return (
-                            <div
+                            <label
                                 key={product.id}
-                                className={`grid grid-cols-[auto_2fr_1fr_1fr] gap-4 p-4 ${
+                                className={`grid grid-cols-[auto_2fr_1fr_1fr] gap-4 p-4 items-center ${
                                     index !== products.length - 1 ? 'border-b border-border' : ''
-                                }`}
+                                } ${product.stock == 0 ? 'text-muted/30' : 'hover:bg-border-dark cursor-pointer'}`}
                             >
-                                <input type="checkbox" checked={isChecked} onChange={() => toggleSelect(product)} />
+                                <input
+                                    type="checkbox"
+                                    disabled={product.stock === 0}
+                                    checked={isChecked}
+                                    onChange={() => toggleSelect(product)}
+                                    className="w-4 h-4 accent-accent cursor-pointer disabled:cursor-default "
+                                />
                                 <div className="truncate">{product.name}</div>
                                 <div
                                     className={`${
@@ -151,7 +157,7 @@ export default function SelectProducts({
                                     {product.stock}
                                 </div>
                                 <div>{formatPrice(product.price)}</div>
-                            </div>
+                            </label>
                         );
                     })}
 

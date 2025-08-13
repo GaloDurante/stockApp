@@ -39,6 +39,15 @@ export default function SellFormProducts({
         setValue('items', newItems, { shouldDirty: true });
     };
 
+    const handleQtyBlur = (index: number, stock: number) => (e: React.FocusEvent<HTMLInputElement>) => {
+        let v = e.target.valueAsNumber;
+        if (!Number.isFinite(v) || v < 1) v = 1;
+        if (v > stock) v = stock;
+
+        setValue(`items.${index}.quantity`, v, { shouldDirty: true, shouldValidate: true });
+        e.currentTarget.value = String(v);
+    };
+
     return (
         <div className="bg-surface p-8 rounded-lg border border-border">
             <div className="flex flex-col gap-1">
@@ -55,8 +64,8 @@ export default function SellFormProducts({
                 </button>
 
                 {items.length > 0 && (
-                    <div className="mt-4 border border-border rounded-lg bg-main">
-                        <div className="grid grid-cols-[2fr_1fr_1fr_auto] gap-4 px-4 py-2 bg-border sticky top-0 text-xs font-semibold rounded-t-md">
+                    <div className="mt-4 border border-border rounded-lg bg-main overflow-auto max-h-[18rem] custom-scrollbar">
+                        <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_auto] gap-4 px-4 py-2 bg-border sticky z-10 top-0 text-xs font-semibold">
                             <span>Producto</span>
                             <span>Cantidad</span>
                             <span>Total</span>
@@ -65,38 +74,46 @@ export default function SellFormProducts({
 
                         {items.map((item, index) => {
                             const quantity = watch(`items.${index}.quantity`) ?? 1;
-                            const totalItem = quantity * item.price;
+                            const totalItem = quantity ? quantity * item.price : item.price;
                             return (
                                 <div
                                     key={item.id}
-                                    className={`grid grid-cols-[2fr_1fr_1fr_auto] gap-4 px-4 py-2 items-center ${index != items.length - 1 && 'border-b border-border'}`}
+                                    className={`relative grid sm:grid-cols-[2fr_1fr_1fr_auto] gap-4 px-4 py-2 items-center ${
+                                        index != items.length - 1 && 'border-b border-border'
+                                    }`}
                                 >
                                     <div>
                                         <span className="block font-semibold truncate">{item.name}</span>
                                         <span className="block mt-2 text-sm text-muted">{formatPrice(item.price)}</span>
                                     </div>
 
-                                    <input
-                                        type="number"
-                                        min={1}
-                                        {...register(`items.${index}.quantity`, {
-                                            valueAsNumber: true,
-                                            min: 1,
-                                        })}
-                                        defaultValue={item.quantity ?? 1}
-                                        className="border border-border rounded-md w-16 text-center"
-                                    />
+                                    <div className="flex items-center sm:block">
+                                        <span className="sm:hidden text-xs text-muted mr-2">Cantidad:</span>
+                                        <input
+                                            type="number"
+                                            min={1}
+                                            max={item.stock}
+                                            className="border border-border rounded-md w-16 text-center"
+                                            {...register(`items.${index}.quantity`, { valueAsNumber: true })}
+                                            onBlur={handleQtyBlur(index, item.stock)}
+                                        />
+                                    </div>
 
-                                    <span>{formatPrice(totalItem)}</span>
+                                    <div className="flex items-center sm:block">
+                                        <span className="sm:hidden text-xs text-muted mr-2">Total:</span>
+                                        <span>{formatPrice(totalItem)}</span>
+                                    </div>
 
-                                    <button
-                                        type="button"
-                                        onClick={() => handleRemoveItem(item.id)}
-                                        aria-label={`Eliminar ${item.name}`}
-                                        className="p-1 hover:bg-border rounded-full transition-all cursor-pointer"
-                                    >
-                                        <X size={16} />
-                                    </button>
+                                    <div className="absolute top-3 right-3 sm:static flex justify-end">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveItem(item.id)}
+                                            aria-label={`Eliminar ${item.name}`}
+                                            className="p-1 hover:bg-border rounded-full transition-all cursor-pointer"
+                                        >
+                                            <X size={20} />
+                                        </button>
+                                    </div>
                                 </div>
                             );
                         })}
