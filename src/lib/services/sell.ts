@@ -1,5 +1,6 @@
 import { Prisma } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
+import { SellFormType } from '@/types/form';
 
 export const getAllSells = async ({
     startDate,
@@ -52,8 +53,59 @@ export const getAllSells = async ({
     return { sells, total };
 };
 
-export async function deleteSellById(id: number) {
-    return await prisma.sell.delete({
-        where: { id },
+export async function deleteSellAndRestoreStock(id: number) {
+    return await prisma.$transaction(async (tx) => {
+        const sellItems = await tx.sellItem.findMany({
+            where: { sellId: id },
+            select: { productId: true, quantity: true },
+        });
+
+        await Promise.all(
+            sellItems.map((item) =>
+                item.productId
+                    ? tx.product.update({
+                          where: { id: item.productId },
+                          data: { stock: { increment: item.quantity } },
+                      })
+                    : null
+            )
+        );
+
+        return tx.sell.delete({
+            where: { id },
+        });
+    });
+}
+
+export async function createSellAndSellItems(data: SellFormType) {
+    const { items, ...restData } = data;
+    const formData = {
+        ...restData,
+        date: new Date(restData.date).toISOString(),
+    };
+
+    return prisma.$transaction(async (tx) => {
+        const newSell = await tx.sell.create({ data: formData });
+
+        await tx.sellItem.createMany({
+            data: items.map((item) => ({
+                sellId: newSell.id,
+                productId: item.id,
+                productName: item.name,
+                quantity: item.quantity ?? 1,
+                unitPrice: item.price,
+            })),
+        });
+
+        await Promise.all(
+            items.map((item) =>
+                tx.product.update({
+                    where: { id: item.id },
+                    data: { stock: { decrement: item.quantity ?? 1 } },
+                })
+            )
+        );
+
+        return newSell;
     });
 }
