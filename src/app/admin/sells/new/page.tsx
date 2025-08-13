@@ -1,4 +1,4 @@
-import SellForm from '@/components/sells/SellForm';
+import SellForm from '@/components/sells/form/SellForm';
 import { getProductsByCategory } from '@/lib/services/product';
 
 interface CreateSellPageType {
