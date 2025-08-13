@@ -20,8 +20,10 @@ export type LoginFormType = {
     password: string;
 };
 
+export type ProductSellFormType = ProductType & { quantity: number };
+
 export type SellFormType = {
-    items: ProductType[];
+    items: ProductSellFormType[];
     date: Date;
     paymentMethod: PaymentMethod;
     receiver?: Receiver | null;

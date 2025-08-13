@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 import { ProductType } from '@/types/product';
+import { ProductSellFormType } from '@/types/form';
+
 import { loadMoreProductsAction } from '@/lib/actions/product';
 import { formatPrice } from '@/lib/helpers/components/utils';
 
@@ -15,6 +17,8 @@ interface SelectProductsType {
     search?: string;
     filterByCategory?: string;
     perPage: number;
+    selectedItems: ProductSellFormType[];
+    onChange: (items: ProductSellFormType[]) => void;
 }
 
 export default function SelectProducts({
@@ -23,6 +27,8 @@ export default function SelectProducts({
     search,
     filterByCategory,
     perPage,
+    selectedItems,
+    onChange,
 }: SelectProductsType) {
     const [products, setProducts] = useState<ProductType[]>(initialProducts);
     const [page, setPage] = useState(1);
@@ -82,6 +88,16 @@ export default function SelectProducts({
         };
     }, [handleObserver, hasMore]);
 
+    const toggleSelect = (product: ProductType) => {
+        const isSelected = selectedItems.some((item) => item.id === product.id);
+
+        if (isSelected) {
+            onChange(selectedItems.filter((item) => item.id !== product.id));
+        } else {
+            onChange([...selectedItems, { ...product, quantity: 1 }]);
+        }
+    };
+
     return (
         <div className="min-h-[60vh]">
             <div className="flex flex-col md:flex-row gap-4 p-4 border-b border-border">
@@ -105,34 +121,39 @@ export default function SelectProducts({
                 </div>
             ) : (
                 <div className="max-h-[calc(60vh-5.5rem)] overflow-y-auto custom-scrollbar relative">
-                    <div className="grid grid-cols-[2fr_1fr_1fr] gap-4 px-4 py-2 bg-border sticky top-0 text-xs font-semibold">
+                    <div className="grid grid-cols-[auto_2fr_1fr_1fr] gap-4 px-4 py-2 bg-border sticky top-0 text-xs font-semibold">
+                        <span></span>
                         <span>Producto</span>
                         <span>Inventario</span>
                         <span>Precio</span>
                     </div>
 
-                    {products.map((product, index) => (
-                        <div
-                            key={product.id}
-                            className={`grid grid-cols-[2fr_1fr_1fr] gap-4 p-4 ${
-                                index !== products.length - 1 ? 'border-b border-border' : ''
-                            }`}
-                        >
-                            <div className="truncate">{product.name}</div>
+                    {products.map((product, index) => {
+                        const isChecked = selectedItems.some((item) => item.id === product.id);
+                        return (
                             <div
-                                className={`${
-                                    product.stock === 0
-                                        ? 'text-red-700'
-                                        : product.stock > 0 && product.stock < 8
-                                          ? 'text-yellow-600'
-                                          : ''
+                                key={product.id}
+                                className={`grid grid-cols-[auto_2fr_1fr_1fr] gap-4 p-4 ${
+                                    index !== products.length - 1 ? 'border-b border-border' : ''
                                 }`}
                             >
-                                {product.stock}
+                                <input type="checkbox" checked={isChecked} onChange={() => toggleSelect(product)} />
+                                <div className="truncate">{product.name}</div>
+                                <div
+                                    className={`${
+                                        product.stock === 0
+                                            ? 'text-red-700'
+                                            : product.stock > 0 && product.stock < 8
+                                              ? 'text-yellow-600'
+                                              : ''
+                                    }`}
+                                >
+                                    {product.stock}
+                                </div>
+                                <div>{formatPrice(product.price)}</div>
                             </div>
-                            <div>{formatPrice(product.price)}</div>
-                        </div>
-                    ))}
+                        );
+                    })}
 
                     <div ref={loader} className="h-10 flex justify-center items-center">
                         {loading && <span>Cargando más productos...</span>}
