@@ -1,13 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 import { ProductType } from '@/types/product';
 import { SellFormType, ProductSellFormType } from '@/types/form';
 
+import { createSellAction } from '@/lib/actions/sell';
 import { formatPrice } from '@/lib/helpers/components/utils';
 
+import { showErrorToast, showSuccessToast } from '@/components/Toast';
 import { LoaderCircle, X } from 'lucide-react';
 import Modal from '@/components/Modal';
 import SelectProducts from '@/components/sells/form/SelectProducts';
@@ -37,16 +40,16 @@ export default function SellForm({
         resetField,
         setValue,
         clearErrors,
-        formState: { errors, isDirty },
+        formState: { errors, isDirty, isSubmitting },
     } = useForm<SellFormType>({
         defaultValues: {
             items: [],
         },
     });
 
-    const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tempSelectedItems, setTempSelectedItems] = useState<ProductSellFormType[]>([]);
+    const router = useRouter();
 
     const handleSaveSelection = () => {
         setValue('items', tempSelectedItems, { shouldDirty: true });
@@ -78,7 +81,19 @@ export default function SellForm({
     }, [items, clearErrors]);
 
     const onSubmit = async (data: SellFormType) => {
-        console.log(data);
+        const formData = {
+            ...data,
+            date: new Date(data.date).toISOString(),
+        };
+
+        try {
+            await createSellAction(formData);
+            showSuccessToast('Venta creada con éxito');
+            router.push('/admin/sells');
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'No se pudo crear la venta';
+            showErrorToast(errorMessage);
+        }
     };
 
     return (
@@ -136,14 +151,14 @@ export default function SellForm({
                     <div className="font-semibold text-lg">Total: {formatPrice(totalVenta)}</div>
                     <button
                         type="submit"
-                        disabled={isLoading || !isDirty}
+                        disabled={isSubmitting || !isDirty}
                         className={`font-semibold ${
-                            isLoading || !isDirty
+                            isSubmitting || !isDirty
                                 ? 'cursor-not-allowed bg-muted'
                                 : 'cursor-pointer bg-secondary hover:bg-muted'
                         } text-main border border-border py-2 px-4 rounded-md transition-all`}
                     >
-                        {isLoading ? <LoaderCircle className="animate-spin" /> : 'Guardar'}
+                        {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Guardar'}
                     </button>
                 </div>
             </div>

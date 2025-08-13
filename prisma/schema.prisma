@@ -68,7 +68,7 @@ model SellItem {
   quantity    Int
   unitPrice   Int
 
-  sell        Sell      @relation(fields: [sellId], references: [id])
+  sell        Sell      @relation(fields: [sellId], references: [id], onDelete: Cascade)
   product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
 }
 

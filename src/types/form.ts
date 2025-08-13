@@ -24,7 +24,7 @@ export type ProductSellFormType = ProductType & { quantity: number };
 
 export type SellFormType = {
     items: ProductSellFormType[];
-    date: Date;
+    date: Date | string;
     paymentMethod: PaymentMethod;
     receiver?: Receiver | null;
     totalPrice: number;
