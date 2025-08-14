@@ -148,7 +148,7 @@ export default function ProductsTable({
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">{formatCategory(product.category)}</td>
                                 <td className="px-4 py-3 whitespace-nowrap">{renderStock(product.stock)}</td>
-                                <td className="px-4 py-3 whitespace-nowrap">{formatPrice(product.price)}</td>
+                                <td className="px-4 py-3 whitespace-nowrap">{formatPrice(product.purchasePrice)}</td>
                             </tr>
                         ))
                     )}

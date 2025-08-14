@@ -24,7 +24,9 @@ export default function DuplicateButton({ baseProduct }: DuplicateButtonType) {
             name: `${baseProduct.name} (copia)`,
             description: baseProduct.description ?? undefined,
             stock: 0,
-            price: 0,
+            purchasePrice: 0,
+            salePrice: 0,
+            salePriceBox: 0,
             category: baseProduct.category,
         };
         try {

@@ -11,7 +11,9 @@ export type ProductFormType = {
     name: string;
     description?: string;
     stock: number;
-    price: number;
+    purchasePrice: number;
+    salePrice?: number;
+    salePriceBox?: number;
     category: Category;
 };
 

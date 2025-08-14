@@ -156,7 +156,7 @@ export default function SelectProducts({
                                 >
                                     {product.stock}
                                 </div>
-                                <div>{formatPrice(product.price)}</div>
+                                <div>{formatPrice(product.purchasePrice)}</div>
                             </label>
                         );
                     })}
