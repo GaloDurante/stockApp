@@ -70,19 +70,13 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
     };
 
     const purchasePrice = watch('purchasePrice');
-    const salePrice = watch('salePrice');
 
     useEffect(() => {
-        if (!isNaN(Number(purchasePrice))) {
+        if (!isEdit && !isNaN(Number(purchasePrice))) {
             setValue('salePrice', Number(purchasePrice));
+            setValue('salePriceBox', Number(purchasePrice) * 6);
         }
-    }, [purchasePrice, setValue]);
-
-    useEffect(() => {
-        if (!isNaN(Number(salePrice))) {
-            setValue('salePriceBox', Number(salePrice) * 6);
-        }
-    }, [salePrice, setValue]);
+    }, [purchasePrice, setValue, isEdit]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -167,7 +161,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
             <div className="bg-surface border border-border rounded-lg p-4 md:p-8 mt-4">
                 <div className="flex flex-col gap-1 mb-4 w-full">
                     <label>
-                        Precio de compra <span className="text-red-700">*</span>
+                        Precio unitario <span className="text-red-700">*</span>
                     </label>
                     <div className="relative">
                         <span className="absolute left-2 top-1/2 -translate-y-1/2">$</span>
@@ -218,9 +212,9 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                             {...register('salePriceBox', {
                                 valueAsNumber: true,
                                 min: {
-                                    value: (salePrice ?? 0) * 6,
+                                    value: (purchasePrice ?? 0) * 6,
                                     message:
-                                        'El precio de venta en caja no puede ser menor al precio de venta multiplicado por 6 unidades',
+                                        'El precio de venta en caja no puede ser menor al precio de compra multiplicado por 6 unidades',
                                 },
                             })}
                             className={`p-2 pl-6 border rounded-md no-spinner w-full ${errors.salePriceBox ? 'border-red-700' : 'border-border'}`}

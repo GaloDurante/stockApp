@@ -27,7 +27,7 @@ export default async function CreateSellPage({ searchParams }: CreateSellPageTyp
                 Completá el formulario para registrar una nueva venta.
             </p>
             <div className="flex justify-center">
-                <div className="mt-6 w-full md:w-7/10 2xl:w-5/10">
+                <div className="mt-6 w-full 2xl:max-w-9/12">
                     <SellForm
                         perPage={perPage}
                         totalCount={total}

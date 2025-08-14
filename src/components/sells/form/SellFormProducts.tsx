@@ -1,8 +1,6 @@
 import { UseFormRegister, UseFormSetValue, UseFormWatch, FieldErrors } from 'react-hook-form';
-
 import { ProductSellFormType, SellFormType } from '@/types/form';
 import { formatPrice } from '@/lib/helpers/components/utils';
-
 import { X } from 'lucide-react';
 
 interface SellFormProductsProps {
@@ -48,10 +46,18 @@ export default function SellFormProducts({
         e.currentTarget.value = String(v);
     };
 
+    const handlePriceBlur = (index: number, minPrice: number) => (e: React.FocusEvent<HTMLInputElement>) => {
+        let v = e.target.valueAsNumber;
+        if (!Number.isFinite(v) || v < minPrice) v = minPrice;
+
+        setValue(`items.${index}.newSalePrice`, v, { shouldDirty: true, shouldValidate: true });
+        e.currentTarget.value = String(v);
+    };
+
     return (
         <div className="bg-surface p-8 rounded-lg border border-border">
             <div className="flex flex-col gap-1">
-                <label>
+                <label className="text-sm font-medium">
                     Productos <span className="text-red-700">*</span>
                 </label>
 
@@ -65,46 +71,78 @@ export default function SellFormProducts({
 
                 {items.length > 0 && (
                     <div className="mt-4 border border-border rounded-lg bg-main overflow-auto max-h-[18rem] custom-scrollbar">
-                        <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_auto] gap-4 px-4 py-2 bg-border sticky z-10 top-0 text-xs font-semibold">
+                        <div className="hidden md:grid grid-cols-[3fr_1fr_1fr_1fr_auto] items-center gap-4 px-4 py-2 bg-border sticky z-10 top-0 text-xs font-semibold">
                             <span>Producto</span>
-                            <span>Cantidad</span>
-                            <span>Total</span>
-                            <span></span>
+                            <span className="text-center">Cantidad</span>
+                            <span className="text-center">Precio de venta</span>
+                            <span className="text-center">Total</span>
+                            <span className="invisible">Acción</span>
                         </div>
 
                         {items.map((item, index) => {
                             const quantity = watch(`items.${index}.quantity`) ?? 1;
-                            const totalItem = quantity ? quantity * item.price : item.price;
+                            const salePrice = watch(`items.${index}.newSalePrice`) ?? item.salePrice;
+                            const totalItem = salePrice ? quantity * salePrice : 0;
+
                             return (
                                 <div
                                     key={item.id}
-                                    className={`relative grid sm:grid-cols-[2fr_1fr_1fr_auto] gap-4 px-4 py-2 items-center ${
-                                        index != items.length - 1 && 'border-b border-border'
+                                    className={`relative grid grid-cols-1 md:grid-cols-[3fr_1fr_1fr_1fr_auto] items-center gap-4 px-4 py-3 ${
+                                        index !== items.length - 1 && 'border-b border-border'
                                     }`}
                                 >
-                                    <div>
-                                        <span className="block font-semibold truncate">{item.name}</span>
-                                        <span className="block mt-2 text-sm text-muted">{formatPrice(item.price)}</span>
+                                    <div className="w-10/12 sm:w-full flex flex-col">
+                                        <span className="font-semibold mb-2">{item.name}</span>
+                                        <span className="text-sm text-muted">
+                                            Unitario: {formatPrice(item.purchasePrice)}
+                                        </span>
+                                        <span className="text-sm text-muted">Venta: {formatPrice(item.salePrice)}</span>
                                     </div>
 
-                                    <div className="flex items-center sm:block">
-                                        <span className="sm:hidden text-xs text-muted mr-2">Cantidad:</span>
-                                        <input
-                                            type="number"
-                                            min={1}
-                                            max={item.stock}
-                                            className="border border-border rounded-md w-16 text-center"
-                                            {...register(`items.${index}.quantity`, { valueAsNumber: true })}
-                                            onBlur={handleQtyBlur(index, item.stock)}
-                                        />
+                                    <div className="grid grid-cols-[auto_1fr] md:block items-center gap-2">
+                                        <span className="md:hidden text-sm text-muted">Cantidad:</span>
+                                        <div className="flex md:justify-center">
+                                            <input
+                                                type="number"
+                                                min={1}
+                                                max={item.stock}
+                                                className="border border-border rounded-md p-1 w-16 text-center"
+                                                {...register(`items.${index}.quantity`, {
+                                                    valueAsNumber: true,
+                                                    value: item.quantity ?? 1,
+                                                })}
+                                                onBlur={handleQtyBlur(index, item.stock)}
+                                            />
+                                        </div>
                                     </div>
 
-                                    <div className="flex items-center sm:block">
-                                        <span className="sm:hidden text-xs text-muted mr-2">Total:</span>
-                                        <span>{formatPrice(totalItem)}</span>
+                                    <div className="grid grid-cols-[auto_1fr] md:block items-center gap-2">
+                                        <span className="md:hidden text-sm text-muted">Precio de venta:</span>
+                                        <div className="flex md:justify-center">
+                                            <div className="relative">
+                                                <span className="absolute left-2 top-1/2 -translate-y-1/2">$</span>
+                                                <input
+                                                    type="number"
+                                                    min={item.purchasePrice}
+                                                    className="border border-border rounded-md p-1 pl-6 w-24 no-spinner"
+                                                    {...register(`items.${index}.newSalePrice`, {
+                                                        valueAsNumber: true,
+                                                        value: item.salePrice,
+                                                    })}
+                                                    onBlur={handlePriceBlur(index, item.purchasePrice)}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div className="absolute top-3 right-3 sm:static flex justify-end">
+                                    <div className="grid grid-cols-[auto_1fr] md:block items-center gap-2">
+                                        <span className="md:hidden text-sm text-muted">Total:</span>
+                                        <div className="flex md:justify-center">
+                                            <span className="font-medium">{formatPrice(totalItem)}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="absolute top-3 right-3 md:static flex justify-end">
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveItem(item.id)}

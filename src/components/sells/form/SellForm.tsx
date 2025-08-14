@@ -60,7 +60,7 @@ export default function SellForm({
     const items = watch('items') || [];
     const totalVenta = items.reduce((acc, item) => {
         const qty = Number(item.quantity) || 1;
-        const price = Number(item.price) || 0;
+        const price = Number(item.newSalePrice) || 0;
         return acc + qty * price;
     }, 0);
 
@@ -92,7 +92,7 @@ export default function SellForm({
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="">
+        <form onSubmit={handleSubmit(onSubmit)}>
             <SellFormProducts
                 errors={errors}
                 items={items}
@@ -141,21 +141,20 @@ export default function SellForm({
                     resetField={resetField}
                     watch={watch}
                 />
-
-                <div className="flex w-full justify-end items-center gap-4">
-                    <div className="font-semibold text-lg">Total: {formatPrice(totalVenta)}</div>
-                    <button
-                        type="submit"
-                        disabled={isSubmitting || !isDirty}
-                        className={`font-semibold ${
-                            isSubmitting || !isDirty
-                                ? 'cursor-not-allowed bg-muted'
-                                : 'cursor-pointer bg-secondary hover:bg-muted'
-                        } text-main border border-border py-2 px-4 rounded-md transition-all`}
-                    >
-                        {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Guardar'}
-                    </button>
-                </div>
+            </div>
+            <div className="flex w-full justify-end items-center gap-4 mt-4">
+                <div className="font-semibold text-lg">Total: {formatPrice(totalVenta)}</div>
+                <button
+                    type="submit"
+                    disabled={isSubmitting || !isDirty}
+                    className={`font-semibold ${
+                        isSubmitting || !isDirty
+                            ? 'cursor-not-allowed bg-muted'
+                            : 'cursor-pointer bg-secondary hover:bg-muted'
+                    } text-main border border-border py-2 px-4 rounded-md transition-all`}
+                >
+                    {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Guardar'}
+                </button>
             </div>
         </form>
     );

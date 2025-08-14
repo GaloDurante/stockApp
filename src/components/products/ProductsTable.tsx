@@ -113,7 +113,7 @@ export default function ProductsTable({
                         <th className="p-4">Producto</th>
                         <th className="p-4">Categoría</th>
                         <th className="p-4">Inventario</th>
-                        <th className="p-4">Precio</th>
+                        <th className="p-4">Precio unitario</th>
                     </tr>
                 </thead>
                 <tbody>

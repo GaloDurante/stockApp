@@ -93,7 +93,7 @@ export async function createSellAndSellItems(data: SellFormType) {
                 productId: item.id,
                 productName: item.name,
                 quantity: item.quantity ?? 1,
-                unitPrice: item.price,
+                unitPrice: item.newSalePrice ?? item.salePrice,
             })),
         });
 

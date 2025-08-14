@@ -24,7 +24,7 @@ model Product {
   category      Category
   stock         Int
   purchasePrice Int
-  salePrice     Int?
+  salePrice     Int
   salePriceBox  Int?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt

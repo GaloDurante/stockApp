@@ -125,7 +125,7 @@ export default function SelectProducts({
                         <span></span>
                         <span>Producto</span>
                         <span>Inventario</span>
-                        <span>Precio</span>
+                        <span>Precio unitario</span>
                     </div>
 
                     {products.map((product, index) => {
