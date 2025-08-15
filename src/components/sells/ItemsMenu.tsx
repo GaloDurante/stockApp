@@ -54,7 +54,15 @@ export default function ItemsMenu({ items }: ItemsMenuProps) {
                                     <span>{item.productName}</span>
                                 )}
                                 <div className="flex flex-col items-end gap-2">
-                                    <span>x {item.quantity}</span>
+                                    {item.isBox ? (
+                                        <span>
+                                            x {item.quantity / 6} {item.quantity / 6 === 1 ? 'caja' : 'cajas'}
+                                        </span>
+                                    ) : (
+                                        <span>
+                                            x {item.quantity} {item.quantity === 1 ? 'unidad' : 'unidades'}
+                                        </span>
+                                    )}
                                     <span className="font-semibold text-base">{formatPrice(item.unitPrice)}</span>
                                 </div>
                             </div>

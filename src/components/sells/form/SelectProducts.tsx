@@ -94,7 +94,7 @@ export default function SelectProducts({
         if (isSelected) {
             onChange(selectedItems.filter((item) => item.id !== product.id));
         } else {
-            onChange([...selectedItems, { ...product, quantity: 1 }]);
+            onChange([...selectedItems, { ...product, quantity: 1, isBox: false }]);
         }
     };
 
@@ -125,7 +125,7 @@ export default function SelectProducts({
                         <span></span>
                         <span>Producto</span>
                         <span>Inventario</span>
-                        <span>Precio</span>
+                        <span>Precio unitario</span>
                     </div>
 
                     {products.map((product, index) => {
@@ -156,7 +156,7 @@ export default function SelectProducts({
                                 >
                                     {product.stock}
                                 </div>
-                                <div>{formatPrice(product.price)}</div>
+                                <div>{formatPrice(product.purchasePrice)}</div>
                             </label>
                         );
                     })}

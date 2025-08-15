@@ -38,9 +38,13 @@ export async function createSellAction(data: SellFormType) {
     }
 
     data.items.forEach((item) => {
-        if (item.quantity! > item.stock) {
+        const totalQuantity = item.isBox ? item.quantity * 6 : item.quantity;
+
+        if (totalQuantity > item.stock) {
             throw new Error(`Stock insuficiente para ${item.name}`);
         }
+
+        item.quantity = totalQuantity;
     });
 
     try {

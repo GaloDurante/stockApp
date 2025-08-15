@@ -11,7 +11,9 @@ export type ProductFormType = {
     name: string;
     description?: string;
     stock: number;
-    price: number;
+    purchasePrice: number;
+    salePrice: number;
+    salePriceBox?: number;
     category: Category;
 };
 
@@ -20,7 +22,11 @@ export type LoginFormType = {
     password: string;
 };
 
-export type ProductSellFormType = ProductType & { quantity: number };
+export type ProductSellFormType = ProductType & {
+    quantity: number;
+    newSalePrice?: number;
+    isBox: boolean;
+};
 
 export type SellFormType = {
     items: ProductSellFormType[];

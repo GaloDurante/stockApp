@@ -107,7 +107,7 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                 <tbody>
                     {sells.length === 0 ? (
                         <tr>
-                            <td colSpan={6} className="text-center py-6 text-muted">
+                            <td colSpan={7} className="text-center py-6 text-muted">
                                 No hay ventas para mostrar.
                             </td>
                         </tr>
