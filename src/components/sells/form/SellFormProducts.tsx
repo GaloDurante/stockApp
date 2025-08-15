@@ -2,6 +2,7 @@ import { UseFormRegister, UseFormSetValue, UseFormWatch, FieldErrors } from 'rea
 import { ProductSellFormType, SellFormType } from '@/types/form';
 import { formatPrice } from '@/lib/helpers/components/utils';
 import { X } from 'lucide-react';
+import Switch from '@/components/Switch';
 
 interface SellFormProductsProps {
     items: ProductSellFormType[];
@@ -37,21 +38,46 @@ export default function SellFormProducts({
         setValue('items', newItems, { shouldDirty: true });
     };
 
-    const handleQtyBlur = (index: number, stock: number) => (e: React.FocusEvent<HTMLInputElement>) => {
+    const handleQtyBlur = (index: number, stock: number, isBox: boolean) => (e: React.FocusEvent<HTMLInputElement>) => {
         let v = e.target.valueAsNumber;
-        if (!Number.isFinite(v) || v < 1) v = 1;
-        if (v > stock) v = stock;
+        if (!Number.isFinite(v)) v = 1;
+
+        const maxQuantity = isBox ? Math.floor(stock / 6) : stock;
+
+        if (v < 1) v = 1;
+        if (v > maxQuantity) v = maxQuantity;
 
         setValue(`items.${index}.quantity`, v, { shouldDirty: true, shouldValidate: true });
         e.currentTarget.value = String(v);
     };
 
-    const handlePriceBlur = (index: number, minPrice: number) => (e: React.FocusEvent<HTMLInputElement>) => {
-        let v = e.target.valueAsNumber;
-        if (!Number.isFinite(v) || v < minPrice) v = minPrice;
+    const handlePriceBlur =
+        (index: number, minPrice: number, isBox: boolean) => (e: React.FocusEvent<HTMLInputElement>) => {
+            let v = e.target.valueAsNumber;
+            const min = isBox ? minPrice * 6 : minPrice;
 
-        setValue(`items.${index}.newSalePrice`, v, { shouldDirty: true, shouldValidate: true });
-        e.currentTarget.value = String(v);
+            if (!Number.isFinite(v) || v < min) v = min;
+
+            setValue(`items.${index}.newSalePrice`, v, { shouldDirty: true, shouldValidate: true });
+            e.currentTarget.value = String(v);
+        };
+
+    const toggleBoxSelling = (index: number, currentValue: boolean) => {
+        const newValue = !currentValue;
+        setValue(`items.${index}.isBox`, newValue, { shouldDirty: true });
+
+        setValue(`items.${index}.quantity`, 1, { shouldDirty: true });
+
+        const item = items[index];
+        const currentPrice = watch(`items.${index}.newSalePrice`) ?? item.salePrice;
+        const minPrice = newValue ? item.purchasePrice * 6 : item.purchasePrice;
+        const defaultPrice = newValue ? item.salePriceBox || item.salePrice * 6 : item.salePrice;
+
+        if (currentPrice < minPrice) {
+            setValue(`items.${index}.newSalePrice`, defaultPrice, { shouldDirty: true });
+        } else if (currentPrice === (newValue ? item.salePrice : item.salePriceBox)) {
+            setValue(`items.${index}.newSalePrice`, defaultPrice, { shouldDirty: true });
+        }
     };
 
     return (
@@ -82,21 +108,46 @@ export default function SellFormProducts({
                         {items.map((item, index) => {
                             const quantity = watch(`items.${index}.quantity`) ?? 1;
                             const salePrice = watch(`items.${index}.newSalePrice`) ?? item.salePrice;
-                            const totalItem = salePrice ? quantity * salePrice : 0;
+                            const isBox = watch(`items.${index}.isBox`) ?? false;
+                            const totalItem = salePrice && quantity ? quantity * salePrice : 0;
+                            const availableStock = isBox ? Math.floor(item.stock / 6) : item.stock;
 
                             return (
                                 <div
                                     key={item.id}
-                                    className={`relative grid grid-cols-1 md:grid-cols-[3fr_1fr_1fr_1fr_auto] items-center gap-4 px-4 py-3 ${
+                                    className={`relative grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] items-center gap-4 px-4 py-3 ${
                                         index !== items.length - 1 && 'border-b border-border'
                                     }`}
                                 >
-                                    <div className="w-10/12 sm:w-full flex flex-col">
+                                    <div className="w-10/12 sm:w-full flex flex-col gap-1">
                                         <span className="font-semibold mb-2">{item.name}</span>
+
                                         <span className="text-sm text-muted">
-                                            Unitario: {formatPrice(item.purchasePrice)}
+                                            Costo: {formatPrice(item.purchasePrice)}{' '}
+                                            {isBox && `(${formatPrice(item.purchasePrice * 6)} x caja)`}
                                         </span>
-                                        <span className="text-sm text-muted">Venta: {formatPrice(item.salePrice)}</span>
+                                        <span className="text-sm text-muted">
+                                            {isBox
+                                                ? `Venta caja: ${formatPrice(item.salePriceBox || item.salePrice * 6)}`
+                                                : `Venta unidad: ${formatPrice(item.salePrice)}`}
+                                        </span>
+                                        <span className="text-sm text-muted">
+                                            Stock:{' '}
+                                            {isBox
+                                                ? `${availableStock} cajas (${item.stock} unidades)`
+                                                : `${item.stock} unidades`}
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-muted">{isBox ? 'Caja (6u)' : 'Unidad'}</span>
+                                            <Switch
+                                                disabled={!!(item.stock < 6)}
+                                                checked={isBox}
+                                                onChange={() => toggleBoxSelling(index, isBox)}
+                                            />
+                                        </div>
                                     </div>
 
                                     <div className="grid grid-cols-[auto_1fr] md:block items-center gap-2">
@@ -105,31 +156,36 @@ export default function SellFormProducts({
                                             <input
                                                 type="number"
                                                 min={1}
-                                                max={item.stock}
+                                                max={availableStock}
                                                 className="border border-border rounded-md p-1 w-16 text-center"
                                                 {...register(`items.${index}.quantity`, {
                                                     valueAsNumber: true,
                                                     value: item.quantity ?? 1,
                                                 })}
-                                                onBlur={handleQtyBlur(index, item.stock)}
+                                                onBlur={handleQtyBlur(index, item.stock, isBox)}
                                             />
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-[auto_1fr] md:block items-center gap-2">
-                                        <span className="md:hidden text-sm text-muted">Precio de venta:</span>
+                                        <span className="md:hidden text-sm text-muted">Precio:</span>
                                         <div className="flex md:justify-center">
                                             <div className="relative">
                                                 <span className="absolute left-2 top-1/2 -translate-y-1/2">$</span>
                                                 <input
                                                     type="number"
-                                                    min={item.purchasePrice}
+                                                    min={isBox ? item.purchasePrice * 6 : item.purchasePrice}
                                                     className="border border-border rounded-md p-1 pl-6 w-24 no-spinner"
                                                     {...register(`items.${index}.newSalePrice`, {
                                                         valueAsNumber: true,
-                                                        value: item.salePrice,
+                                                        value: isBox
+                                                            ? item.salePriceBox || item.salePrice * 6
+                                                            : item.salePrice,
                                                     })}
-                                                    onBlur={handlePriceBlur(index, item.purchasePrice)}
+                                                    onBlur={handlePriceBlur(index, item.purchasePrice, isBox)}
+                                                    defaultValue={
+                                                        isBox ? item.salePriceBox || item.salePrice * 6 : item.salePrice
+                                                    }
                                                 />
                                             </div>
                                         </div>

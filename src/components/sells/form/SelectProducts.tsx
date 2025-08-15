@@ -94,7 +94,7 @@ export default function SelectProducts({
         if (isSelected) {
             onChange(selectedItems.filter((item) => item.id !== product.id));
         } else {
-            onChange([...selectedItems, { ...product, quantity: 1 }]);
+            onChange([...selectedItems, { ...product, quantity: 1, isBox: false }]);
         }
     };
 

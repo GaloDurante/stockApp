@@ -22,7 +22,11 @@ export type LoginFormType = {
     password: string;
 };
 
-export type ProductSellFormType = ProductType & { quantity: number; newSalePrice?: number };
+export type ProductSellFormType = ProductType & {
+    quantity: number;
+    newSalePrice?: number;
+    isBox: boolean;
+};
 
 export type SellFormType = {
     items: ProductSellFormType[];
