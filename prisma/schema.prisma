@@ -69,6 +69,7 @@ model SellItem {
   productName String
   quantity    Int
   unitPrice   Int
+  isBox       Boolean   @default(false)
 
   sell        Sell      @relation(fields: [sellId], references: [id], onDelete: Cascade)
   product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
