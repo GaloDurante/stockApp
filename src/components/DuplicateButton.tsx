@@ -28,6 +28,7 @@ export default function DuplicateButton({ baseProduct }: DuplicateButtonType) {
             salePrice: 0,
             salePriceBox: 0,
             category: baseProduct.category,
+            unitsPerBox: baseProduct.unitsPerBox,
         };
         try {
             const newProduct = await createProductAction(dataForm);

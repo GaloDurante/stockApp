@@ -38,9 +38,11 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                       salePriceBox: selectedProduct.salePriceBox ?? undefined,
                       stock: selectedProduct.stock,
                       description: selectedProduct.description ?? undefined,
+                      unitsPerBox: selectedProduct.unitsPerBox,
                   }
                 : {
                       stock: 0,
+                      unitsPerBox: 6,
                   },
     });
 
@@ -70,13 +72,16 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
     };
 
     const purchasePrice = watch('purchasePrice');
+    const unitsPerBox = watch('unitsPerBox');
 
     useEffect(() => {
         if (!isEdit && !isNaN(Number(purchasePrice))) {
             setValue('salePrice', Number(purchasePrice));
-            setValue('salePriceBox', Number(purchasePrice) * 6);
+            if (purchasePrice && unitsPerBox) {
+                setValue('salePriceBox', purchasePrice * unitsPerBox);
+            }
         }
-    }, [purchasePrice, setValue, isEdit]);
+    }, [purchasePrice, unitsPerBox, setValue, isEdit]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -110,23 +115,44 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                     {errors.description && <p className="text-red-700 text-sm">{errors.description.message}</p>}
                 </div>
 
-                <div className="flex flex-col gap-1 mb-4">
-                    <label>
-                        Stock <span className="text-red-700">*</span>
-                    </label>
-                    <input
-                        type="number"
-                        {...register('stock', {
-                            required: 'El stock es obligatorio',
-                            valueAsNumber: true,
-                            min: {
-                                value: 0,
-                                message: 'El stock no puede ser menor a 0',
-                            },
-                        })}
-                        className={`p-2 border rounded-md no-spinner ${errors.stock ? 'border-red-700' : 'border-border'}`}
-                    />
-                    {errors.stock && <p className="text-red-700 text-sm">{errors.stock.message}</p>}
+                <div className="flex flex-col gap-0 justify-between md:flex-row md:gap-4">
+                    <div className="flex flex-col gap-1 mb-4 w-full">
+                        <label>
+                            Stock <span className="text-red-700">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            {...register('stock', {
+                                required: 'El stock es obligatorio',
+                                valueAsNumber: true,
+                                min: {
+                                    value: 0,
+                                    message: 'El stock no puede ser menor a 0',
+                                },
+                            })}
+                            className={`p-2 border rounded-md no-spinner ${errors.stock ? 'border-red-700' : 'border-border'}`}
+                        />
+                        {errors.stock && <p className="text-red-700 text-sm">{errors.stock.message}</p>}
+                    </div>
+
+                    <div className="flex flex-col gap-1 mb-4 w-full">
+                        <label>
+                            Unidades por caja <span className="text-red-700">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            {...register('unitsPerBox', {
+                                required: 'Las unidades por caja son obligatorias',
+                                valueAsNumber: true,
+                                min: {
+                                    value: 1,
+                                    message: 'Las unidades no pueden ser menor a 1',
+                                },
+                            })}
+                            className={`p-2 border rounded-md no-spinner ${errors.unitsPerBox ? 'border-red-700' : 'border-border'}`}
+                        />
+                        {errors.unitsPerBox && <p className="text-red-700 text-sm">{errors.unitsPerBox.message}</p>}
+                    </div>
                 </div>
 
                 <div className="flex flex-col gap-1 mb-4">
@@ -212,9 +238,8 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                             {...register('salePriceBox', {
                                 valueAsNumber: true,
                                 min: {
-                                    value: (purchasePrice ?? 0) * 6,
-                                    message:
-                                        'El precio de venta en caja no puede ser menor al precio de compra multiplicado por 6 unidades',
+                                    value: (purchasePrice ?? 0) * (unitsPerBox ?? 1),
+                                    message: `El precio de venta en caja no puede ser menor a ${(purchasePrice ?? 0) * (unitsPerBox ?? 1)}`,
                                 },
                             })}
                             className={`p-2 pl-6 border rounded-md no-spinner w-full ${errors.salePriceBox ? 'border-red-700' : 'border-border'}`}

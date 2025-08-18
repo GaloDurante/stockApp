@@ -39,34 +39,44 @@ export default function ItemsMenu({ items }: ItemsMenuProps) {
                     </div>
 
                     <div className="overflow-y-auto flex-grow max-h-[60vh]">
-                        {items.map((item, index) => (
-                            <div
-                                key={item.id}
-                                className={`p-4 border-border flex justify-between ${
-                                    index !== items.length - 1 ? 'border-b' : ''
-                                }`}
-                            >
-                                {item.productId ? (
-                                    <Link href={`/admin/products/${item.productId}`} className="hover:underline">
-                                        {item.productName}
-                                    </Link>
-                                ) : (
-                                    <span>{item.productName}</span>
-                                )}
-                                <div className="flex flex-col items-end gap-2">
-                                    {item.isBox ? (
-                                        <span>
-                                            x {item.quantity / 6} {item.quantity / 6 === 1 ? 'caja' : 'cajas'}
+                        {items.map((item, index) => {
+                            const quantity = item.isBox ? item.quantity / item.unitsPerBox : item.quantity;
+
+                            return (
+                                <div
+                                    key={item.id}
+                                    className={`p-4 border-border flex justify-between items-center ${
+                                        index !== items.length - 1 ? 'border-b' : ''
+                                    }`}
+                                >
+                                    <div className="flex flex-col">
+                                        {item.productId ? (
+                                            <Link
+                                                href={`/admin/products/${item.productId}`}
+                                                className="hover:underline font-medium"
+                                            >
+                                                {item.productName}
+                                            </Link>
+                                        ) : (
+                                            <span className="font-medium">{item.productName}</span>
+                                        )}
+
+                                        <span className="text-sm text-muted mt-2">
+                                            x {quantity}{' '}
+                                            {item.isBox
+                                                ? quantity === 1
+                                                    ? `caja (${item.unitsPerBox} u)`
+                                                    : `cajas (${item.unitsPerBox} u c/u)`
+                                                : quantity === 1
+                                                  ? 'unidad'
+                                                  : 'unidades'}
                                         </span>
-                                    ) : (
-                                        <span>
-                                            x {item.quantity} {item.quantity === 1 ? 'unidad' : 'unidades'}
-                                        </span>
-                                    )}
-                                    <span className="font-semibold text-base">{formatPrice(item.unitPrice)}</span>
+                                    </div>
+
+                                    <div className="font-semibold text-base">{formatPrice(item.unitPrice)}</div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </Modal>
             )}
