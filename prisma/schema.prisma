@@ -26,7 +26,7 @@ model Product {
   purchasePrice Int
   salePrice     Int
   salePriceBox  Int?
-  unitsPerBox   Int?       @default(6)
+  unitsPerBox   Int        @default(6)
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   sellItems     SellItem[]
@@ -71,6 +71,7 @@ model SellItem {
   quantity    Int
   unitPrice   Int
   isBox       Boolean   @default(false)
+  unitsPerBox Int
 
   sell        Sell      @relation(fields: [sellId], references: [id], onDelete: Cascade)
   product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)

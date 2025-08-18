@@ -14,7 +14,7 @@ export type ProductFormType = {
     purchasePrice: number;
     salePrice: number;
     salePriceBox?: number;
-    unitsPerBox?: number;
+    unitsPerBox: number;
     category: Category;
 };
 

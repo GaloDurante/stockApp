@@ -38,23 +38,26 @@ export default function SellFormProducts({
         setValue('items', newItems, { shouldDirty: true });
     };
 
-    const handleQtyBlur = (index: number, stock: number, isBox: boolean) => (e: React.FocusEvent<HTMLInputElement>) => {
-        let v = e.target.valueAsNumber;
-        if (!Number.isFinite(v)) v = 1;
+    const handleQtyBlur =
+        (index: number, stock: number, isBox: boolean, unitsPerBox: number) =>
+        (e: React.FocusEvent<HTMLInputElement>) => {
+            let v = e.target.valueAsNumber;
+            if (!Number.isFinite(v)) v = 1;
 
-        const maxQuantity = isBox ? Math.floor(stock / 6) : stock;
+            const maxQuantity = isBox ? Math.floor(stock / unitsPerBox) : stock;
 
-        if (v < 1) v = 1;
-        if (v > maxQuantity) v = maxQuantity;
+            if (v < 1) v = 1;
+            if (v > maxQuantity) v = maxQuantity;
 
-        setValue(`items.${index}.quantity`, v, { shouldDirty: true, shouldValidate: true });
-        e.currentTarget.value = String(v);
-    };
+            setValue(`items.${index}.quantity`, v, { shouldDirty: true, shouldValidate: true });
+            e.currentTarget.value = String(v);
+        };
 
     const handlePriceBlur =
-        (index: number, minPrice: number, isBox: boolean) => (e: React.FocusEvent<HTMLInputElement>) => {
+        (index: number, minPrice: number, isBox: boolean, unitsPerBox: number) =>
+        (e: React.FocusEvent<HTMLInputElement>) => {
             let v = e.target.valueAsNumber;
-            const min = isBox ? minPrice * 6 : minPrice;
+            const min = isBox ? minPrice * unitsPerBox : minPrice;
 
             if (!Number.isFinite(v) || v < min) v = min;
 
@@ -70,8 +73,8 @@ export default function SellFormProducts({
 
         const item = items[index];
         const currentPrice = watch(`items.${index}.newSalePrice`) ?? item.salePrice;
-        const minPrice = newValue ? item.purchasePrice * 6 : item.purchasePrice;
-        const defaultPrice = newValue ? item.salePriceBox || item.salePrice * 6 : item.salePrice;
+        const minPrice = newValue ? item.purchasePrice * item.unitsPerBox : item.purchasePrice;
+        const defaultPrice = newValue ? item.salePriceBox || item.salePrice * item.unitsPerBox : item.salePrice;
 
         if (currentPrice < minPrice) {
             setValue(`items.${index}.newSalePrice`, defaultPrice, { shouldDirty: true });
@@ -110,7 +113,7 @@ export default function SellFormProducts({
                             const salePrice = watch(`items.${index}.newSalePrice`) ?? item.salePrice;
                             const isBox = watch(`items.${index}.isBox`) ?? false;
                             const totalItem = salePrice && quantity ? quantity * salePrice : 0;
-                            const availableStock = isBox ? Math.floor(item.stock / 6) : item.stock;
+                            const availableStock = isBox ? Math.floor(item.stock / item.unitsPerBox) : item.stock;
 
                             return (
                                 <div
@@ -124,11 +127,11 @@ export default function SellFormProducts({
 
                                         <span className="text-sm text-muted">
                                             Costo: {formatPrice(item.purchasePrice)}{' '}
-                                            {isBox && `(${formatPrice(item.purchasePrice * 6)} x caja)`}
+                                            {isBox && `(${formatPrice(item.purchasePrice * item.unitsPerBox)} x caja)`}
                                         </span>
                                         <span className="text-sm text-muted">
                                             {isBox
-                                                ? `Venta caja: ${formatPrice(item.salePriceBox || item.salePrice * 6)}`
+                                                ? `Venta caja: ${formatPrice(item.salePriceBox || item.salePrice * item.unitsPerBox)}`
                                                 : `Venta unidad: ${formatPrice(item.salePrice)}`}
                                         </span>
                                         <span className="text-sm text-muted">
@@ -141,9 +144,11 @@ export default function SellFormProducts({
 
                                     <div>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs text-muted">{isBox ? 'Caja (6u)' : 'Unidad'}</span>
+                                            <span className="text-xs text-muted">
+                                                {isBox ? `Caja (${item.unitsPerBox}u)` : 'Unidad'}
+                                            </span>
                                             <Switch
-                                                disabled={!!(item.stock < 6)}
+                                                disabled={!!(item.stock < item.unitsPerBox)}
                                                 checked={isBox}
                                                 onChange={() => toggleBoxSelling(index, isBox)}
                                             />
@@ -162,7 +167,7 @@ export default function SellFormProducts({
                                                     valueAsNumber: true,
                                                     value: item.quantity ?? 1,
                                                 })}
-                                                onBlur={handleQtyBlur(index, item.stock, isBox)}
+                                                onBlur={handleQtyBlur(index, item.stock, isBox, item.unitsPerBox)}
                                             />
                                         </div>
                                     </div>
@@ -174,17 +179,28 @@ export default function SellFormProducts({
                                                 <span className="absolute left-2 top-1/2 -translate-y-1/2">$</span>
                                                 <input
                                                     type="number"
-                                                    min={isBox ? item.purchasePrice * 6 : item.purchasePrice}
+                                                    min={
+                                                        isBox
+                                                            ? item.purchasePrice * item.unitsPerBox
+                                                            : item.purchasePrice
+                                                    }
                                                     className="border border-border rounded-md p-1 pl-6 w-24 no-spinner"
                                                     {...register(`items.${index}.newSalePrice`, {
                                                         valueAsNumber: true,
                                                         value: isBox
-                                                            ? item.salePriceBox || item.salePrice * 6
+                                                            ? item.salePriceBox || item.salePrice * item.unitsPerBox
                                                             : item.salePrice,
                                                     })}
-                                                    onBlur={handlePriceBlur(index, item.purchasePrice, isBox)}
+                                                    onBlur={handlePriceBlur(
+                                                        index,
+                                                        item.purchasePrice,
+                                                        isBox,
+                                                        item.unitsPerBox
+                                                    )}
                                                     defaultValue={
-                                                        isBox ? item.salePriceBox || item.salePrice * 6 : item.salePrice
+                                                        isBox
+                                                            ? item.salePriceBox || item.salePrice * item.unitsPerBox
+                                                            : item.salePrice
                                                     }
                                                 />
                                             </div>
