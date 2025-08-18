@@ -114,6 +114,7 @@ export default function ProductsTable({
                         <th className="p-4">Categoría</th>
                         <th className="p-4">Inventario</th>
                         <th className="p-4">Precio unitario</th>
+                        <th className="p-4">Monto total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -142,13 +143,14 @@ export default function ProductsTable({
                                     </div>
                                 </td>
                                 <td className="px-4 py-3 w-[30%]">
-                                    <span className="block w-[230px] md:w-[350px] xl:w-[450px] truncate">
-                                        {product.name}
-                                    </span>
+                                    <span className="block w-[230px] xl:w-[450px] truncate">{product.name}</span>
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">{formatCategory(product.category)}</td>
                                 <td className="px-4 py-3 whitespace-nowrap">{renderStock(product.stock)}</td>
                                 <td className="px-4 py-3 whitespace-nowrap">{formatPrice(product.purchasePrice)}</td>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                    {formatPrice(product.purchasePrice * product.stock)}
+                                </td>
                             </tr>
                         ))
                     )}

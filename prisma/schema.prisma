@@ -26,6 +26,7 @@ model Product {
   purchasePrice Int
   salePrice     Int
   salePriceBox  Int?
+  unitsPerBox   Int?       @default(6)
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   sellItems     SellItem[]
