@@ -61,20 +61,23 @@ model Sell {
   updatedAt     DateTime      @updatedAt
 
   items         SellItem[]
+  @@index([date])
 }
 
 model SellItem {
-  id          Int       @id @default(autoincrement())
-  sellId      Int
-  productId   Int?
-  productName String
-  quantity    Int
-  unitPrice   Int
-  isBox       Boolean   @default(false)
-  unitsPerBox Int
+  id            Int       @id @default(autoincrement())
+  sellId        Int
+  productId     Int?
+  productName   String
+  quantity      Int
+  unitPrice     Int
+  purchasePrice Int
+  isBox         Boolean   @default(false)
+  unitsPerBox   Int
 
   sell        Sell      @relation(fields: [sellId], references: [id], onDelete: Cascade)
   product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  @@index([sellId])
 }
 
 enum PaymentMethod {

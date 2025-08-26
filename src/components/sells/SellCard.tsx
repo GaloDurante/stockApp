@@ -42,6 +42,7 @@ export default function SellCard({ sell, className, handleDelete, deleteModalId,
                     closeModal={() => setDeleteModalId(null)}
                     isTwoStep
                     confirmationText={`Venta-ID-${sell.id}`}
+                    hideEditButton
                 />
             </div>
         </div>
