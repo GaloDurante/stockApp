@@ -1,13 +1,9 @@
 import { dayStart, dayEnd } from '@formkit/tempo';
-import {
-    getProfitHistoric,
-    getTotalProductsMoney,
-    getTotalReceivedByReceiver,
-    getProfitByMonthForYear,
-} from '@/lib/services/report';
+import { getProfitHistoric, getTotalProductsMoney, getTotalReceivedByReceiver } from '@/lib/services/report';
 import { formatPrice } from '@/lib/helpers/components/utils';
 import Filters from '@/components/Filters';
 import ReceiverCard from '@/components/reports/ReceiverCard';
+import Link from 'next/link';
 
 interface ReportsPageProps {
     searchParams: Promise<{
@@ -31,7 +27,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
 
     return (
         <div className="space-y-6 p-6">
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Filters
                     withDateRange
                     startDate={startDate}
@@ -39,20 +35,22 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
                     withCategories
                     selectedCategory={filterByCategory}
                     showAllCategory
+                    withOrder
+                    orderOptions={['order-1', '', 'order-3 md:order-2']}
                 />
-            </div>
 
-            <div className="flex flex-col md:flex-row gap-6">
-                <div className="p-4 bg-accent-hover text-white rounded-lg flex-1 text-center">
-                    <div>Plata actual en Productos</div>
+                <div className="flex flex-col justify-center items-center order-2 md:order-3 mb-10 md:mb-0 p-4 bg-accent-hover rounded-lg min-h-40">
+                    <span>Plata actual en Productos</span>
                     <div className="text-2xl font-bold">{formatPrice(totalProductsMoney)}</div>
                 </div>
-                <div className="p-4 bg-accent-hover text-white rounded-lg flex-1 text-center">
-                    <div className="flex justify-center items-center gap-2">
-                        <span>Ganancias Totales</span>
-                    </div>
+
+                <Link
+                    href="/admin/reports/profits"
+                    className="flex flex-col justify-center items-center order-4 p-4 bg-accent-hover rounded-lg min-h-40"
+                >
+                    <span>Ganancias Totales</span>
                     <div className="text-2xl font-bold">{formatPrice(profitTotal)}</div>
-                </div>
+                </Link>
             </div>
 
             {receiversMoney.length > 0 && (
