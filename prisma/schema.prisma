@@ -33,21 +33,21 @@ model Product {
 }
 
 enum Category {
-  VINOS_TINTOS  @map("Vinos Tintos")
-  VINOS_BLANCOS @map("Vinos Blancos")
-  VINOS_ROSADOS @map("Vinos Rosados")
-  RON           @map("Ron")
-  LICORES       @map("Licores")
-  SIDRAS        @map("Sidras")
-  CHAMPAGNES    @map("Champagnes")
-  CERVEZAS      @map("Cervezas")
-  VODKA         @map("Vodka")
-  WHISKIES      @map("Whiskies")
-  GASEOSAS      @map("Gaseosas")
-  APERITIVOS    @map("Aperitivos")
-  GIN           @map("Gin")
-  ACCESORIOS    @map("Accesorios")
-  ALMACEN       @map("Almacén")
+  VINOS_TINTOS
+  VINOS_BLANCOS
+  VINOS_ROSADOS
+  RON
+  LICORES
+  SIDRAS
+  CHAMPAGNES
+  CERVEZAS
+  VODKA
+  WHISKIES
+  GASEOSAS
+  APERITIVOS
+  GIN
+  ACCESORIOS
+  ALMACEN
 }
 
 model Sell {

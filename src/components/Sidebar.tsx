@@ -46,7 +46,7 @@ export default function Sidebar() {
             <Link
                 href="/admin/reports"
                 className={`flex items-center gap-2 px-3 py-2 rounded transition-colors hover:bg-border hover:text-accent ${
-                    pathname.startsWith('/admin/stats') && 'text-accent'
+                    pathname.startsWith('/admin/reports') && 'text-accent'
                 }`}
             >
                 <span>

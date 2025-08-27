@@ -51,7 +51,7 @@ export default function Filters({
 
         const options = Object.entries(Category).map(([key, value]) => ({
             value: key,
-            label: value.replace('_', ' '),
+            label: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase().replace('_', ' '),
         }));
 
         if (showAllCategory) {
