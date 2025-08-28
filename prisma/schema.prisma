@@ -33,21 +33,21 @@ model Product {
 }
 
 enum Category {
-  VINOS_TINTOS  @map("Vinos Tintos")
-  VINOS_BLANCOS @map("Vinos Blancos")
-  VINOS_ROSADOS @map("Vinos Rosados")
-  RON           @map("Ron")
-  LICORES       @map("Licores")
-  SIDRAS        @map("Sidras")
-  CHAMPAGNES    @map("Champagnes")
-  CERVEZAS      @map("Cervezas")
-  VODKA         @map("Vodka")
-  WHISKIES      @map("Whiskies")
-  GASEOSAS      @map("Gaseosas")
-  APERITIVOS    @map("Aperitivos")
-  GIN           @map("Gin")
-  ACCESORIOS    @map("Accesorios")
-  ALMACEN       @map("Almacén")
+  VINOS_TINTOS
+  VINOS_BLANCOS
+  VINOS_ROSADOS
+  RON
+  LICORES
+  SIDRAS
+  CHAMPAGNES
+  CERVEZAS
+  VODKA
+  WHISKIES
+  GASEOSAS
+  APERITIVOS
+  GIN
+  ACCESORIOS
+  ALMACEN
 }
 
 model Sell {
@@ -61,20 +61,23 @@ model Sell {
   updatedAt     DateTime      @updatedAt
 
   items         SellItem[]
+  @@index([date])
 }
 
 model SellItem {
-  id          Int       @id @default(autoincrement())
-  sellId      Int
-  productId   Int?
-  productName String
-  quantity    Int
-  unitPrice   Int
-  isBox       Boolean   @default(false)
-  unitsPerBox Int
+  id            Int       @id @default(autoincrement())
+  sellId        Int
+  productId     Int?
+  productName   String
+  quantity      Int
+  unitPrice     Int
+  purchasePrice Int
+  isBox         Boolean   @default(false)
+  unitsPerBox   Int
 
   sell        Sell      @relation(fields: [sellId], references: [id], onDelete: Cascade)
   product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  @@index([sellId])
 }
 
 enum PaymentMethod {

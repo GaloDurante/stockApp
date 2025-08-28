@@ -27,6 +27,8 @@ interface FiltersProps {
     withDateRange?: boolean;
     startDate?: string;
     endDate?: string;
+    withOrder?: boolean;
+    orderOptions?: [string, string, string];
 }
 
 export default function Filters({
@@ -42,6 +44,8 @@ export default function Filters({
     withDateRange = false,
     startDate,
     endDate,
+    withOrder = false,
+    orderOptions,
 }: FiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -51,7 +55,7 @@ export default function Filters({
 
         const options = Object.entries(Category).map(([key, value]) => ({
             value: key,
-            label: value.replace('_', ' '),
+            label: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase().replace('_', ' '),
         }));
 
         if (showAllCategory) {
@@ -120,7 +124,7 @@ export default function Filters({
             {withSearch && <Search placeholder={searchPlaceholder} value={search} setValue={setSearch} />}
 
             {withCategories && (
-                <div className="w-full xl:min-w-56 ">
+                <div className={`w-full xl:min-w-56 ${withOrder && orderOptions ? orderOptions[0] : ''}`}>
                     <CustomSelect
                         value={selectedCategoryOption}
                         options={categoriesOptions}
@@ -133,7 +137,7 @@ export default function Filters({
             )}
 
             {withSort && sortOrderOptions && (
-                <div className="w-full xl:min-w-56">
+                <div className={`w-full xl:min-w-56 ${withOrder && orderOptions ? orderOptions[1] : ''}`}>
                     <CustomSelect
                         value={selectedSortOrderOption}
                         options={sortOrderOptions}
@@ -147,12 +151,14 @@ export default function Filters({
             )}
 
             {withDateRange && (
-                <CustomDatePicker
-                    mode="range"
-                    value={dateRange}
-                    onChange={setDateRange}
-                    customPlaceholder="Filtrar por fechas"
-                />
+                <div className={`w-full ${withOrder && orderOptions ? orderOptions[2] : ''}`}>
+                    <CustomDatePicker
+                        mode="range"
+                        value={dateRange}
+                        onChange={setDateRange}
+                        customPlaceholder="Filtrar por fechas"
+                    />
+                </div>
             )}
         </>
     );

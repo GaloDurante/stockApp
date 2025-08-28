@@ -120,7 +120,7 @@ export default function ProductsTable({
                 <tbody>
                     {products.length === 0 ? (
                         <tr>
-                            <td colSpan={5} className="text-center py-6 text-muted">
+                            <td colSpan={6} className="text-center py-6 text-muted">
                                 No hay productos para mostrar.
                             </td>
                         </tr>

@@ -15,6 +15,7 @@ interface TableActionsButtonsType {
     redirect: string;
     isTwoStep?: boolean;
     confirmationText?: string;
+    hideEditButton?: boolean;
 }
 
 export default function TableActionsButtons({
@@ -26,12 +27,15 @@ export default function TableActionsButtons({
     redirect,
     isTwoStep = false,
     confirmationText,
+    hideEditButton = false,
 }: TableActionsButtonsType) {
     return (
         <>
-            <Link href={redirect} className="hover:bg-border hover:text-white rounded-full p-2 transition">
-                <Pencil size={16} />
-            </Link>
+            {!hideEditButton && (
+                <Link href={redirect} className="hover:bg-border hover:text-white rounded-full p-2 transition">
+                    <Pencil size={16} />
+                </Link>
+            )}
 
             <button
                 onClick={openModal}

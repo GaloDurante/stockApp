@@ -95,13 +95,13 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
             <table className="hidden md:table min-w-full border-t-2 border border-border bg-surface text-sm">
                 <thead className="bg-border sticky -top-[1px]">
                     <tr className="text-left uppercase text-xs tracking-wider">
-                        <th className="p-4 w-[1%]">Acciones</th>
-                        <th className="p-4 w-[5%]">ID</th>
-                        <th className="p-4 w-[20%]">Fecha</th>
-                        <th className="p-4 w-[15%]">Precio Total</th>
-                        <th className="p-4 w-[10%]">Items</th>
-                        <th className="p-4 w-[15%]">Método Pago</th>
-                        <th className="p-4 w-[15%]">Receptor</th>
+                        <th className="p-4">Acciones</th>
+                        <th className="p-4">ID</th>
+                        <th className="p-4">Fecha</th>
+                        <th className="p-4">Precio Total</th>
+                        <th className="p-4">Items</th>
+                        <th className="p-4">Método Pago</th>
+                        <th className="p-4">Receptor</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -125,6 +125,7 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                                             closeModal={() => setDeleteModalId(null)}
                                             isTwoStep
                                             confirmationText={`Venta-ID-${sell.id}`}
+                                            hideEditButton
                                         />
                                     </div>
                                 </td>
