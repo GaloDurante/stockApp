@@ -29,32 +29,48 @@ export default function ProfitByMonthChart({ data }: ProfitByMonthChartProps) {
 
         return (
             <>
-                <h4 className="text-center text-xl font-bold my-4 text-white">
-                    Los 3 productos más vendidos de {selectedMonth}
-                </h4>
-                <ul className="space-y-2">
+                <div className="text-center mb-6">
+                    <h3 className="text-xl font-semibold mb-1">Productos Destacados de {selectedMonth}</h3>
+                    <p className="text-sm text-muted">Los 3 artículos con mayor volumen de ventas</p>
+                </div>
+
+                <div className="space-y-3">
                     {topProducts.map((p, idx) => (
-                        <li
+                        <div
                             key={p.productName}
-                            className="flex justify-between gap-4 bg-[#2a2a2a] p-3 rounded-lg shadow"
+                            className="flex items-center justify-between bg-border p-4 rounded-xl border border-border shadow-lg"
                         >
-                            <span>
-                                {idx + 1}. {p.productName}
-                            </span>
-                            <span className="font-bold">
-                                <span className="text-muted font-normal hidden md:inline">cantidad </span>
-                                {p.quantity}
-                            </span>
-                        </li>
+                            <div className="flex items-center">
+                                <div
+                                    className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
+                                        idx === 0
+                                            ? 'bg-yellow-500/20 text-yellow-300'
+                                            : idx === 1
+                                              ? 'bg-gray-400/20 text-gray-300'
+                                              : 'bg-amber-700/20 text-amber-400'
+                                    }`}
+                                >
+                                    <span className="font-bold text-sm">#{idx + 1}</span>
+                                </div>
+                                <span className="font-medium truncate max-w-[180px] md:max-w-full">
+                                    {p.productName}
+                                </span>
+                            </div>
+
+                            <div className="flex flex-col items-end">
+                                <span className="font-bold text-lg">{p.quantity}</span>
+                                <span className="text-xs text-muted mt-1 hidden md:block">unidades vendidas</span>
+                            </div>
+                        </div>
                     ))}
-                </ul>
+                </div>
             </>
         );
     };
 
     return (
         <div className="w-full flex-1 p-4 flex flex-col">
-            <ResponsiveContainer width="100%" height="60%" className="flex-2">
+            <ResponsiveContainer width="100%" height="60%" className="flex-1">
                 <BarChart data={data} onClick={(option) => setSelectedMonth(option.activeLabel)}>
                     <CartesianGrid horizontal vertical={false} stroke="#444" />
                     <XAxis dataKey="month" axisLine={false} tickLine={false} stroke="#fff" />

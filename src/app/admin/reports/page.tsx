@@ -1,9 +1,8 @@
 import { dayStart, dayEnd } from '@formkit/tempo';
 import { getProfitHistoric, getTotalProductsMoney, getTotalReceivedByReceiver } from '@/lib/services/report';
-import { formatPrice } from '@/lib/helpers/components/utils';
 import Filters from '@/components/Filters';
 import ReceiverCard from '@/components/reports/ReceiverCard';
-import Link from 'next/link';
+import StatsButtons from '@/components/reports/StatsButtons';
 
 interface ReportsPageProps {
     searchParams: Promise<{
@@ -39,18 +38,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
                     orderOptions={['order-1', '', 'order-3 md:order-2']}
                 />
 
-                <div className="flex flex-col justify-center items-center order-2 md:order-3 mb-10 md:mb-0 p-4 bg-accent-hover rounded-lg min-h-40">
-                    <span>Plata actual invertida en productos</span>
-                    <div className="text-2xl font-bold">{formatPrice(totalProductsMoney)}</div>
-                </div>
-
-                <Link
-                    href="/admin/reports/profits"
-                    className="flex flex-col justify-center items-center order-4 p-4 bg-accent-hover rounded-lg min-h-40"
-                >
-                    <span>Ganancias Totales</span>
-                    <div className="text-2xl font-bold">{formatPrice(profitTotal)}</div>
-                </Link>
+                <StatsButtons totalMoney={totalProductsMoney} profitTotal={profitTotal} />
             </div>
 
             {receiversMoney.length > 0 && (
