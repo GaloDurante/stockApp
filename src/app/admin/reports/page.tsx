@@ -40,7 +40,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
                 />
 
                 <div className="flex flex-col justify-center items-center order-2 md:order-3 mb-10 md:mb-0 p-4 bg-accent-hover rounded-lg min-h-40">
-                    <span>Plata actual en Productos</span>
+                    <span>Plata actual invertida en productos</span>
                     <div className="text-2xl font-bold">{formatPrice(totalProductsMoney)}</div>
                 </div>
 

@@ -172,3 +172,7 @@ select:-webkit-autofill {
         background-color: var(--color-accent) !important;
     }
 }
+
+.recharts-surface:focus {
+    outline: none !important;
+}
