@@ -150,7 +150,7 @@ export default function SelectProducts({
                                         product.stock === 0
                                             ? 'text-red-700'
                                             : product.stock > 0 && product.stock < 8
-                                              ? 'text-yellow-600'
+                                              ? 'text-terciary'
                                               : ''
                                     }`}
                                 >

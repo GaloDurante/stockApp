@@ -42,3 +42,7 @@ export type SellFormType = {
     totalPrice: number;
     note?: string | null;
 };
+
+export type StockFormType = {
+    newStock: number;
+};

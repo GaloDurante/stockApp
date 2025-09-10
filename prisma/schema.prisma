@@ -30,6 +30,7 @@ model Product {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   sellItems     SellItem[]
+  PurchaseItem  PurchaseItem[]
 }
 
 enum Category {
@@ -99,4 +100,24 @@ enum PaymentMethod {
 enum Receiver {
   Walter
   Yanina
+}
+
+model Purchase {
+  id         Int            @id @default(autoincrement())
+  date       DateTime
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  items      PurchaseItem[]
+}
+
+model PurchaseItem {
+  id          Int       @id @default(autoincrement())
+  purchaseId  Int
+  productId   Int
+  quantity    Int
+  purchasePrice   Int
+
+  purchase    Purchase  @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
