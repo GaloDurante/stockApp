@@ -16,6 +16,7 @@ import Modal from '@/components/Modal';
 import SelectProducts from '@/components/sells/form/SelectProducts';
 import SellFormProducts from '@/components/sells/form/SellFormProducts';
 import SellFormDetails from '@/components/sells/form/SellFormDetails';
+import SellFormPayments from '@/components/sells/form/SellFormPayments';
 
 interface SellFormProductsType {
     initialProducts: ProductType[];
@@ -37,13 +38,14 @@ export default function SellForm({
         handleSubmit,
         control,
         watch,
-        resetField,
         setValue,
         clearErrors,
+        trigger,
         formState: { errors, isDirty, isSubmitting },
     } = useForm<SellFormType>({
         defaultValues: {
             items: [],
+            payments: [],
         },
     });
 
@@ -134,13 +136,17 @@ export default function SellForm({
             )}
 
             <div className="bg-surface p-8 rounded-lg border border-border mt-8">
-                <SellFormDetails
+                <SellFormPayments
                     control={control}
                     errors={errors}
                     register={register}
-                    resetField={resetField}
                     watch={watch}
+                    trigger={trigger}
                 />
+            </div>
+
+            <div className="bg-surface p-8 rounded-lg border border-border mt-8">
+                <SellFormDetails control={control} errors={errors} register={register} watch={watch} />
             </div>
             <div className="flex w-full justify-end items-center gap-4 mt-4">
                 <div className="font-semibold text-lg">Total: {formatPrice(totalVenta)}</div>

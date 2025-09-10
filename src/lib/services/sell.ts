@@ -25,7 +25,9 @@ export const getAllSells = async ({
     if (Object.keys(dateFilter).length > 0) where.date = dateFilter;
 
     if (paymentMethod) {
-        where.paymentMethod = paymentMethod;
+        where.payments = {
+            some: { method: paymentMethod },
+        };
     }
 
     const orderByMap: Record<string, Prisma.SellOrderByWithRelationInput> = {
@@ -42,7 +44,16 @@ export const getAllSells = async ({
     const [sells, total] = await Promise.all([
         prisma.sell.findMany({
             where,
-            include: { items: true },
+            include: {
+                items: true,
+                payments: {
+                    select: {
+                        receiver: true,
+                        method: true,
+                        id: true,
+                    },
+                },
+            },
             orderBy,
             skip: (page - 1) * perPage,
             take: perPage,
@@ -78,7 +89,7 @@ export async function deleteSellAndRestoreStock(id: number) {
 }
 
 export async function createSellAndSellItems(data: SellFormType) {
-    const { items, ...restData } = data;
+    const { items, payments, ...restData } = data;
     const formData = {
         ...restData,
         date: new Date(restData.date).toISOString(),
@@ -108,6 +119,15 @@ export async function createSellAndSellItems(data: SellFormType) {
                 })
             )
         );
+
+        await tx.payment.createMany({
+            data: payments.map((p) => ({
+                sellId: newSell.id,
+                method: p.method,
+                amount: Number(p.amount),
+                receiver: p.receiver ?? null,
+            })),
+        });
 
         return newSell;
     });

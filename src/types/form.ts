@@ -29,11 +29,16 @@ export type ProductSellFormType = ProductType & {
     isBox: boolean;
 };
 
+type PaymentFormType = {
+    method: PaymentMethod;
+    amount: number | '';
+    receiver?: Receiver;
+};
+
 export type SellFormType = {
     items: ProductSellFormType[];
     date: Date;
-    paymentMethod: PaymentMethod;
-    receiver?: Receiver | null;
+    payments: PaymentFormType[];
     totalPrice: number;
     note?: string | null;
 };

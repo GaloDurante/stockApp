@@ -141,8 +141,36 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                                 ) : (
                                     <td className="px-4 py-3 whitespace-nowrap">{formatQuantity(sell.items.length)}</td>
                                 )}
-                                <td className="px-4 py-3 whitespace-nowrap">{sell.paymentMethod}</td>
-                                <td className="px-4 py-3 whitespace-nowrap">{sell.receiver}</td>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                    <div className="flex gap-1">
+                                        {Array.from(new Set(sell.payments.map((p) => p.method))).map(
+                                            (method, index) => (
+                                                <span
+                                                    key={index}
+                                                    className={`${method === 'Cash' ? 'border-green-600 text-green-600' : 'border-accent text-accent'} border p-2 rounded-xl font-medium`}
+                                                >
+                                                    {method}
+                                                </span>
+                                            )
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                    <div className="flex gap-1">
+                                        {sell.payments.map((payment) => {
+                                            if (!payment.receiver) return;
+
+                                            return (
+                                                <span
+                                                    key={payment.id}
+                                                    className={`border border-orange-600 text-orange-600 p-2 rounded-xl font-medium`}
+                                                >
+                                                    {payment.receiver}
+                                                </span>
+                                            );
+                                        })}
+                                    </div>
+                                </td>
                             </tr>
                         ))
                     )}
