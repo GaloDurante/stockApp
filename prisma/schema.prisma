@@ -51,16 +51,16 @@ enum Category {
 }
 
 model Sell {
-  id            Int           @id @default(autoincrement())
-  date          DateTime
-  paymentMethod PaymentMethod
-  receiver      Receiver?
-  totalPrice    Int
-  note          String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id         Int        @id @default(autoincrement())
+  date       DateTime
+  note       String?
+  totalPrice Int
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
-  items         SellItem[]
+  items      SellItem[]
+  payments   Payment[]
+
   @@index([date])
 }
 
@@ -78,6 +78,17 @@ model SellItem {
   sell        Sell      @relation(fields: [sellId], references: [id], onDelete: Cascade)
   product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
   @@index([sellId])
+}
+
+model Payment {
+  id         Int           @id @default(autoincrement())
+  sellId     Int
+  method     PaymentMethod
+  amount     Int
+  receiver   Receiver?
+  createdAt  DateTime      @default(now())
+
+  sell       Sell          @relation(fields: [sellId], references: [id], onDelete: Cascade)
 }
 
 enum PaymentMethod {

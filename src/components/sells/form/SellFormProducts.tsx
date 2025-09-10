@@ -86,17 +86,21 @@ export default function SellFormProducts({
     return (
         <div className="bg-surface p-8 rounded-lg border border-border">
             <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium">
-                    Productos <span className="text-red-700">*</span>
-                </label>
-
-                <button
-                    type="button"
-                    onClick={openModal}
-                    className="font-semibold cursor-pointer bg-secondary hover:bg-muted text-main border border-border py-2 px-4 rounded-md transition-all w-fit"
-                >
-                    Buscar productos
-                </button>
+                <div className="flex flex-col gap-2 items-start md:flex-row md:items-center justify-between">
+                    <div>
+                        <h2>
+                            Productos <span className="text-red-700">*</span>
+                        </h2>
+                        <p className="text-sm text-muted mt-1">Agregue los productos para esta venta</p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={openModal}
+                        className="font-semibold cursor-pointer bg-accent hover:bg-accent-hover border border-border py-2 px-4 rounded-lg transition-all w-fit"
+                    >
+                        Buscar productos
+                    </button>
+                </div>
 
                 {items.length > 0 && (
                     <div className="mt-4 border border-border rounded-lg bg-main overflow-auto max-h-[18rem] custom-scrollbar">
