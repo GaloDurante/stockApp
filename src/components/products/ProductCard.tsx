@@ -29,7 +29,11 @@ export default function ProductCard({
                     <span>{formatCategory(product.category)}</span>
                 </div>
 
-                <span className="text-sm font-semibold">{formatPrice(product.purchasePrice)}</span>
+                <div>
+                    <span className="text-sm font-semibold">{formatPrice(product.purchasePrice)}</span>
+                    <span> | </span>
+                    <span className="text-sm font-semibold">{formatPrice(product.purchasePrice * product.stock)}</span>
+                </div>
             </div>
             <div className="flex items-center gap-2">
                 <TableActionsButtons

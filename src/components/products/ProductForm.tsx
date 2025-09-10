@@ -61,9 +61,9 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
             }
         } else {
             try {
-                await createProductAction(data);
+                const newProduct = await createProductAction(data);
                 showSuccessToast('Producto creado con éxito');
-                router.push('/admin/products');
+                router.push(`/admin/products/${newProduct.id}`);
             } catch {
                 showErrorToast('No se pudo crear el producto');
             }
@@ -115,27 +115,6 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                 </div>
 
                 <div className="flex flex-col gap-0 justify-between md:flex-row md:gap-4">
-                    {!isEdit && (
-                        <div className="flex flex-col gap-1 mb-4 w-full">
-                            <label>
-                                Stock <span className="text-red-700">*</span>
-                            </label>
-                            <input
-                                type="number"
-                                {...register('stock', {
-                                    required: 'El stock es obligatorio',
-                                    valueAsNumber: true,
-                                    min: {
-                                        value: 0,
-                                        message: 'El stock no puede ser menor a 0',
-                                    },
-                                })}
-                                className={`p-2 border rounded-md no-spinner ${errors.stock ? 'border-red-700' : 'border-border'}`}
-                            />
-                            {errors.stock && <p className="text-red-700 text-sm">{errors.stock.message}</p>}
-                        </div>
-                    )}
-
                     <div className="flex flex-col gap-1 mb-4 w-full">
                         <label>
                             Unidades por caja <span className="text-red-700">*</span>
