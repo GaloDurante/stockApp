@@ -155,6 +155,7 @@ export default function SellFormDetails({ control, errors, register, watch, trig
                                         {...register(`payments.${index}.amount`, {
                                             required: 'Debe ingresar el monto',
                                             min: { value: 1, message: 'El monto debe ser mayor a 0' },
+                                            valueAsNumber: true,
                                         })}
                                         className={`pl-6 border border-border rounded-lg py-2.5 px-3 w-full no-spinner ${
                                             errors.payments?.[index]?.amount ? 'border-red-700' : 'border-border'

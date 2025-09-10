@@ -83,16 +83,14 @@ export default function SellForm({
     }, [items, clearErrors]);
 
     const onSubmit = async (data: SellFormType) => {
-        console.log(data);
-
-        // try {
-        //     await createSellAction(data);
-        //     showSuccessToast('Venta creada con éxito');
-        //     router.push('/admin/sells');
-        // } catch (error: unknown) {
-        //     const errorMessage = error instanceof Error ? error.message : 'No se pudo crear la venta';
-        //     showErrorToast(errorMessage);
-        // }
+        try {
+            await createSellAction(data);
+            showSuccessToast('Venta creada con éxito');
+            router.push('/admin/sells');
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'No se pudo crear la venta';
+            showErrorToast(errorMessage);
+        }
     };
 
     return (

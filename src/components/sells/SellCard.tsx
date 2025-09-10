@@ -26,8 +26,30 @@ export default function SellCard({ sell, className, handleDelete, deleteModalId,
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                    <span className="px-2 py-1 bg-accent text-sm rounded-lg">{sell.paymentMethod}</span>
-                    {sell.receiver && <span className="px-2 py-1 text-sm bg-accent rounded-lg">{sell.receiver}</span>}
+                    <div className="flex gap-1">
+                        {Array.from(new Set(sell.payments.map((p) => p.method))).map((method, index) => (
+                            <span
+                                key={index}
+                                className={`${method === 'Cash' ? 'border-green-600 text-green-600' : 'border-accent text-accent'} text-xs border p-2 rounded-xl font-medium`}
+                            >
+                                {method}
+                            </span>
+                        ))}
+                    </div>
+                    <div className="flex gap-1">
+                        {sell.payments.map((payment) => {
+                            if (!payment.receiver) return;
+
+                            return (
+                                <span
+                                    key={payment.id}
+                                    className={`text-xs border border-orange-600 text-orange-600 p-2 rounded-xl font-medium`}
+                                >
+                                    {payment.receiver}
+                                </span>
+                            );
+                        })}
+                    </div>
                 </div>
 
                 <span className="text-sm font-semibold">{formatPrice(sell.totalPrice)}</span>

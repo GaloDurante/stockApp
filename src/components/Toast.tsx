@@ -2,7 +2,7 @@ import { toast, ToastOptions } from 'react-hot-toast';
 
 export const showErrorToast = (message: string, options?: ToastOptions) => {
     toast.error(message, {
-        position: 'top-right',
+        position: 'bottom-right',
         duration: 3000,
         style: {
             background: '#B91C1C',
@@ -29,7 +29,7 @@ export const showErrorToast = (message: string, options?: ToastOptions) => {
 
 export const showSuccessToast = (message: string, options?: ToastOptions) => {
     toast.success(message, {
-        position: 'top-right',
+        position: 'bottom-right',
         duration: 3000,
         style: {
             background: '#15803D',

@@ -43,10 +43,10 @@ export async function getTotalProductsMoney(category?: string) {
 }
 
 export async function getTotalReceivedByReceiver() {
-    const result = await prisma.sell.groupBy({
+    const result = await prisma.payment.groupBy({
         by: ['receiver'],
         _sum: {
-            totalPrice: true,
+            amount: true,
         },
         where: {
             receiver: {
@@ -57,7 +57,7 @@ export async function getTotalReceivedByReceiver() {
 
     return result.map((r) => ({
         receiver: r.receiver as Receiver,
-        total: Number(r._sum.totalPrice ?? 0),
+        total: Number(r._sum.amount ?? 0),
     }));
 }
 
