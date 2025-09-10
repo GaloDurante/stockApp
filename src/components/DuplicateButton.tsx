@@ -9,6 +9,7 @@ import { ProductType } from '@/types/product';
 import { showSuccessToast, showErrorToast } from '@/components/Toast';
 import Modal from '@/components/Modal';
 import ConfirmModal from '@/components/ConfirmModal';
+import ReStockButton from '@/components/ReStockButton';
 
 interface DuplicateButtonType {
     baseProduct: ProductType;
@@ -55,13 +56,18 @@ export default function DuplicateButton({ baseProduct }: DuplicateButtonType) {
 
     return (
         <>
+            <ReStockButton
+                productId={baseProduct.id}
+                productPurchasePrice={baseProduct.purchasePrice}
+                productStock={baseProduct.stock}
+            />
             <button
                 onClick={() => {
                     setIsDelete(false);
                     setIsModalOpen(true);
                 }}
                 type="button"
-                className="cursor-pointer border border-border p-2 rounded-md mb-4 bg-surface hover:bg-border-dark transition-all"
+                className="ml-4 cursor-pointer border border-border p-2 rounded-md mb-4 bg-surface hover:bg-border-dark transition-all"
             >
                 Duplicar
             </button>
