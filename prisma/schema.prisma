@@ -92,8 +92,8 @@ model Payment {
 }
 
 enum PaymentMethod {
-  Cash
-  Transfer
+  Efectivo
+  Transferencia
 }
 
 enum Receiver {

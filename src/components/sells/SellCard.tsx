@@ -1,9 +1,11 @@
 import { format } from '@formkit/tempo';
 
 import { SellType } from '@/types/sell';
-import { formatPrice, formatQuantity } from '@/lib/helpers/components/utils';
+import { formatPrice } from '@/lib/helpers/components/utils';
 
 import TableActionsButtons from '@/components/products/TableActionsButtons';
+import SellMoreDetails from '@/components/sells/SellMoreDetails';
+import ItemsMenu from '@/components/sells/ItemsMenu';
 
 interface SellCardType {
     sell: SellType;
@@ -22,7 +24,9 @@ export default function SellCard({ sell, className, handleDelete, deleteModalId,
                 <div className="flex gap-3 text-sm text-muted">
                     {format({ date: sell.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
                     <span>•</span>
-                    <span>{formatQuantity(sell.items.length)}</span>
+                    <div className="text-secondary">
+                        <ItemsMenu items={sell.items} />
+                    </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
@@ -30,29 +34,16 @@ export default function SellCard({ sell, className, handleDelete, deleteModalId,
                         {Array.from(new Set(sell.payments.map((p) => p.method))).map((method, index) => (
                             <span
                                 key={index}
-                                className={`${method === 'Cash' ? 'border-green-600 text-green-600' : 'border-accent text-accent'} text-xs border p-2 rounded-xl font-medium`}
+                                className={`${method === 'Efectivo' ? 'border-green-600 text-green-600' : 'border-accent text-accent'} text-xs border p-2 rounded-xl font-medium`}
                             >
                                 {method}
                             </span>
                         ))}
                     </div>
-                    <div className="flex gap-1">
-                        {sell.payments.map((payment) => {
-                            if (!payment.receiver) return;
-
-                            return (
-                                <span
-                                    key={payment.id}
-                                    className={`text-xs border border-orange-600 text-orange-600 p-2 rounded-xl font-medium`}
-                                >
-                                    {payment.receiver}
-                                </span>
-                            );
-                        })}
-                    </div>
                 </div>
 
-                <span className="text-sm font-semibold">{formatPrice(sell.totalPrice)}</span>
+                <SellMoreDetails sell={sell} />
+                <span className="font-semibold">{formatPrice(sell.totalPrice)}</span>
             </div>
             <div className="flex items-center gap-2">
                 <TableActionsButtons

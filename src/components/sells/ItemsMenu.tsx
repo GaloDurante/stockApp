@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { SellItemType } from '@/types/sellItem';
 import { formatQuantity, formatPrice } from '@/lib/helpers/components/utils';
 
-import { ChevronDown, X } from 'lucide-react';
+import { ChevronDown, ShoppingCartIcon, X } from 'lucide-react';
 import Link from 'next/link';
 import Modal from '@/components/Modal';
 
@@ -19,12 +19,21 @@ export default function ItemsMenu({ items }: ItemsMenuProps) {
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="rounded-md flex items-end p-2 cursor-pointer hover:bg-accent transition-all group relative"
+                className="hidden rounded-md md:flex items-end p-2 cursor-pointer hover:bg-accent transition-all group relative"
             >
                 {formatQuantity(items.length)}
                 <span className="opacity-0 group-hover:opacity-100">
                     <ChevronDown height={18} />
                 </span>
+            </button>
+
+            <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className="md:hidden flex gap-1 text-sm font-semibold cursor-pointer"
+            >
+                <ShoppingCartIcon className="w-4 h-4" />
+                {formatQuantity(items.length)}
             </button>
 
             {isOpen && (

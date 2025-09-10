@@ -12,6 +12,7 @@ import { showErrorToast, showSuccessToast } from '@/components/Toast';
 import SellCard from '@/components/sells/SellCard';
 import TableActionsButtons from '@/components/products/TableActionsButtons';
 import ItemsMenu from '@/components/sells/ItemsMenu';
+import SellMoreDetails from '@/components/sells/SellMoreDetails';
 
 interface SellsTableProps {
     initialSells: SellType[];
@@ -101,7 +102,7 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                         <th className="p-4">Precio Total</th>
                         <th className="p-4">Items</th>
                         <th className="p-4">Método Pago</th>
-                        <th className="p-4">Receptor</th>
+                        <th className="p-4">Detalles</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -147,7 +148,7 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                                             (method, index) => (
                                                 <span
                                                     key={index}
-                                                    className={`${method === 'Cash' ? 'border-green-600 text-green-600' : 'border-accent text-accent'} border p-2 rounded-xl font-medium`}
+                                                    className={`${method === 'Efectivo' ? 'border-green-600 text-green-600' : 'border-accent text-accent'} border p-2 rounded-xl font-medium`}
                                                 >
                                                     {method}
                                                 </span>
@@ -156,20 +157,7 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                                     </div>
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">
-                                    <div className="flex gap-1">
-                                        {sell.payments.map((payment) => {
-                                            if (!payment.receiver) return;
-
-                                            return (
-                                                <span
-                                                    key={payment.id}
-                                                    className={`border border-orange-600 text-orange-600 p-2 rounded-xl font-medium`}
-                                                >
-                                                    {payment.receiver}
-                                                </span>
-                                            );
-                                        })}
-                                    </div>
+                                    <SellMoreDetails sell={sell} />
                                 </td>
                             </tr>
                         ))
