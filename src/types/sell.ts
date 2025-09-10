@@ -8,6 +8,7 @@ export type SellType = Prisma.SellGetPayload<{
                 receiver: true;
                 method: true;
                 id: true;
+                amount: true;
             };
         };
     };

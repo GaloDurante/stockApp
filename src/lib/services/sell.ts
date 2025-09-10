@@ -12,7 +12,7 @@ export const getAllSells = async ({
 }: {
     startDate?: string;
     endDate?: string;
-    paymentMethod?: 'Cash' | 'Transfer';
+    paymentMethod?: 'Efectivo' | 'Transferencia';
     sortOrder?: 'id_asc' | 'id_desc' | 'date_asc' | 'date_desc' | 'price_asc' | 'price_desc';
     page?: number;
     perPage?: number;
@@ -51,6 +51,7 @@ export const getAllSells = async ({
                         receiver: true,
                         method: true,
                         id: true,
+                        amount: true,
                     },
                 },
             },

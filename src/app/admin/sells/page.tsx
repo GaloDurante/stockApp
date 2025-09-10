@@ -22,7 +22,7 @@ export default async function SellsPage({ searchParams }: SellsPageType) {
     const { sells: initialSells, total } = await getAllSells({
         startDate: startDate ? dayStart(startDate).toISOString() : undefined,
         endDate: endDate ? dayEnd(endDate).toISOString() : undefined,
-        paymentMethod: paymentMethod === '' ? undefined : (paymentMethod as 'Cash' | 'Transfer' | undefined),
+        paymentMethod: paymentMethod === '' ? undefined : (paymentMethod as 'Efectivo' | 'Transferencia' | undefined),
         sortOrder,
         page: pageNumber,
         perPage: perPage,

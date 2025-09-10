@@ -9,6 +9,8 @@
     --color-muted: #a3a3a3;
     --color-accent: #3b82f6;
     --color-accent-hover: #2563eb;
+    --color-terciary: #ff8805;
+    --color-terciary-hover: #e67604;
 }
 
 @layer utilities {

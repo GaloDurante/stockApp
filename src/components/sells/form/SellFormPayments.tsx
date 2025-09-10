@@ -15,7 +15,7 @@ import { Receiver, PaymentMethod } from '@/generated/prisma';
 
 import { formatPrice } from '@/lib/helpers/components/utils';
 
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 
 interface SellFormDetailsProps {
@@ -80,7 +80,7 @@ export default function SellFormDetails({ control, errors, register, watch, trig
                 <button
                     type="button"
                     onClick={() => {
-                        append({ method: PaymentMethod.Cash, amount: '' });
+                        append({ method: PaymentMethod.Efectivo, amount: '' });
                     }}
                     className="font-medium flex items-center gap-1 bg-accent hover:bg-accent-hover py-2 px-4 rounded-lg transition-colors cursor-pointer"
                 >
@@ -110,7 +110,7 @@ export default function SellFormDetails({ control, errors, register, watch, trig
                                 className="cursor-pointer text-red-700 p-2 rounded-full hover:bg-border transition-colors"
                                 title="Eliminar pago"
                             >
-                                <Trash2 size={18} />
+                                <Trash size={18} />
                             </button>
                         </div>
 
@@ -170,7 +170,7 @@ export default function SellFormDetails({ control, errors, register, watch, trig
                             </div>
                         </div>
 
-                        {selectedMethod === PaymentMethod.Transfer && (
+                        {selectedMethod === PaymentMethod.Transferencia && (
                             <div className="mt-4">
                                 <label className="block text-sm mb-1">Receptor</label>
                                 <Controller
