@@ -109,6 +109,7 @@ model Purchase {
   updatedAt  DateTime       @updatedAt
 
   items      PurchaseItem[]
+  @@index([date])
 }
 
 model PurchaseItem {
