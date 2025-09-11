@@ -6,9 +6,15 @@ import { ChartsData } from '@/types/report';
 
 interface ProfitByMonthChartProps {
     data: ChartsData[];
+    productsSectionSubtitle: string;
+    productsSectionLabel: string;
 }
 
-export default function ProfitByMonthChart({ data }: ProfitByMonthChartProps) {
+export default function ProfitByMonthChart({
+    data,
+    productsSectionSubtitle,
+    productsSectionLabel,
+}: ProfitByMonthChartProps) {
     const [selectedMonth, setSelectedMonth] = useState<string | undefined>(undefined);
 
     const topProducts = useMemo(() => {
@@ -31,7 +37,7 @@ export default function ProfitByMonthChart({ data }: ProfitByMonthChartProps) {
             <>
                 <div className="text-center mb-6">
                     <h3 className="text-xl font-semibold mb-1">Productos Destacados de {selectedMonth}</h3>
-                    <p className="text-sm text-muted">Los artículos con mayor volumen de ventas</p>
+                    <p className="text-sm text-muted">{productsSectionSubtitle}</p>
                 </div>
 
                 <div className="space-y-3">
@@ -59,7 +65,7 @@ export default function ProfitByMonthChart({ data }: ProfitByMonthChartProps) {
 
                             <div className="flex flex-col items-end">
                                 <span className="font-bold text-lg">{p.quantity}</span>
-                                <span className="text-xs text-muted mt-1 hidden md:block">unidades vendidas</span>
+                                <span className="text-xs text-muted mt-1 hidden md:block">{productsSectionLabel}</span>
                             </div>
                         </div>
                     ))}
