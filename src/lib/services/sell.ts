@@ -7,6 +7,7 @@ export const getAllSells = async ({
     endDate,
     paymentMethod,
     sortOrder,
+    status,
     page = 1,
     perPage = 20,
 }: {
@@ -14,6 +15,7 @@ export const getAllSells = async ({
     endDate?: string;
     paymentMethod?: 'Efectivo' | 'Transferencia';
     sortOrder?: 'id_asc' | 'id_desc' | 'date_asc' | 'date_desc' | 'price_asc' | 'price_desc';
+    status?: 'Pendiente' | 'Completada';
     page?: number;
     perPage?: number;
 }) => {
@@ -29,6 +31,8 @@ export const getAllSells = async ({
             some: { method: paymentMethod },
         };
     }
+
+    where.status = status ?? 'Completada';
 
     const orderByMap: Record<string, Prisma.SellOrderByWithRelationInput> = {
         id_asc: { id: 'asc' },

@@ -56,6 +56,7 @@ model Sell {
   date       DateTime
   note       String?
   totalPrice Int
+  status     SellStatus @default(Pendiente)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 
@@ -100,6 +101,11 @@ enum PaymentMethod {
 enum Receiver {
   Walter
   Yanina
+}
+
+enum SellStatus {
+  Pendiente
+  Completada
 }
 
 model Purchase {
