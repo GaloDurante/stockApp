@@ -1,6 +1,7 @@
 'use server';
-import { getAllSells, createSellAndSellItems, deleteSellAndRestoreStock } from '@/lib/services/sell';
+import { getAllSells, createSellAndSellItems, deleteSellAndRestoreStock, updateSell } from '@/lib/services/sell';
 import { SellFormType } from '@/types/form';
+import { SellStatus } from '@/generated/prisma';
 
 export async function loadMoreSellsAction({
     sortOrder,
@@ -51,5 +52,17 @@ export async function createSellAction(data: SellFormType) {
         return await createSellAndSellItems(data);
     } catch {
         throw new Error('No se pudo crear la venta');
+    }
+}
+
+export async function updateSellAction(id: number, data: SellFormType, status: SellStatus) {
+    if (!data.payments || data.payments.length === 0) {
+        throw new Error('Debe agregar al menos un pago');
+    }
+
+    try {
+        return await updateSell(id, data, status);
+    } catch {
+        throw new Error('No se pudo actualizar la venta');
     }
 }

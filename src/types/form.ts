@@ -29,10 +29,10 @@ export type ProductSellFormType = ProductType & {
     isBox: boolean;
 };
 
-type PaymentFormType = {
+export type PaymentFormType = {
     method: PaymentMethod;
     amount: number | '';
-    receiver?: Receiver;
+    receiver?: Receiver | null;
 };
 
 export type SellFormType = {

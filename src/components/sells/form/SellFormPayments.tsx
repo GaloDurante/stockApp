@@ -1,32 +1,53 @@
+'use client';
 import { useMemo } from 'react';
-import {
-    UseFormRegister,
-    FieldErrors,
-    Control,
-    Controller,
-    useFieldArray,
-    useWatch,
-    UseFormWatch,
-    UseFormTrigger,
-} from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 
-import { SellFormType } from '@/types/form';
-import { Receiver, PaymentMethod } from '@/generated/prisma';
+import { SellFormType, PaymentFormType } from '@/types/form';
+import { Receiver, PaymentMethod, SellStatus } from '@/generated/prisma';
 
-import { formatPrice } from '@/lib/helpers/components/utils';
+import { updateSellAction } from '@/lib/actions/sell';
 
 import { Plus, Trash } from 'lucide-react';
+import { showSuccessToast, showErrorToast } from '@/components/Toast';
 import CustomSelect from '@/components/CustomSelect';
+import SellFormDetails from '@/components/sells/form/SellFormDetails';
 
-interface SellFormDetailsProps {
-    register: UseFormRegister<SellFormType>;
-    errors: FieldErrors<SellFormType>;
-    control: Control<SellFormType>;
-    watch: UseFormWatch<SellFormType>;
-    trigger: UseFormTrigger<SellFormType>;
+interface SellFormPaymentsProps {
+    currentStatus: SellStatus;
+    sellId: number;
+    totalPrice: number;
+    previousPayments?: PaymentFormType[];
+    previousNote?: string | null;
+    previousDate?: Date;
 }
 
-export default function SellFormDetails({ control, errors, register, watch, trigger }: SellFormDetailsProps) {
+export default function SellFormPayments({
+    currentStatus,
+    sellId,
+    totalPrice,
+    previousPayments,
+    previousNote,
+    previousDate,
+}: SellFormPaymentsProps) {
+    const {
+        control,
+        register,
+        trigger,
+        watch,
+        handleSubmit,
+        formState: { errors, isDirty, isSubmitting },
+    } = useForm<SellFormType>({
+        defaultValues: {
+            payments: previousPayments ?? [],
+            totalPrice,
+            note: previousNote ?? null,
+            date: previousDate ?? undefined,
+        },
+    });
+
+    const router = useRouter();
+
     const receiverOptions = useMemo(
         () =>
             Object.entries(Receiver).map(([key, value]) => ({
@@ -56,157 +77,182 @@ export default function SellFormDetails({ control, errors, register, watch, trig
             if (!payments || payments.length === 0) {
                 return 'Debe agregar al menos un pago';
             }
-
-            const total = watch('totalPrice') || 0;
-            const sumPayments = payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
-
-            if (sumPayments !== total) {
-                return `La suma de pagos ${formatPrice(sumPayments)} no coincide con el total ${formatPrice(total)}`;
-            }
-
             return true;
         },
     });
 
+    const onSubmitPayment = async (data: SellFormType) => {
+        try {
+            let newStatus = currentStatus;
+            const total = totalPrice || 0;
+            const sumPayments = payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
+            newStatus = sumPayments === total ? 'Completada' : 'Pendiente';
+
+            await updateSellAction(sellId, data, newStatus);
+            showSuccessToast('Venta actualizada con éxito');
+            router.refresh();
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'No se pudo actualizar la venta';
+            showErrorToast(errorMessage);
+        }
+    };
+
     return (
-        <div>
-            <div className="flex flex-col gap-2 items-start md:flex-row md:items-center justify-between">
-                <div>
-                    <h2>
-                        Pagos <span className="text-red-700">*</span>
-                    </h2>
-                    <p className="text-sm text-muted mt-1">Agregue los métodos de pago para esta venta</p>
+        <form onSubmit={handleSubmit(onSubmitPayment)}>
+            <div className="bg-surface p-4 md:p-8 rounded-lg border border-border mt-8">
+                <div className="flex flex-col gap-2 items-start md:flex-row md:items-center justify-between">
+                    <div>
+                        <h2>
+                            Pagos <span className="text-red-700">*</span>
+                        </h2>
+                        <p className="text-sm text-muted mt-1">Agregue los métodos de pago para esta venta</p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            append({ method: PaymentMethod.Efectivo, amount: '' });
+                        }}
+                        className="font-medium flex items-center gap-1 bg-accent hover:bg-accent-hover py-2 px-4 rounded-lg transition-colors cursor-pointer"
+                    >
+                        <Plus size={18} />
+                        Agregar pago
+                    </button>
                 </div>
-                <button
-                    type="button"
-                    onClick={() => {
-                        append({ method: PaymentMethod.Efectivo, amount: '' });
-                    }}
-                    className="font-medium flex items-center gap-1 bg-accent hover:bg-accent-hover py-2 px-4 rounded-lg transition-colors cursor-pointer"
-                >
-                    <Plus size={18} />
-                    Agregar pago
-                </button>
+
+                {fields.map((field, index) => {
+                    const selectedMethod = payments?.[index]?.method;
+
+                    return (
+                        <div key={field.id} className="rounded-xl border border-border p-5 mt-4 bg-main">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 text-accent border border-accent rounded-full flex items-center justify-center font-medium">
+                                        {index + 1}
+                                    </div>
+                                    <h3 className="font-medium">Pago</h3>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        remove(index);
+                                        trigger('payments');
+                                    }}
+                                    className="cursor-pointer text-red-700 p-2 rounded-full hover:bg-border transition-colors"
+                                    title="Eliminar pago"
+                                >
+                                    <Trash size={18} />
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm mb-1">Método de pago</label>
+                                    <Controller
+                                        name={`payments.${index}.method`}
+                                        control={control}
+                                        rules={{ required: 'Seleccione un método' }}
+                                        render={({ field }) => {
+                                            const selectedValue = paymentMethodOptions.find(
+                                                (opt) => opt.value === field.value
+                                            );
+                                            return (
+                                                <CustomSelect
+                                                    instanceId={`paymentMethod-${index}`}
+                                                    value={selectedValue || null}
+                                                    options={paymentMethodOptions}
+                                                    onChange={(newValue) =>
+                                                        field.onChange((newValue as { value: string }).value)
+                                                    }
+                                                    isError={!!errors.payments?.[index]?.method}
+                                                    background="bg-main"
+                                                />
+                                            );
+                                        }}
+                                    />
+                                    {errors.payments?.[index]?.method && (
+                                        <p className="text-red-700 text-sm mt-1">
+                                            {errors.payments[index]?.method?.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm mb-1">Monto</label>
+                                    <div className="relative">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2">$</span>
+                                        <input
+                                            type="number"
+                                            {...register(`payments.${index}.amount`, {
+                                                required: 'Debe ingresar el monto',
+                                                min: { value: 1, message: 'El monto debe ser mayor a 0' },
+                                                valueAsNumber: true,
+                                            })}
+                                            className={`pl-6 border border-border rounded-lg py-2.5 px-3 w-full no-spinner ${
+                                                errors.payments?.[index]?.amount ? 'border-red-700' : 'border-border'
+                                            }`}
+                                        />
+                                    </div>
+                                    {errors.payments?.[index]?.amount && (
+                                        <p className="text-red-700 text-sm mt-1">
+                                            {errors.payments[index]?.amount?.message}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {selectedMethod === PaymentMethod.Transferencia && (
+                                <div className="mt-4">
+                                    <label className="block text-sm mb-1">Receptor</label>
+                                    <Controller
+                                        name={`payments.${index}.receiver`}
+                                        control={control}
+                                        rules={{ required: 'Debe seleccionar un receptor' }}
+                                        render={({ field }) => {
+                                            const selectedValue = receiverOptions.find(
+                                                (opt) => opt.value === field.value
+                                            );
+                                            return (
+                                                <CustomSelect
+                                                    instanceId={`receiver-${index}`}
+                                                    value={selectedValue || null}
+                                                    options={receiverOptions}
+                                                    onChange={(newValue) =>
+                                                        field.onChange((newValue as { value: string }).value)
+                                                    }
+                                                    placeholder="Selecciona un receptor"
+                                                    isError={!!errors.payments?.[index]?.receiver}
+                                                    background="bg-main"
+                                                />
+                                            );
+                                        }}
+                                    />
+                                    {errors.payments?.[index]?.receiver && (
+                                        <p className="text-red-700 text-sm mt-1">
+                                            {errors.payments[index]?.receiver?.message}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+                {errors.payments?.root?.message && (
+                    <p className="text-red-700 text-sm mt-1">{errors.payments.root.message}</p>
+                )}
             </div>
 
-            {fields.map((field, index) => {
-                const selectedMethod = payments?.[index]?.method;
-
-                return (
-                    <div key={field.id} className="rounded-xl border border-border p-5 mt-4 bg-main">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 text-accent border border-accent rounded-full flex items-center justify-center font-medium">
-                                    {index + 1}
-                                </div>
-                                <h3 className="font-medium">Pago</h3>
-                            </div>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    remove(index);
-                                    trigger('payments');
-                                }}
-                                className="cursor-pointer text-red-700 p-2 rounded-full hover:bg-border transition-colors"
-                                title="Eliminar pago"
-                            >
-                                <Trash size={18} />
-                            </button>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm mb-1">Método de pago</label>
-                                <Controller
-                                    name={`payments.${index}.method`}
-                                    control={control}
-                                    rules={{ required: 'Seleccione un método' }}
-                                    render={({ field }) => {
-                                        const selectedValue = paymentMethodOptions.find(
-                                            (opt) => opt.value === field.value
-                                        );
-                                        return (
-                                            <CustomSelect
-                                                instanceId={`paymentMethod-${index}`}
-                                                value={selectedValue || null}
-                                                options={paymentMethodOptions}
-                                                onChange={(newValue) =>
-                                                    field.onChange((newValue as { value: string }).value)
-                                                }
-                                                isError={!!errors.payments?.[index]?.method}
-                                                background="bg-main"
-                                            />
-                                        );
-                                    }}
-                                />
-                                {errors.payments?.[index]?.method && (
-                                    <p className="text-red-700 text-sm mt-1">
-                                        {errors.payments[index]?.method?.message}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div>
-                                <label className="block text-sm mb-1">Monto</label>
-                                <div className="relative">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2">$</span>
-                                    <input
-                                        type="number"
-                                        {...register(`payments.${index}.amount`, {
-                                            required: 'Debe ingresar el monto',
-                                            min: { value: 1, message: 'El monto debe ser mayor a 0' },
-                                            valueAsNumber: true,
-                                        })}
-                                        className={`pl-6 border border-border rounded-lg py-2.5 px-3 w-full no-spinner ${
-                                            errors.payments?.[index]?.amount ? 'border-red-700' : 'border-border'
-                                        }`}
-                                    />
-                                </div>
-                                {errors.payments?.[index]?.amount && (
-                                    <p className="text-red-700 text-sm mt-1">
-                                        {errors.payments[index]?.amount?.message}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-
-                        {selectedMethod === PaymentMethod.Transferencia && (
-                            <div className="mt-4">
-                                <label className="block text-sm mb-1">Receptor</label>
-                                <Controller
-                                    name={`payments.${index}.receiver`}
-                                    control={control}
-                                    rules={{ required: 'Debe seleccionar un receptor' }}
-                                    render={({ field }) => {
-                                        const selectedValue = receiverOptions.find((opt) => opt.value === field.value);
-                                        return (
-                                            <CustomSelect
-                                                instanceId={`receiver-${index}`}
-                                                value={selectedValue || null}
-                                                options={receiverOptions}
-                                                onChange={(newValue) =>
-                                                    field.onChange((newValue as { value: string }).value)
-                                                }
-                                                placeholder="Selecciona un receptor"
-                                                isError={!!errors.payments?.[index]?.receiver}
-                                                background="bg-main"
-                                            />
-                                        );
-                                    }}
-                                />
-                                {errors.payments?.[index]?.receiver && (
-                                    <p className="text-red-700 text-sm mt-1">
-                                        {errors.payments[index]?.receiver?.message}
-                                    </p>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                );
-            })}
-            {errors.payments?.root?.message && (
-                <p className="text-red-700 text-sm mt-1">{errors.payments.root.message}</p>
-            )}
-        </div>
+            <div className="bg-surface p-4 md:p-8 rounded-lg border border-border mt-8">
+                <SellFormDetails control={control} errors={errors} register={register} watch={watch} />
+            </div>
+            <div className="flex w-full justify-end mt-4">
+                <button
+                    type="submit"
+                    disabled={isSubmitting || !isDirty}
+                    className={`font-semibold ${isSubmitting || !isDirty ? 'cursor-not-allowed bg-muted' : 'cursor-pointer bg-secondary hover:bg-muted'} text-main border border-border py-2 px-4 rounded-md transition-all`}
+                >
+                    Guardar
+                </button>
+            </div>
+        </form>
     );
 }
