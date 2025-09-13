@@ -12,6 +12,7 @@ import { Plus, Trash } from 'lucide-react';
 import { showSuccessToast, showErrorToast } from '@/components/Toast';
 import CustomSelect from '@/components/CustomSelect';
 import SellFormDetails from '@/components/sells/form/SellFormDetails';
+import DeleteSellButton from '@/components/sells/DeleteSellButton';
 
 interface SellFormPaymentsProps {
     currentStatus: SellStatus;
@@ -244,7 +245,8 @@ export default function SellFormPayments({
             <div className="bg-surface p-4 md:p-8 rounded-lg border border-border mt-8">
                 <SellFormDetails control={control} errors={errors} register={register} watch={watch} />
             </div>
-            <div className="flex w-full justify-end mt-4">
+            <div className="flex w-full justify-end items-center gap-4 mt-4">
+                <DeleteSellButton sellId={sellId} />
                 <button
                     type="submit"
                     disabled={isSubmitting || !isDirty}
