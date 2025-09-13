@@ -13,6 +13,7 @@ import SellCard from '@/components/sells/SellCard';
 import TableActionsButtons from '@/components/products/TableActionsButtons';
 import ItemsMenu from '@/components/sells/ItemsMenu';
 import SellMoreDetails from '@/components/sells/SellMoreDetails';
+import Link from 'next/link';
 
 interface SellsTableProps {
     initialSells: SellType[];
@@ -130,7 +131,11 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                                         />
                                     </div>
                                 </td>
-                                <td className="px-4 py-3 whitespace-nowrap">#{sell.id}</td>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                    <Link className="hover:border-b transition-all" href={`/admin/sells/${sell.id}`}>
+                                        #{sell.id}
+                                    </Link>
+                                </td>
                                 <td className="px-4 py-3 whitespace-nowrap">
                                     {format({ date: sell.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
                                 </td>

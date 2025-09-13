@@ -10,11 +10,12 @@ interface SellsPageType {
         endDate?: string;
         paymentMethod?: string;
         sortOrder?: 'id_asc' | 'id_desc' | 'date_asc' | 'date_desc' | 'price_asc' | 'price_desc';
+        status?: 'Pendiente' | 'Completada';
     }>;
 }
 
 export default async function SellsPage({ searchParams }: SellsPageType) {
-    const { startDate, endDate, paymentMethod, sortOrder = 'date_desc' } = await searchParams;
+    const { startDate, endDate, paymentMethod, sortOrder = 'date_desc', status = 'Completada' } = await searchParams;
 
     const pageNumber = 1;
     const perPage = 20;
@@ -24,6 +25,7 @@ export default async function SellsPage({ searchParams }: SellsPageType) {
         endDate: endDate ? dayEnd(endDate).toISOString() : undefined,
         paymentMethod: paymentMethod === '' ? undefined : (paymentMethod as 'Efectivo' | 'Transferencia' | undefined),
         sortOrder,
+        status,
         page: pageNumber,
         perPage: perPage,
     });
@@ -48,6 +50,8 @@ export default async function SellsPage({ searchParams }: SellsPageType) {
                         withDateRange
                         startDate={startDate}
                         endDate={endDate}
+                        withStatus
+                        selectedStatus={status}
                     />
                 </div>
                 <Link

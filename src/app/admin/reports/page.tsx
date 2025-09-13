@@ -35,7 +35,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
                     selectedCategory={filterByCategory}
                     showAllCategory
                     withOrder
-                    orderOptions={['order-1', '', 'order-3 md:order-2']}
+                    orderOptions={['order-1', '', 'order-3 md:order-2', '']}
                 />
 
                 <StatsButtons totalMoney={totalProductsMoney} profitTotal={profitTotal} />

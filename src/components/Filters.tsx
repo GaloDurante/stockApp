@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 
 import { format } from '@formkit/tempo';
 
-import { Category } from '@/generated/prisma';
+import { Category, SellStatus } from '@/generated/prisma';
 import { OptionType } from '@/types/form';
 
 import { getSelectedOption, buildQueryParams } from '@/lib/helpers/utils';
@@ -28,7 +28,9 @@ interface FiltersProps {
     startDate?: string;
     endDate?: string;
     withOrder?: boolean;
-    orderOptions?: [string, string, string];
+    orderOptions?: [string, string, string, string];
+    withStatus?: boolean;
+    selectedStatus?: string;
 }
 
 export default function Filters({
@@ -46,6 +48,8 @@ export default function Filters({
     endDate,
     withOrder = false,
     orderOptions,
+    withStatus = false,
+    selectedStatus: selectedStatusProp,
 }: FiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -72,8 +76,21 @@ export default function Filters({
         return baseSortOptions;
     }, [withSort, baseSortOptions]);
 
+    const statusOptions = useMemo(() => {
+        if (!withStatus) return [];
+
+        const options = Object.entries(SellStatus).map(([key, value]) => ({
+            value: key,
+            label: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase().replace('_', ' '),
+        }));
+
+        return options;
+    }, [withStatus]);
+
     const [search, setSearch] = useState(searchProp ?? '');
     const [selectedCategory, setSelectedCategory] = useState(selectedCategoryProp ?? '');
+    const [selectedStatus, setSelectedStatus] = useState(selectedStatusProp ?? '');
+
     const [sortOrder, setSortOrder] = useState<string | undefined>(withSort ? (sortOrderProp ?? 'asc') : undefined);
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
         startDate ? new Date(startDate) : null,
@@ -90,6 +107,11 @@ export default function Filters({
         return getSelectedOption(sortOrderOptions, sortOrder ?? null);
     }, [withSort, sortOrder, sortOrderOptions]);
 
+    const selectedStatusOption = useMemo(() => {
+        if (!withStatus || !statusOptions) return null;
+        return getSelectedOption(statusOptions, selectedStatus ?? null);
+    }, [withStatus, selectedStatus, statusOptions]);
+
     useEffect(() => {
         const timeout = setTimeout(() => {
             const queryParams = {
@@ -98,6 +120,7 @@ export default function Filters({
                 ...(withSort && sortOrder ? { sortOrder } : {}),
                 ...(withDateRange && dateRange[0] ? { startDate: format(dateRange[0], 'YYYY-MM-DD', 'en') } : {}),
                 ...(withDateRange && dateRange[1] ? { endDate: format(dateRange[1], 'YYYY-MM-DD', 'en') } : {}),
+                ...(withStatus ? { status: selectedStatus } : {}),
             };
 
             const queryString = buildQueryParams(queryParams);
@@ -117,6 +140,8 @@ export default function Filters({
         withSort,
         withDateRange,
         dateRange,
+        withStatus,
+        selectedStatus,
     ]);
 
     return (
@@ -157,6 +182,19 @@ export default function Filters({
                         value={dateRange}
                         onChange={setDateRange}
                         customPlaceholder="Filtrar por fechas"
+                    />
+                </div>
+            )}
+
+            {withStatus && (
+                <div className={`w-full xl:min-w-56 ${withOrder && orderOptions ? orderOptions[3] : ''}`}>
+                    <CustomSelect
+                        value={selectedStatusOption}
+                        options={statusOptions}
+                        instanceId="status"
+                        onChange={(newValue) => {
+                            setSelectedStatus((newValue as OptionType | null)?.value ?? '');
+                        }}
                     />
                 </div>
             )}

@@ -1,4 +1,4 @@
-import { Prisma } from '@/generated/prisma';
+import { Prisma, SellStatus } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import { SellFormType } from '@/types/form';
 
@@ -7,6 +7,7 @@ export const getAllSells = async ({
     endDate,
     paymentMethod,
     sortOrder,
+    status,
     page = 1,
     perPage = 20,
 }: {
@@ -14,6 +15,7 @@ export const getAllSells = async ({
     endDate?: string;
     paymentMethod?: 'Efectivo' | 'Transferencia';
     sortOrder?: 'id_asc' | 'id_desc' | 'date_asc' | 'date_desc' | 'price_asc' | 'price_desc';
+    status?: 'Pendiente' | 'Completada';
     page?: number;
     perPage?: number;
 }) => {
@@ -29,6 +31,8 @@ export const getAllSells = async ({
             some: { method: paymentMethod },
         };
     }
+
+    where.status = status ?? 'Completada';
 
     const orderByMap: Record<string, Prisma.SellOrderByWithRelationInput> = {
         id_asc: { id: 'asc' },
@@ -63,6 +67,23 @@ export const getAllSells = async ({
     ]);
 
     return { sells, total };
+};
+
+export const getSellById = async (id: number) => {
+    return await prisma.sell.findUnique({
+        where: { id },
+        include: {
+            items: true,
+            payments: {
+                select: {
+                    receiver: true,
+                    method: true,
+                    id: true,
+                    amount: true,
+                },
+            },
+        },
+    });
 };
 
 export async function deleteSellAndRestoreStock(id: number) {
@@ -131,5 +152,32 @@ export async function createSellAndSellItems(data: SellFormType) {
         });
 
         return newSell;
+    });
+}
+
+export async function updateSell(id: number, data: SellFormType, status: SellStatus) {
+    return prisma.$transaction(async (tx) => {
+        const updatedSell = await tx.sell.update({
+            where: { id },
+            data: {
+                note: data.note,
+                status: status,
+            },
+        });
+
+        await tx.payment.deleteMany({
+            where: { sellId: id },
+        });
+
+        await tx.payment.createMany({
+            data: data.payments.map((p) => ({
+                sellId: id,
+                method: p.method,
+                amount: Number(p.amount),
+                receiver: p.receiver ?? null,
+            })),
+        });
+
+        return updatedSell;
     });
 }
