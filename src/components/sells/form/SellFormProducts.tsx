@@ -88,7 +88,7 @@ export default function SellFormProducts({
             <div className="flex flex-col gap-1">
                 <div className="flex flex-col gap-2 items-start md:flex-row md:items-center justify-between">
                     <div>
-                        <h2>
+                        <h2 className="font-semibold">
                             Productos <span className="text-red-700">*</span>
                         </h2>
                         <p className="text-sm text-muted mt-1">Agregue los productos para esta venta</p>

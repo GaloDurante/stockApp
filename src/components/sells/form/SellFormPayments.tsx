@@ -103,7 +103,7 @@ export default function SellFormPayments({
             <div className="bg-surface p-4 md:p-8 rounded-lg border border-border mt-8">
                 <div className="flex flex-col gap-2 items-start md:flex-row md:items-center justify-between">
                     <div>
-                        <h2>
+                        <h2 className="font-semibold">
                             Pagos <span className="text-red-700">*</span>
                         </h2>
                         <p className="text-sm text-muted mt-1">Agregue los métodos de pago para esta venta</p>

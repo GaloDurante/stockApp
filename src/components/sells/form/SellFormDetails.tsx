@@ -15,7 +15,7 @@ export default function SellFormDetails({ control, errors, register }: SellFormD
     return (
         <>
             <div className="flex flex-col gap-1 mb-4">
-                <label>
+                <label className="font-semibold">
                     Fecha <span className="text-red-700">*</span>
                 </label>
                 <Controller
@@ -36,7 +36,7 @@ export default function SellFormDetails({ control, errors, register }: SellFormD
             </div>
 
             <div className="flex flex-col gap-1 mb-4">
-                <label>Nota</label>
+                <label className="font-semibold">Nota</label>
                 <textarea
                     {...register('note', {
                         maxLength: { value: 1000, message: 'La nota no puede superar los 1000 caracteres' },

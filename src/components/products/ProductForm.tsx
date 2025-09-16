@@ -86,7 +86,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="bg-surface border border-border rounded-lg p-4 md:p-8">
                 <div className="flex flex-col gap-1 mb-4">
-                    <label>
+                    <label className="font-semibold">
                         Nombre <span className="text-red-700">*</span>
                     </label>
                     <input
@@ -98,7 +98,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                 </div>
 
                 <div className="flex flex-col gap-1 mb-4">
-                    <label>Descripción</label>
+                    <label className="font-semibold">Descripción</label>
                     <textarea
                         {...register('description', {
                             maxLength: {
@@ -116,7 +116,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
 
                 <div className="flex flex-col gap-0 justify-between md:flex-row md:gap-4">
                     <div className="flex flex-col gap-1 mb-4 w-full">
-                        <label>
+                        <label className="font-semibold">
                             Unidades por caja <span className="text-red-700">*</span>
                         </label>
                         <input
@@ -129,14 +129,14 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                                     message: 'Las unidades no pueden ser menor a 1',
                                 },
                             })}
-                            className={`p-2 border rounded-md no-spinner ${errors.unitsPerBox ? 'border-red-700' : 'border-border'}`}
+                            className={`p-2 border rounded-md ${errors.unitsPerBox ? 'border-red-700' : 'border-border'}`}
                         />
                         {errors.unitsPerBox && <p className="text-red-700 text-sm">{errors.unitsPerBox.message}</p>}
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-1 mb-4">
-                    <label>
+                    <label className="font-semibold">
                         Categoría <span className="text-red-700">*</span>
                     </label>
                     <Controller
@@ -166,7 +166,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
 
             <div className="bg-surface border border-border rounded-lg p-4 md:p-8 mt-4">
                 <div className="flex flex-col gap-1 mb-4 w-full">
-                    <label>
+                    <label className="font-semibold">
                         Precio unitario <span className="text-red-700">*</span>
                     </label>
                     <div className="relative">
@@ -188,7 +188,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                 </div>
 
                 <div className="flex flex-col gap-1 mb-4 w-full">
-                    <label>
+                    <label className="font-semibold">
                         Precio de venta <span className="text-red-700">*</span>
                     </label>
                     <div className="relative">
@@ -210,7 +210,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                 </div>
 
                 <div className="flex flex-col gap-1 mb-4 w-full">
-                    <label>Precio de venta en caja</label>
+                    <label className="font-semibold">Precio de venta en caja</label>
                     <div className="relative">
                         <span className="absolute left-2 top-1/2 -translate-y-1/2">$</span>
                         <input
