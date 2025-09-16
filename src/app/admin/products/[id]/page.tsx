@@ -2,7 +2,7 @@ import { getProductById } from '@/lib/services/product';
 
 import ProductForm from '@/components/products/ProductForm';
 import ErrorMessage from '@/components/ErrorMessage';
-import DuplicateButton from '@/components/DuplicateButton';
+import ProductActionButtons from '@/components/ProductActionButtons';
 
 interface ProductPageType {
     params: Promise<{
@@ -28,7 +28,7 @@ export default async function ProductPage({ params }: ProductPageType) {
         <div>
             <div className="flex justify-center">
                 <div className="mt-6 w-full md:w-7/10 2xl:w-5/10">
-                    <DuplicateButton baseProduct={product} />
+                    <ProductActionButtons baseProduct={product} />
                     <ProductForm selectedProduct={product} isEdit />
                 </div>
             </div>

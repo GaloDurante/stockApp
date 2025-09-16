@@ -10,6 +10,7 @@ import { showSuccessToast, showErrorToast } from '@/components/Toast';
 import Modal from '@/components/Modal';
 import ConfirmModal from '@/components/ConfirmModal';
 import ReStockButton from '@/components/ReStockButton';
+import ReduceStockButton from '@/components/ReduceStockButton';
 
 interface DuplicateButtonType {
     baseProduct: ProductType;
@@ -55,21 +56,22 @@ export default function DuplicateButton({ baseProduct }: DuplicateButtonType) {
     };
 
     return (
-        <>
+        <div className="grid grid-cols-2 md:grid-cols-4 mb-4 gap-4">
             <ReStockButton
                 productId={baseProduct.id}
                 productPurchasePrice={baseProduct.purchasePrice}
                 productStock={baseProduct.stock}
             />
+            <ReduceStockButton productId={baseProduct.id} productStock={baseProduct.stock} />
             <button
                 onClick={() => {
                     setIsDelete(false);
                     setIsModalOpen(true);
                 }}
                 type="button"
-                className="ml-4 cursor-pointer border border-border p-2 rounded-md mb-4 bg-surface hover:bg-border-dark transition-all"
+                className="font-medium cursor-pointer border border-border py-2 px-4 rounded-md bg-surface hover:bg-border-dark transition-all"
             >
-                Duplicar
+                Duplicar producto
             </button>
             <button
                 onClick={() => {
@@ -77,7 +79,7 @@ export default function DuplicateButton({ baseProduct }: DuplicateButtonType) {
                     setIsModalOpen(true);
                 }}
                 type="button"
-                className="ml-4 cursor-pointer p-2 rounded-md mb-4 transition-all bg-red-700 hover:bg-red-900"
+                className="font-medium cursor-pointer py-2 px-4 rounded-md transition-all bg-red-700 hover:bg-red-900"
             >
                 Eliminar
             </button>
@@ -100,6 +102,6 @@ export default function DuplicateButton({ baseProduct }: DuplicateButtonType) {
                     />
                 </Modal>
             )}
-        </>
+        </div>
     );
 }

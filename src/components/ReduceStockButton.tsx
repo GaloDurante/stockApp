@@ -3,38 +3,36 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
-import { StockFormType } from '@/types/form';
-import { createPurchaseAction } from '@/lib/actions/purchase';
+import { ProductFormType } from '@/types/form';
+import { updateProductAction } from '@/lib/actions/product';
 
 import { showSuccessToast, showErrorToast } from '@/components/Toast';
 import { X } from 'lucide-react';
 import Modal from '@/components/Modal';
 
-interface ReStockButtonProp {
+interface ReduceStockButtonProp {
     productId: number;
     productStock: number;
-    productPurchasePrice: number;
 }
 
-export default function ReStockButton({ productId, productStock, productPurchasePrice }: ReStockButtonProp) {
+export default function ReduceStockButton({ productId, productStock }: ReduceStockButtonProp) {
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors, isDirty, isSubmitting },
-    } = useForm<StockFormType>();
+    } = useForm<ProductFormType>({
+        defaultValues: {
+            stock: productStock,
+        },
+    });
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const router = useRouter();
-    const onSubmit = async (data: StockFormType) => {
-        const dataForm = {
-            productId: productId,
-            purchasePrice: productPurchasePrice,
-            newStock: data.newStock,
-        };
+    const onSubmit = async (data: ProductFormType) => {
         try {
-            await createPurchaseAction(dataForm);
+            await updateProductAction(data, productId);
             showSuccessToast('Stock actualizado con éxito');
             reset();
             router.refresh();
@@ -54,7 +52,7 @@ export default function ReStockButton({ productId, productStock, productPurchase
                 type="button"
                 className="font-medium cursor-pointer border border-border py-2 px-4 rounded-md bg-surface hover:bg-border-dark transition-all"
             >
-                Reponer stock
+                Reducir stock
             </button>
 
             {isModalOpen && (
@@ -72,27 +70,13 @@ export default function ReStockButton({ productId, productStock, productPurchase
                         </button>
                     </div>
                     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
-                        <p>
-                            Stock actual
-                            <span
-                                className={`text-lg font-semibold block ${
-                                    productStock === 0
-                                        ? 'text-red-700'
-                                        : productStock > 0 && productStock < 8
-                                          ? 'text-terciary'
-                                          : ''
-                                }`}
-                            >
-                                {productStock}
-                            </span>
-                        </p>
-                        <div className="flex flex-col gap-1 my-4 w-full">
+                        <div className="flex flex-col gap-1 w-full">
                             <label>
-                                Nuevas unidades <span className="text-red-700">*</span>
+                                Stock <span className="text-red-700">*</span>
                             </label>
                             <input
                                 type="number"
-                                {...register('newStock', {
+                                {...register('stock', {
                                     required: 'El campo es obligatorio',
                                     valueAsNumber: true,
                                     min: {
@@ -100,9 +84,9 @@ export default function ReStockButton({ productId, productStock, productPurchase
                                         message: 'Debes ingresar unidades mayor a 0',
                                     },
                                 })}
-                                className={`p-2 border rounded-md no-spinner ${errors.newStock ? 'border-red-700' : 'border-border'}`}
+                                className={`p-2 border rounded-md ${errors.stock ? 'border-red-700' : 'border-border'}`}
                             />
-                            {errors.newStock && <p className="text-red-700 text-sm">{errors.newStock.message}</p>}
+                            {errors.stock && <p className="text-red-700 text-sm">{errors.stock.message}</p>}
                         </div>
                         <div className="flex w-full justify-end mt-4">
                             <button
