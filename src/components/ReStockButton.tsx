@@ -100,7 +100,7 @@ export default function ReStockButton({ productId, productStock, productPurchase
                                         message: 'Debes ingresar unidades mayor a 0',
                                     },
                                 })}
-                                className={`p-2 border rounded-md no-spinner ${errors.newStock ? 'border-red-700' : 'border-border'}`}
+                                className={`p-2 border rounded-md ${errors.newStock ? 'border-red-700' : 'border-border'}`}
                             />
                             {errors.newStock && <p className="text-red-700 text-sm">{errors.newStock.message}</p>}
                         </div>

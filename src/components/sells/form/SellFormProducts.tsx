@@ -1,7 +1,7 @@
 import { UseFormRegister, UseFormSetValue, UseFormWatch, FieldErrors } from 'react-hook-form';
 import { ProductSellFormType, SellFormType } from '@/types/form';
 import { formatPrice } from '@/lib/helpers/components/utils';
-import { X } from 'lucide-react';
+import { Trash } from 'lucide-react';
 import Switch from '@/components/Switch';
 
 interface SellFormProductsProps {
@@ -84,7 +84,7 @@ export default function SellFormProducts({
     };
 
     return (
-        <div className="bg-surface p-8 rounded-lg border border-border">
+        <div className="bg-surface p-6 md:p-8 rounded-lg border border-border">
             <div className="flex flex-col gap-1">
                 <div className="flex flex-col gap-2 items-start md:flex-row md:items-center justify-between">
                     <div>
@@ -103,8 +103,8 @@ export default function SellFormProducts({
                 </div>
 
                 {items.length > 0 && (
-                    <div className="mt-4 border border-border rounded-lg bg-main overflow-auto max-h-[18rem] custom-scrollbar">
-                        <div className="hidden md:grid grid-cols-[3fr_1fr_1fr_1fr_auto] items-center gap-4 px-4 py-2 bg-border sticky z-10 top-0 text-xs font-semibold">
+                    <div className="mt-4 border border-border rounded-lg shadow-lg overflow-auto max-h-[30rem] md:max-h-[50rem] custom-scrollbar">
+                        <div className="hidden md:grid grid-cols-[3fr_1fr_1fr_1fr_auto] items-center bg-border rounded-tl-md gap-4 px-4 py-2 sticky z-10 top-0 text-xs font-semibold">
                             <span>Producto</span>
                             <span className="text-center">Cantidad</span>
                             <span className="text-center">Precio de venta</span>
@@ -119,6 +119,13 @@ export default function SellFormProducts({
                             const totalItem = salePrice && quantity ? quantity * salePrice : 0;
                             const availableStock = isBox ? Math.floor(item.stock / item.unitsPerBox) : item.stock;
 
+                            const stockColor =
+                                availableStock > 20
+                                    ? 'bg-green-400/30 text-green-400'
+                                    : availableStock > 10
+                                      ? 'bg-yellow-400/30 text-yellow-400'
+                                      : 'bg-red-400/30 text-red-400';
+
                             return (
                                 <div
                                     key={item.id}
@@ -129,16 +136,21 @@ export default function SellFormProducts({
                                     <div className="w-10/12 sm:w-full flex flex-col gap-1">
                                         <span className="font-semibold mb-2">{item.name}</span>
 
-                                        <span className="text-sm text-muted">
-                                            Costo: {formatPrice(item.purchasePrice)}{' '}
-                                            {isBox && `(${formatPrice(item.purchasePrice * item.unitsPerBox)} x caja)`}
+                                        <span className="text-xs bg-border text-muted px-3 py-1.5 rounded-md font-medium w-fit">
+                                            {isBox
+                                                ? `Compra caja: ${formatPrice(item.purchasePrice * item.unitsPerBox)}`
+                                                : `Compra unidad: ${formatPrice(item.purchasePrice)}`}
                                         </span>
-                                        <span className="text-sm text-muted">
+
+                                        <span className="text-xs bg-accent/30 text-accent px-3 py-1.5 rounded-md font-medium w-fit">
                                             {isBox
                                                 ? `Venta caja: ${formatPrice(item.salePriceBox || item.salePrice * item.unitsPerBox)}`
                                                 : `Venta unidad: ${formatPrice(item.salePrice)}`}
                                         </span>
-                                        <span className="text-sm text-muted">
+
+                                        <span
+                                            className={`text-xs ${stockColor} px-3 py-1.5 rounded-md font-medium w-fit`}
+                                        >
                                             Stock:{' '}
                                             {isBox
                                                 ? `${availableStock} cajas (${item.stock} unidades)`
@@ -223,9 +235,9 @@ export default function SellFormProducts({
                                             type="button"
                                             onClick={() => handleRemoveItem(item.id)}
                                             aria-label={`Eliminar ${item.name}`}
-                                            className="p-1 hover:bg-border rounded-full transition-all cursor-pointer"
+                                            className="p-1 md:p-2 hover:bg-border rounded-full transition-all cursor-pointer"
                                         >
-                                            <X size={20} />
+                                            <Trash size={18} />
                                         </button>
                                     </div>
                                 </div>
