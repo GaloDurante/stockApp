@@ -6,6 +6,7 @@ import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { SellFormType, PaymentFormType } from '@/types/form';
 import { Receiver, PaymentMethod, SellStatus } from '@/generated/prisma';
 
+import { formatPrice } from '@/lib/helpers/components/utils';
 import { updateSellAction } from '@/lib/actions/sell';
 
 import { Plus, Trash } from 'lucide-react';
@@ -77,6 +78,10 @@ export default function SellFormPayments({
         validate: (payments: SellFormType['payments']) => {
             if (!payments || payments.length === 0) {
                 return 'Debe agregar al menos un pago';
+            }
+            const sumPayments = payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
+            if (sumPayments > totalPrice) {
+                return `El total de los pagos (${formatPrice(sumPayments)}) no debe superar el total de la venta (${formatPrice(totalPrice)})`;
             }
             return true;
         },
