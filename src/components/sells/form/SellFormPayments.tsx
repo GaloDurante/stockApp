@@ -100,7 +100,7 @@ export default function SellFormPayments({
 
     return (
         <form onSubmit={handleSubmit(onSubmitPayment)}>
-            <div className="bg-surface p-4 md:p-8 rounded-lg border border-border mt-8">
+            <div className="bg-surface p-6 md:p-8 rounded-lg border border-border mt-8">
                 <div className="flex flex-col gap-2 items-start md:flex-row md:items-center justify-between">
                     <div>
                         <h2 className="font-semibold">
@@ -124,12 +124,12 @@ export default function SellFormPayments({
                     const selectedMethod = payments?.[index]?.method;
 
                     return (
-                        <div key={field.id} className="rounded-xl border border-border p-5 mt-4 bg-main">
+                        <div key={field.id} className="rounded-lg border border-border p-5 mt-4 shadow-lg">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-8 h-8 text-accent border border-accent rounded-full flex items-center justify-center font-medium">
+                                    <span className="w-9 h-9 bg-accent/30 text-accent rounded-full flex items-center justify-center font-medium">
                                         {index + 1}
-                                    </div>
+                                    </span>
                                     <h3 className="font-medium">Pago</h3>
                                 </div>
                                 <button
@@ -138,7 +138,7 @@ export default function SellFormPayments({
                                         remove(index);
                                         trigger('payments');
                                     }}
-                                    className="cursor-pointer text-red-700 p-2 rounded-full hover:bg-border transition-colors"
+                                    className="cursor-pointer p-2 rounded-full hover:bg-border transition-colors"
                                     title="Eliminar pago"
                                 >
                                     <Trash size={18} />
@@ -165,7 +165,6 @@ export default function SellFormPayments({
                                                         field.onChange((newValue as { value: string }).value)
                                                     }
                                                     isError={!!errors.payments?.[index]?.method}
-                                                    background="bg-main"
                                                 />
                                             );
                                         }}
@@ -222,7 +221,6 @@ export default function SellFormPayments({
                                                     }
                                                     placeholder="Selecciona un receptor"
                                                     isError={!!errors.payments?.[index]?.receiver}
-                                                    background="bg-main"
                                                 />
                                             );
                                         }}
@@ -242,7 +240,7 @@ export default function SellFormPayments({
                 )}
             </div>
 
-            <div className="bg-surface p-4 md:p-8 rounded-lg border border-border mt-8">
+            <div className="bg-surface p-6 md:p-8 rounded-lg border border-border mt-8">
                 <SellFormDetails control={control} errors={errors} register={register} watch={watch} />
             </div>
             <div className="flex w-full justify-end items-center gap-4 mt-4">
