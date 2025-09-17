@@ -19,7 +19,7 @@ export default function SellCard({ sell, className, handleDelete, deleteModalId,
     return (
         <div className={`bg-surface p-4 flex items-start justify-between ${className || ''}`}>
             <div className="flex flex-col gap-2">
-                <span>#{sell.id}</span>
+                <span className="font-medium">#{sell.id}</span>
 
                 <div className="flex gap-3 text-sm text-muted">
                     {format({ date: sell.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
