@@ -9,6 +9,7 @@ export async function createPurchase(data: ReStockType) {
                 items: {
                     create: {
                         productId: data.productId,
+                        productName: data.productName,
                         quantity: data.newStock,
                         purchasePrice: data.purchasePrice,
                     },

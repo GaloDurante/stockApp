@@ -12,11 +12,17 @@ import Modal from '@/components/Modal';
 
 interface ReStockButtonProp {
     productId: number;
+    productName: string;
     productStock: number;
     productPurchasePrice: number;
 }
 
-export default function ReStockButton({ productId, productStock, productPurchasePrice }: ReStockButtonProp) {
+export default function ReStockButton({
+    productId,
+    productName,
+    productStock,
+    productPurchasePrice,
+}: ReStockButtonProp) {
     const {
         register,
         handleSubmit,
@@ -30,6 +36,7 @@ export default function ReStockButton({ productId, productStock, productPurchase
     const onSubmit = async (data: StockFormType) => {
         const dataForm = {
             productId: productId,
+            productName: productName,
             purchasePrice: productPurchasePrice,
             newStock: data.newStock,
         };

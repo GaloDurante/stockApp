@@ -121,10 +121,11 @@ model Purchase {
 model PurchaseItem {
   id          Int       @id @default(autoincrement())
   purchaseId  Int
-  productId   Int
+  productId   Int?
+  productName String
   quantity    Int
   purchasePrice   Int
 
   purchase    Purchase  @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
 }
