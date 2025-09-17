@@ -2,7 +2,7 @@ import { getProductById } from '@/lib/services/product';
 
 import ProductForm from '@/components/products/ProductForm';
 import ErrorMessage from '@/components/ErrorMessage';
-import ProductActionButtons from '@/components/ProductActionButtons';
+import ProductActionButtons from '@/components/products/ProductActionButtons';
 
 interface ProductPageType {
     params: Promise<{

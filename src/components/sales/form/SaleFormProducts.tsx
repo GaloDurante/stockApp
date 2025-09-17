@@ -1,20 +1,20 @@
 import { UseFormRegister, UseFormSetValue, UseFormWatch, FieldErrors } from 'react-hook-form';
-import { ProductSellFormType, SellFormType } from '@/types/form';
+import { ProductSaleFormType, SaleFormType } from '@/types/form';
 import { formatPrice } from '@/lib/helpers/components/utils';
 import { Trash } from 'lucide-react';
 import Switch from '@/components/Switch';
 
-interface SellFormProductsProps {
-    items: ProductSellFormType[];
+interface SaleFormProductsProps {
+    items: ProductSaleFormType[];
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setTempSelectedItems: React.Dispatch<React.SetStateAction<ProductSellFormType[]>>;
-    setValue: UseFormSetValue<SellFormType>;
-    register: UseFormRegister<SellFormType>;
-    errors: FieldErrors<SellFormType>;
-    watch: UseFormWatch<SellFormType>;
+    setTempSelectedItems: React.Dispatch<React.SetStateAction<ProductSaleFormType[]>>;
+    setValue: UseFormSetValue<SaleFormType>;
+    register: UseFormRegister<SaleFormType>;
+    errors: FieldErrors<SaleFormType>;
+    watch: UseFormWatch<SaleFormType>;
 }
 
-export default function SellFormProducts({
+export default function SaleFormProducts({
     setIsModalOpen,
     items,
     setTempSelectedItems,
@@ -22,7 +22,7 @@ export default function SellFormProducts({
     register,
     errors,
     watch,
-}: SellFormProductsProps) {
+}: SaleFormProductsProps) {
     const openModal = () => {
         setTempSelectedItems(
             items.map((item) => ({
@@ -65,7 +65,7 @@ export default function SellFormProducts({
             e.currentTarget.value = String(v);
         };
 
-    const toggleBoxSelling = (index: number, currentValue: boolean) => {
+    const toggleBoxSaleing = (index: number, currentValue: boolean) => {
         const newValue = !currentValue;
         setValue(`items.${index}.isBox`, newValue, { shouldDirty: true });
 
@@ -166,7 +166,7 @@ export default function SellFormProducts({
                                             <Switch
                                                 disabled={!!(item.stock < item.unitsPerBox)}
                                                 checked={isBox}
-                                                onChange={() => toggleBoxSelling(index, isBox)}
+                                                onChange={() => toggleBoxSaleing(index, isBox)}
                                             />
                                         </div>
                                     </div>

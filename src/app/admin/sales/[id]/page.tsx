@@ -1,21 +1,21 @@
-import { getSellById } from '@/lib/services/sell';
+import { getSaleById } from '@/lib/services/sale';
 
 import { formatPrice } from '@/lib/helpers/components/utils';
 
 import ErrorMessage from '@/components/ErrorMessage';
-import SellFormPayments from '@/components/sells/form/SellFormPayments';
+import SaleFormPayments from '@/components/sales/form/SaleFormPayments';
 
-interface SellPageProps {
+interface SalePageProps {
     params: Promise<{
         id: string;
     }>;
 }
 
-export default async function SellPage({ params }: SellPageProps) {
+export default async function SalePage({ params }: SalePageProps) {
     const { id } = await params;
-    const sell = await getSellById(Number(id));
+    const sale = await getSaleById(Number(id));
 
-    if (!sell)
+    if (!sale)
         return (
             <ErrorMessage
                 title={'Venta no encontrada'}
@@ -30,27 +30,27 @@ export default async function SellPage({ params }: SellPageProps) {
             <div className="p-6 md:p-8 bg-surface rounded-lg max-h-fit flex-1 xl:sticky top-8 border border-border shadow-lg">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold mb-2">Detalles de Venta</h1>
-                    <span className="text-muted">ID: #{sell.id}</span>
+                    <span className="text-muted">ID: #{sale.id}</span>
                 </div>
 
                 <div className="space-y-4">
                     <div className="flex justify-between items-center p-4 rounded-lg border border-border shadow-lg">
                         <span className="text-muted text-sm md:text-base">Total:</span>
-                        <span className="text-lg md:text-xl font-bold">{formatPrice(sell.totalPrice)}</span>
+                        <span className="text-lg md:text-xl font-bold">{formatPrice(sale.totalPrice)}</span>
                     </div>
 
                     <div className="flex justify-between items-center p-4 rounded-lg border border-border shadow-lg">
                         <span className="text-muted text-sm md:text-base">Seleccionados:</span>
                         <span className="text-lg md:text-xl font-semibold">
-                            {sell.items.length} {sell.items.length === 1 ? 'producto' : 'productos'}
+                            {sale.items.length} {sale.items.length === 1 ? 'producto' : 'productos'}
                         </span>
                     </div>
 
-                    {sell.items.length > 0 && (
+                    {sale.items.length > 0 && (
                         <div className="mt-4 pt-4 border-t border-border">
                             <h3 className="text-sm font-medium text-muted mb-2">Resumen:</h3>
                             <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                                {sell.items.map((item) => {
+                                {sale.items.map((item) => {
                                     const quantity = item.isBox ? item.quantity / item.unitsPerBox : item.quantity;
                                     const totalItem = quantity * item.unitPrice;
 
@@ -72,12 +72,12 @@ export default async function SellPage({ params }: SellPageProps) {
                             <span className="text-muted font-medium text-sm">Estado:</span>
                             <span
                                 className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                    sell.status === 'Pendiente'
+                                    sale.status === 'Pendiente'
                                         ? 'bg-yellow-400/20 text-yellow-400'
                                         : 'bg-green-600/20 text-green-600'
                                 }`}
                             >
-                                {sell.status}
+                                {sale.status}
                             </span>
                         </div>
                     </div>
@@ -88,7 +88,7 @@ export default async function SellPage({ params }: SellPageProps) {
                 <div className="bg-surface rounded-lg p-6 md:p-8 shadow-lg border border-border">
                     <h2 className="font-semibold mb-4">Productos</h2>
                     <div className="space-y-4">
-                        {sell.items.map((item) => {
+                        {sale.items.map((item) => {
                             const quantity = item.isBox ? item.quantity / item.unitsPerBox : item.quantity;
 
                             return (
@@ -137,13 +137,13 @@ export default async function SellPage({ params }: SellPageProps) {
                         })}
                     </div>
                 </div>
-                <SellFormPayments
-                    currentStatus={sell.status}
-                    sellId={sell.id}
-                    totalPrice={sell.totalPrice}
-                    previousPayments={sell.payments}
-                    previousNote={sell.note}
-                    previousDate={sell.date}
+                <SaleFormPayments
+                    currentStatus={sale.status}
+                    saleId={sale.id}
+                    totalPrice={sale.totalPrice}
+                    previousPayments={sale.payments}
+                    previousNote={sale.note}
+                    previousDate={sale.date}
                 />
             </div>
         </div>

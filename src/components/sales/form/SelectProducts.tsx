@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 import { ProductType } from '@/types/product';
-import { ProductSellFormType } from '@/types/form';
+import { ProductSaleFormType } from '@/types/form';
 
 import { loadMoreProductsAction } from '@/lib/actions/product';
 import { formatPrice } from '@/lib/helpers/components/utils';
@@ -17,8 +17,8 @@ interface SelectProductsType {
     search?: string;
     filterByCategory?: string;
     perPage: number;
-    selectedItems: ProductSellFormType[];
-    onChange: (items: ProductSellFormType[]) => void;
+    selectedItems: ProductSaleFormType[];
+    onChange: (items: ProductSaleFormType[]) => void;
 }
 
 export default function SelectProducts({

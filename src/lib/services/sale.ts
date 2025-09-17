@@ -1,8 +1,8 @@
-import { Prisma, SellStatus } from '@/generated/prisma';
+import { Prisma, SaleStatus } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
-import { SellFormType } from '@/types/form';
+import { SaleFormType } from '@/types/form';
 
-export const getAllSells = async ({
+export const getAllSales = async ({
     startDate,
     endDate,
     paymentMethod,
@@ -19,7 +19,7 @@ export const getAllSells = async ({
     page?: number;
     perPage?: number;
 }) => {
-    const where: Prisma.SellWhereInput = {};
+    const where: Prisma.SaleWhereInput = {};
 
     const dateFilter: Prisma.DateTimeFilter = {};
     if (startDate) dateFilter.gte = new Date(startDate);
@@ -34,7 +34,7 @@ export const getAllSells = async ({
 
     where.status = status ?? 'Completada';
 
-    const orderByMap: Record<string, Prisma.SellOrderByWithRelationInput> = {
+    const orderByMap: Record<string, Prisma.SaleOrderByWithRelationInput> = {
         id_asc: { id: 'asc' },
         id_desc: { id: 'desc' },
         date_asc: { date: 'asc' },
@@ -45,8 +45,8 @@ export const getAllSells = async ({
 
     const orderBy = orderByMap[sortOrder ?? 'id_asc'] ?? { id: 'asc' };
 
-    const [sells, total] = await Promise.all([
-        prisma.sell.findMany({
+    const [sales, total] = await Promise.all([
+        prisma.sale.findMany({
             where,
             include: {
                 items: true,
@@ -63,14 +63,14 @@ export const getAllSells = async ({
             skip: (page - 1) * perPage,
             take: perPage,
         }),
-        prisma.sell.count({ where }),
+        prisma.sale.count({ where }),
     ]);
 
-    return { sells, total };
+    return { sales, total };
 };
 
-export const getSellById = async (id: number) => {
-    return await prisma.sell.findUnique({
+export const getSaleById = async (id: number) => {
+    return await prisma.sale.findUnique({
         where: { id },
         include: {
             items: true,
@@ -86,15 +86,15 @@ export const getSellById = async (id: number) => {
     });
 };
 
-export async function deleteSellAndRestoreStock(id: number) {
+export async function deleteSaleAndRestoreStock(id: number) {
     return await prisma.$transaction(async (tx) => {
-        const sellItems = await tx.sellItem.findMany({
-            where: { sellId: id },
+        const saleItems = await tx.saleItem.findMany({
+            where: { saleId: id },
             select: { productId: true, quantity: true },
         });
 
         await Promise.all(
-            sellItems.map((item) =>
+            saleItems.map((item) =>
                 item.productId
                     ? tx.product.update({
                           where: { id: item.productId },
@@ -104,13 +104,13 @@ export async function deleteSellAndRestoreStock(id: number) {
             )
         );
 
-        return tx.sell.delete({
+        return tx.sale.delete({
             where: { id },
         });
     });
 }
 
-export async function createSellAndSellItems(data: SellFormType) {
+export async function createSaleAndSaleItems(data: SaleFormType) {
     const { items, payments, ...restData } = data;
     const formData = {
         ...restData,
@@ -118,11 +118,11 @@ export async function createSellAndSellItems(data: SellFormType) {
     };
 
     return prisma.$transaction(async (tx) => {
-        const newSell = await tx.sell.create({ data: formData });
+        const newSale = await tx.sale.create({ data: formData });
 
-        await tx.sellItem.createMany({
+        await tx.saleItem.createMany({
             data: items.map((item) => ({
-                sellId: newSell.id,
+                saleId: newSale.id,
                 productId: item.id,
                 productName: item.name,
                 quantity: item.quantity ?? 1,
@@ -144,20 +144,20 @@ export async function createSellAndSellItems(data: SellFormType) {
 
         await tx.payment.createMany({
             data: payments.map((p) => ({
-                sellId: newSell.id,
+                saleId: newSale.id,
                 method: p.method,
                 amount: Number(p.amount),
                 receiver: p.receiver ?? null,
             })),
         });
 
-        return newSell;
+        return newSale;
     });
 }
 
-export async function updateSell(id: number, data: SellFormType, status: SellStatus) {
+export async function updateSale(id: number, data: SaleFormType, status: SaleStatus) {
     return prisma.$transaction(async (tx) => {
-        const updatedSell = await tx.sell.update({
+        const updatedSale = await tx.sale.update({
             where: { id },
             data: {
                 note: data.note,
@@ -166,18 +166,18 @@ export async function updateSell(id: number, data: SellFormType, status: SellSta
         });
 
         await tx.payment.deleteMany({
-            where: { sellId: id },
+            where: { saleId: id },
         });
 
         await tx.payment.createMany({
             data: data.payments.map((p) => ({
-                sellId: id,
+                saleId: id,
                 method: p.method,
                 amount: Number(p.amount),
                 receiver: p.receiver ?? null,
             })),
         });
 
-        return updatedSell;
+        return updatedSale;
     });
 }

@@ -9,8 +9,8 @@ import { ProductType } from '@/types/product';
 import { showSuccessToast, showErrorToast } from '@/components/Toast';
 import Modal from '@/components/Modal';
 import ConfirmModal from '@/components/ConfirmModal';
-import ReStockButton from '@/components/ReStockButton';
-import ReduceStockButton from '@/components/ReduceStockButton';
+import ReStockButton from '@/components/products/ReStockButton';
+import ReduceStockButton from '@/components/products/ReduceStockButton';
 
 interface DuplicateButtonType {
     baseProduct: ProductType;

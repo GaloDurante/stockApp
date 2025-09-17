@@ -9,14 +9,14 @@ export async function getProfitHistoric({ start, end }: { start?: Date; end?: Da
     if (start && end) {
         result = await prisma.$queryRaw<{ total: string }[]>`
         SELECT COALESCE(SUM(("unitPrice"::numeric - "purchasePrice"::numeric) * "quantity"::numeric), 0)::numeric AS total
-        FROM "SellItem" si
-        JOIN "Sell" s ON s.id = si."sellId"
+        FROM "SaleItem" si
+        JOIN "Sale" s ON s.id = si."saleId"
         WHERE s.date BETWEEN ${start} AND ${end};
     `;
     } else {
         result = await prisma.$queryRaw<{ total: string }[]>`
         SELECT COALESCE(SUM(("unitPrice"::numeric - "purchasePrice"::numeric) * "quantity"::numeric), 0)::numeric AS total
-        FROM "SellItem";
+        FROM "SaleItem";
     `;
     }
 
@@ -74,8 +74,8 @@ monthly_sales_summary AS (
     SELECT
         date_trunc('month', s.date) AS month,
         SUM((si."unitPrice"::numeric - si."purchasePrice"::numeric) * si.quantity::numeric)::numeric AS total_profit
-    FROM "Sell" s
-    JOIN "SellItem" si ON si."sellId" = s.id
+    FROM "Sale" s
+    JOIN "SaleItem" si ON si."saleId" = s.id
     WHERE s.date BETWEEN ${yStart} AND ${yEnd}
     GROUP BY date_trunc('month', s.date)
 ),
@@ -89,8 +89,8 @@ monthly_product_sales AS (
             PARTITION BY date_trunc('month', s.date)
             ORDER BY SUM(si.quantity::numeric) DESC
         ) as rank
-    FROM "Sell" s
-    JOIN "SellItem" si ON si."sellId" = s.id
+    FROM "Sale" s
+    JOIN "SaleItem" si ON si."saleId" = s.id
     WHERE s.date BETWEEN ${yStart} AND ${yEnd}
     GROUP BY date_trunc('month', s.date), si."productId", si."productName"
 ),

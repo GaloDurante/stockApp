@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-import { SellType } from '@/types/sell';
+import { SaleType } from '@/types/sale';
 import { formatPrice } from '@/lib/helpers/components/utils';
 
 import { ChevronDown, X, CreditCard, Banknote } from 'lucide-react';
 import Modal from '@/components/Modal';
 
-interface SellMoreDetailsProps {
-    sell: SellType;
+interface SaleMoreDetailsProps {
+    sale: SaleType;
 }
 
 const getPaymentIcon = (method: string) => {
@@ -33,7 +33,7 @@ const getPaymentIcon = (method: string) => {
     }
 };
 
-export default function SellMoreDetails({ sell }: SellMoreDetailsProps) {
+export default function SaleMoreDetails({ sale }: SaleMoreDetailsProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -69,7 +69,7 @@ export default function SellMoreDetails({ sell }: SellMoreDetailsProps) {
                     </div>
 
                     <div className="overflow-y-auto flex-grow max-h-[60vh]">
-                        {sell.payments.map((payment) => (
+                        {sale.payments.map((payment) => (
                             <div key={payment.id} className="p-4 border-b border-border">
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3">
@@ -91,7 +91,7 @@ export default function SellMoreDetails({ sell }: SellMoreDetailsProps) {
                             <div className="flex justify-between text-sm">
                                 <span>Total pagado:</span>
                                 <span className="font-medium text-base">
-                                    {formatPrice(sell.payments.reduce((sum, payment) => sum + payment.amount, 0))}
+                                    {formatPrice(sale.payments.reduce((sum, payment) => sum + payment.amount, 0))}
                                 </span>
                             </div>
                         </div>

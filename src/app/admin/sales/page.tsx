@@ -1,10 +1,10 @@
 import { dayStart, dayEnd } from '@formkit/tempo';
-import { getAllSells } from '@/lib/services/sell';
+import { getAllSales } from '@/lib/services/sale';
 import Filters from '@/components/Filters';
 import Link from 'next/link';
-import SellsTable from '@/components/sells/SellsTable';
+import SalesTable from '@/components/sales/SalesTable';
 
-interface SellsPageType {
+interface SalesPageType {
     searchParams: Promise<{
         startDate?: string;
         endDate?: string;
@@ -14,13 +14,13 @@ interface SellsPageType {
     }>;
 }
 
-export default async function SellsPage({ searchParams }: SellsPageType) {
+export default async function SalesPage({ searchParams }: SalesPageType) {
     const { startDate, endDate, paymentMethod, sortOrder = 'date_desc', status = 'Completada' } = await searchParams;
 
     const pageNumber = 1;
     const perPage = 20;
 
-    const { sells: initialSells, total } = await getAllSells({
+    const { sales: initialSales, total } = await getAllSales({
         startDate: startDate ? dayStart(startDate).toISOString() : undefined,
         endDate: endDate ? dayEnd(endDate).toISOString() : undefined,
         paymentMethod: paymentMethod === '' ? undefined : (paymentMethod as 'Efectivo' | 'Transferencia' | undefined),
@@ -55,7 +55,7 @@ export default async function SellsPage({ searchParams }: SellsPageType) {
                     />
                 </div>
                 <Link
-                    href="/admin/sells/new"
+                    href="/admin/sales/new"
                     className="self-end border border-border font-semibold bg-surface hover:bg-border-dark rounded-md px-4 py-2 transition-all"
                 >
                     Registrar nueva venta
@@ -63,7 +63,7 @@ export default async function SellsPage({ searchParams }: SellsPageType) {
             </div>
 
             <div className="mt-4 lg:mt-8">
-                <SellsTable initialSells={initialSells} totalCount={total} sortOrder={sortOrder} perPage={perPage} />
+                <SalesTable initialSales={initialSales} totalCount={total} sortOrder={sortOrder} perPage={perPage} />
             </div>
         </div>
     );
