@@ -42,7 +42,7 @@ export default async function SellsPage({ searchParams }: SellsPageType) {
     return (
         <div>
             <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-2">
-                <div className="flex flex-col lg:flex-row justify-between gap-2 xl:gap-8 w-full lg:w-3/4">
+                <div className="flex flex-col lg:flex-row justify-between gap-2 xl:gap-4 w-full lg:w-3/4">
                     <Filters
                         withSort
                         sortOrder={sortOrder}

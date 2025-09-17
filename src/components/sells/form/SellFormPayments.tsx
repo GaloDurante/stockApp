@@ -138,7 +138,7 @@ export default function SellFormPayments({
                                         remove(index);
                                         trigger('payments');
                                     }}
-                                    className="cursor-pointer p-2 rounded-full hover:bg-border transition-colors"
+                                    className="cursor-pointer p-2 rounded-full hover:bg-red-200 hover:text-red-700 transition-colors"
                                     title="Eliminar pago"
                                 >
                                     <Trash size={18} />

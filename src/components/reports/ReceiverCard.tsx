@@ -11,7 +11,7 @@ interface ReceiverProps {
 
 export default function ReceiverCard({ r, percentage }: ReceiverProps) {
     return (
-        <div key={r.receiver} className="bg-surface p-6 rounded-lg">
+        <div key={r.receiver} className="bg-surface p-6 rounded-lg border border-border">
             <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 rounded-full bg-accent/30 flex items-center justify-center">
                     <span className="text-accent font-semibold">{r.receiver.charAt(0)}</span>

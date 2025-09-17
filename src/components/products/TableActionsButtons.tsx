@@ -32,7 +32,11 @@ export default function TableActionsButtons({
     return (
         <>
             {!hideEditButton && (
-                <Link href={redirect} className="hover:bg-border hover:text-white rounded-full p-2 transition">
+                <Link
+                    href={redirect}
+                    className="hover:bg-border hover:text-white rounded-full p-2 transition"
+                    title="Editar"
+                >
                     <Pencil size={16} />
                 </Link>
             )}
@@ -40,6 +44,7 @@ export default function TableActionsButtons({
             <button
                 onClick={openModal}
                 className="hover:bg-red-200 hover:text-red-700 rounded-full p-2 transition cursor-pointer"
+                title="Eliminar"
             >
                 <Trash size={16} />
             </button>

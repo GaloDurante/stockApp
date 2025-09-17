@@ -27,7 +27,7 @@ export default async function ProductPage({ params }: ProductPageType) {
     return (
         <div>
             <div className="flex justify-center">
-                <div className="w-full md:w-9/10 2xl:w-6/10">
+                <div className="w-full lg:w-9/10 2xl:w-6/10">
                     <ProductActionButtons baseProduct={product} />
                     <ProductForm selectedProduct={product} isEdit />
                 </div>
