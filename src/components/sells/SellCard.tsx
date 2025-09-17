@@ -19,7 +19,7 @@ export default function SellCard({ sell, className, handleDelete, deleteModalId,
     return (
         <div className={`bg-surface p-4 flex items-start justify-between ${className || ''}`}>
             <div className="flex flex-col gap-2">
-                <span className="text-base font-medium">#{sell.id}</span>
+                <span>#{sell.id}</span>
 
                 <div className="flex gap-3 text-sm text-muted">
                     {format({ date: sell.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
@@ -55,7 +55,6 @@ export default function SellCard({ sell, className, handleDelete, deleteModalId,
                     closeModal={() => setDeleteModalId(null)}
                     isTwoStep
                     confirmationText={`Venta-ID-${sell.id}`}
-                    hideEditButton
                 />
             </div>
         </div>

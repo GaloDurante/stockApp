@@ -8,7 +8,7 @@ export default function CreateProductPage() {
                 Completá el formulario para registrar un nuevo producto.
             </p>
             <div className="flex justify-center">
-                <div className="mt-6 w-full md:w-7/10 2xl:w-5/10">
+                <div className="mt-6 w-full lg:w-9/10 2xl:w-6/10">
                     <ProductForm />
                 </div>
             </div>

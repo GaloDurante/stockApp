@@ -84,7 +84,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="bg-surface border border-border rounded-lg p-4 md:p-8">
+            <div className="bg-surface border border-border rounded-lg p-6 md:p-8">
                 <div className="flex flex-col gap-1 mb-4">
                     <label className="font-semibold">
                         Nombre <span className="text-red-700">*</span>
@@ -164,7 +164,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                 </div>
             </div>
 
-            <div className="bg-surface border border-border rounded-lg p-4 md:p-8 mt-4">
+            <div className="bg-surface border border-border rounded-lg p-6 md:p-8 mt-4">
                 <div className="flex flex-col gap-1 mb-4 w-full">
                     <label className="font-semibold">
                         Precio unitario <span className="text-red-700">*</span>

@@ -17,10 +17,12 @@ export default function StatsButtons({ totalMoney, profitTotal }: StatsButtonsPr
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-600/20 mb-3 group-hover:bg-blue-500/30 transition-colors">
                     <CircleDollarSign />
                 </div>
-                <span className="text-sm font-medium text-blue-200 mb-1 text-center">
-                    Plata invertida en inventario
-                </span>
+                <span className="text-sm font-medium text-blue-200 mb-1 text-center">Plata actual en inventario</span>
                 <div className="text-2xl font-bold mt-1">{formatPrice(totalMoney)}</div>
+                <div className="flex items-center mt-2 text-xs text-blue-200">
+                    <span>Ver reporte detallado</span>
+                    <ChevronRight size={16} className="mt-0.5" />
+                </div>
             </Link>
 
             <Link

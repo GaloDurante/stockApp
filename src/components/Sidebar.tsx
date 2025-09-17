@@ -79,7 +79,7 @@ export default function Sidebar() {
 
     return (
         <>
-            <aside className="hidden lg:flex w-40 xl:w-64 flex-col bg-surface border-r border-border">
+            <aside className="hidden lg:flex w-42 xl:w-64 flex-col bg-surface border-r border-border">
                 <nav className="flex flex-col gap-1 p-4 text-sm">{renderNavLinks()}</nav>
             </aside>
 

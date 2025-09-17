@@ -25,7 +25,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
     ]);
 
     return (
-        <div className="space-y-6 p-6">
+        <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Filters
                     withDateRange
@@ -42,8 +42,8 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
             </div>
 
             {receiversMoney.length > 0 && (
-                <div className="mt-8">
-                    <h2 className="text-xl font-semibold mb-6 pb-2">Montos recibidos por cuenta</h2>
+                <div className="">
+                    <h2 className="text-xl font-semibold mb-4">Montos recibidos por cuenta</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {receiversMoney.map((r, index) => {

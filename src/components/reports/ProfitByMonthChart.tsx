@@ -76,32 +76,41 @@ export default function ProfitByMonthChart({
 
     return (
         <div className="w-full flex-1 p-4 flex flex-col">
-            <ResponsiveContainer width="100%" height="60%" className="flex-1">
-                <BarChart data={data} onClick={(option) => setSelectedMonth(option.activeLabel)}>
-                    <CartesianGrid horizontal vertical={false} stroke="#444" />
-                    <XAxis dataKey="month" axisLine={false} tickLine={false} stroke="#fff" />
-                    <YAxis
-                        axisLine={false}
-                        tickLine={false}
-                        stroke="#fff"
-                        width={yAxisWidth}
-                        tickFormatter={(value) => formatPrice(Number(value))}
-                    />
-                    <Tooltip
-                        trigger="click"
-                        cursor={{ fill: 'rgba(200, 200, 200, 0.05)' }}
-                        formatter={(value) => formatPrice(Number(value))}
-                        itemStyle={{ color: 'white' }}
-                        contentStyle={{
-                            backgroundColor: '#2a2a2a',
-                            borderRadius: '8px',
-                            border: 'none',
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-                        }}
-                    />
-                    <Bar dataKey="total" fill="#3b82f6" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="orange" />} />
-                </BarChart>
-            </ResponsiveContainer>
+            <div className="overflow-x-auto">
+                <div style={{ minWidth: '700px' }}>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={data} onClick={(option) => setSelectedMonth(option.activeLabel)}>
+                            <CartesianGrid horizontal vertical={false} stroke="#444" />
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} stroke="#fff" />
+                            <YAxis
+                                axisLine={false}
+                                tickLine={false}
+                                stroke="#fff"
+                                width={yAxisWidth}
+                                tickFormatter={(value) => formatPrice(Number(value))}
+                            />
+                            <Tooltip
+                                trigger="click"
+                                cursor={{ fill: 'rgba(200, 200, 200, 0.05)' }}
+                                formatter={(value) => formatPrice(Number(value))}
+                                itemStyle={{ color: 'white' }}
+                                contentStyle={{
+                                    backgroundColor: '#2a2a2a',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+                                }}
+                            />
+                            <Bar
+                                dataKey="total"
+                                fill="#3b82f6"
+                                radius={[4, 4, 0, 0]}
+                                activeBar={<Rectangle fill="orange" />}
+                            />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
 
             <div className="mt-4 flex-1 overflow-auto">{renderTopProductsSection()}</div>
         </div>

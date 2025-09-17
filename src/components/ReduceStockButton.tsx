@@ -80,8 +80,8 @@ export default function ReduceStockButton({ productId, productStock }: ReduceSto
                                     required: 'El campo es obligatorio',
                                     valueAsNumber: true,
                                     min: {
-                                        value: 1,
-                                        message: 'Debes ingresar unidades mayor a 0',
+                                        value: 0,
+                                        message: 'El stock no puede ser menor a 0',
                                     },
                                 })}
                                 className={`p-2 border rounded-md ${errors.stock ? 'border-red-700' : 'border-border'}`}
