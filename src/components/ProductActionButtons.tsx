@@ -59,6 +59,7 @@ export default function DuplicateButton({ baseProduct }: DuplicateButtonType) {
         <div className="grid grid-cols-2 md:flex mb-4 gap-4">
             <ReStockButton
                 productId={baseProduct.id}
+                productName={baseProduct.name}
                 productPurchasePrice={baseProduct.purchasePrice}
                 productStock={baseProduct.stock}
             />

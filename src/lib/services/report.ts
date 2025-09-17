@@ -83,7 +83,7 @@ monthly_product_sales AS (
     SELECT
         date_trunc('month', s.date) AS month,
         si."productId",
-        p.name AS product_name,
+        si."productName" AS product_name,
         SUM(si.quantity::numeric)::numeric AS total_quantity,
         ROW_NUMBER() OVER (
             PARTITION BY date_trunc('month', s.date)
@@ -91,9 +91,8 @@ monthly_product_sales AS (
         ) as rank
     FROM "Sell" s
     JOIN "SellItem" si ON si."sellId" = s.id
-    JOIN "Product" p ON p.id = si."productId"
     WHERE s.date BETWEEN ${yStart} AND ${yEnd}
-    GROUP BY date_trunc('month', s.date), si."productId", p.name
+    GROUP BY date_trunc('month', s.date), si."productId", si."productName"
 ),
 top_products_by_month AS (
     SELECT
@@ -142,54 +141,53 @@ export async function getInvestmentByMonthForYear(year: number) {
         }[]
     >`
 WITH months AS (
-  SELECT generate_series(${yStart}::timestamp, ${yEnd}::timestamp, interval '1 month') AS month_start
+    SELECT generate_series(${yStart}::timestamp, ${yEnd}::timestamp, interval '1 month') AS month_start
 ),
 monthly_investment AS (
-  SELECT
-    date_trunc('month', p.date) AS month,
-    SUM((pi.quantity::numeric) * (pi."purchasePrice"::numeric))::numeric AS total_invested
-  FROM "Purchase" p
-  JOIN "PurchaseItem" pi ON pi."purchaseId" = p.id
-  WHERE p.date BETWEEN ${yStart} AND ${yEnd}
-  GROUP BY date_trunc('month', p.date)
+    SELECT
+        date_trunc('month', p.date) AS month,
+        SUM((pi.quantity::numeric) * (pi."purchasePrice"::numeric))::numeric AS total_invested
+    FROM "Purchase" p
+    JOIN "PurchaseItem" pi ON pi."purchaseId" = p.id
+    WHERE p.date BETWEEN ${yStart} AND ${yEnd}
+    GROUP BY date_trunc('month', p.date)
 ),
 monthly_product_purchases AS (
-  SELECT
-    date_trunc('month', p.date) AS month,
-    pi."productId",
-    pr.name AS product_name,
-    SUM(pi.quantity::numeric)::numeric AS total_quantity,
-    ROW_NUMBER() OVER (
-      PARTITION BY date_trunc('month', p.date)
-      ORDER BY SUM(pi.quantity::numeric) DESC
-    ) as rank
-  FROM "Purchase" p
-  JOIN "PurchaseItem" pi ON pi."purchaseId" = p.id
-  JOIN "Product" pr ON pr.id = pi."productId"
-  WHERE p.date BETWEEN ${yStart} AND ${yEnd}
-  GROUP BY date_trunc('month', p.date), pi."productId", pr.name
+    SELECT
+        date_trunc('month', p.date) AS month,
+        pi."productId",
+        pi."productName" AS product_name,
+        SUM(pi.quantity::numeric)::numeric AS total_quantity,
+        ROW_NUMBER() OVER (
+            PARTITION BY date_trunc('month', p.date)
+            ORDER BY SUM(pi.quantity::numeric) DESC
+        ) as rank
+    FROM "Purchase" p
+    JOIN "PurchaseItem" pi ON pi."purchaseId" = p.id
+    WHERE p.date BETWEEN ${yStart} AND ${yEnd}
+    GROUP BY date_trunc('month', p.date), pi."productId", pi."productName"
 ),
 top_products_by_month AS (
-  SELECT
-    month,
-    json_agg(
-      json_build_object(
-        'productName', product_name,
-        'quantity', total_quantity
-      ) ORDER BY total_quantity DESC
-    ) FILTER (WHERE rank <= 3) as "topProducts"
-  FROM monthly_product_purchases
-  GROUP BY month
+    SELECT
+        month,
+        json_agg(
+            json_build_object(
+                'productName', product_name,
+                'quantity', total_quantity
+            ) ORDER BY total_quantity DESC
+        ) FILTER (WHERE rank <= 3) as "topProducts"
+    FROM monthly_product_purchases
+    GROUP BY month
 )
 SELECT
-  TO_CHAR(m.month_start, 'YYYY-MM') AS month,
-  COALESCE(mi.total_invested, 0)::numeric AS total,
-  COALESCE(tp."topProducts", '[]'::json) as "topProducts"
+    TO_CHAR(m.month_start, 'YYYY-MM') AS month,
+    COALESCE(mi.total_invested, 0)::numeric AS total,
+    COALESCE(tp."topProducts", '[]'::json) as "topProducts"
 FROM months m
 LEFT JOIN monthly_investment mi
-  ON mi.month = m.month_start
+    ON mi.month = m.month_start
 LEFT JOIN top_products_by_month tp
-  ON tp.month = m.month_start
+    ON tp.month = m.month_start
 ORDER BY m.month_start;
 `;
 
