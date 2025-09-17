@@ -1,24 +1,24 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { deleteSellByIdAction } from '@/lib/actions/sell';
+import { deleteSaleByIdAction } from '@/lib/actions/sale';
 import { showSuccessToast, showErrorToast } from '@/components/Toast';
 import Modal from '@/components/Modal';
 import ConfirmModal from '@/components/ConfirmModal';
 
-interface DeleteSellButtonProps {
-    sellId: number;
+interface DeleteSaleButtonProps {
+    saleId: number;
 }
 
-export default function DeleteSellButton({ sellId }: DeleteSellButtonProps) {
+export default function DeleteSaleButton({ saleId }: DeleteSaleButtonProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const router = useRouter();
 
     const handleDelete = async () => {
         try {
-            await deleteSellByIdAction(sellId);
+            await deleteSaleByIdAction(saleId);
             showSuccessToast('Venta eliminada con éxito');
-            router.push('/admin/sells');
+            router.push('/admin/sales');
         } catch {
             showErrorToast('No se pudo eliminar la venta');
         } finally {
@@ -39,8 +39,8 @@ export default function DeleteSellButton({ sellId }: DeleteSellButtonProps) {
                 <Modal onClose={() => setIsModalOpen(false)}>
                     <ConfirmModal
                         isTwoStep
-                        confirmationText={`Venta-ID-${sellId}`}
-                        entityItem={`la venta ID #${sellId}`}
+                        confirmationText={`Venta-ID-${saleId}`}
+                        entityItem={`la venta ID #${saleId}`}
                         onClose={() => setIsModalOpen(false)}
                         onTrigger={handleDelete}
                     />

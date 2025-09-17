@@ -1,17 +1,17 @@
 import { UseFormRegister, FieldErrors, Control, Controller, UseFormWatch } from 'react-hook-form';
 
-import { SellFormType } from '@/types/form';
+import { SaleFormType } from '@/types/form';
 
 import CustomDatePicker from '@/components/CustomDatePicker';
 
-interface SellFormDetailsProps {
-    register: UseFormRegister<SellFormType>;
-    errors: FieldErrors<SellFormType>;
-    control: Control<SellFormType>;
-    watch: UseFormWatch<SellFormType>;
+interface SaleFormDetailsProps {
+    register: UseFormRegister<SaleFormType>;
+    errors: FieldErrors<SaleFormType>;
+    control: Control<SaleFormType>;
+    watch: UseFormWatch<SaleFormType>;
 }
 
-export default function SellFormDetails({ control, errors, register }: SellFormDetailsProps) {
+export default function SaleFormDetails({ control, errors, register }: SaleFormDetailsProps) {
     return (
         <>
             <div className="flex flex-col gap-1 mb-4">

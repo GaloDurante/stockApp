@@ -1,14 +1,14 @@
-import SellForm from '@/components/sells/form/SellForm';
+import SaleForm from '@/components/sales/form/SaleForm';
 import { getProductsByCategory } from '@/lib/services/product';
 
-interface CreateSellPageType {
+interface CreateSalePageType {
     searchParams: Promise<{
         filterByCategory?: string;
         search?: string;
     }>;
 }
 
-export default async function CreateSellPage({ searchParams }: CreateSellPageType) {
+export default async function CreateSalePage({ searchParams }: CreateSalePageType) {
     const { filterByCategory, search } = await searchParams;
     const pageNumber = 1;
     const perPage = 20;
@@ -28,7 +28,7 @@ export default async function CreateSellPage({ searchParams }: CreateSellPageTyp
             </p>
             <div className="flex justify-center">
                 <div className="mt-6 w-full">
-                    <SellForm
+                    <SaleForm
                         perPage={perPage}
                         totalCount={total}
                         initialProducts={initialProducts}

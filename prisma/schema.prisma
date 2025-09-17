@@ -29,7 +29,7 @@ model Product {
   unitsPerBox   Int        @default(6)
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
-  sellItems     SellItem[]
+  saleItems     SaleItem[]
   PurchaseItem  PurchaseItem[]
 }
 
@@ -51,24 +51,24 @@ enum Category {
   ALMACEN
 }
 
-model Sell {
+model Sale {
   id         Int        @id @default(autoincrement())
   date       DateTime
   note       String?
   totalPrice Int
-  status     SellStatus @default(Pendiente)
+  status     SaleStatus @default(Pendiente)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 
-  items      SellItem[]
+  items      SaleItem[]
   payments   Payment[]
 
   @@index([date])
 }
 
-model SellItem {
+model SaleItem {
   id            Int       @id @default(autoincrement())
-  sellId        Int
+  saleId        Int
   productId     Int?
   productName   String
   quantity      Int
@@ -77,20 +77,20 @@ model SellItem {
   isBox         Boolean   @default(false)
   unitsPerBox   Int
 
-  sell        Sell      @relation(fields: [sellId], references: [id], onDelete: Cascade)
+  sale        Sale      @relation(fields: [saleId], references: [id], onDelete: Cascade)
   product     Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
-  @@index([sellId])
+  @@index([saleId])
 }
 
 model Payment {
   id         Int           @id @default(autoincrement())
-  sellId     Int
+  saleId     Int
   method     PaymentMethod
   amount     Int
   receiver   Receiver?
   createdAt  DateTime      @default(now())
 
-  sell       Sell          @relation(fields: [sellId], references: [id], onDelete: Cascade)
+  sale       Sale          @relation(fields: [saleId], references: [id], onDelete: Cascade)
 }
 
 enum PaymentMethod {
@@ -103,7 +103,7 @@ enum Receiver {
   Yanina
 }
 
-enum SellStatus {
+enum SaleStatus {
   Pendiente
   Completada
 }

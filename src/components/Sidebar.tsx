@@ -22,9 +22,9 @@ export default function Sidebar() {
     const renderNavLinks = () => (
         <>
             <Link
-                href="/admin/sells"
+                href="/admin/sales"
                 className={`flex items-center gap-2 px-3 py-2 rounded transition-colors hover:bg-border hover:text-accent ${
-                    pathname.startsWith('/admin/sells') && 'text-accent'
+                    pathname.startsWith('/admin/sales') && 'text-accent'
                 }`}
             >
                 <span>

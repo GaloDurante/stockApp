@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 
 import { format } from '@formkit/tempo';
 
-import { Category, SellStatus } from '@/generated/prisma';
+import { Category, SaleStatus } from '@/generated/prisma';
 import { OptionType } from '@/types/form';
 
 import { getSelectedOption, buildQueryParams } from '@/lib/helpers/utils';
@@ -79,7 +79,7 @@ export default function Filters({
     const statusOptions = useMemo(() => {
         if (!withStatus) return [];
 
-        const options = Object.entries(SellStatus).map(([key, value]) => ({
+        const options = Object.entries(SaleStatus).map(([key, value]) => ({
             value: key,
             label: value.charAt(0).toUpperCase() + value.slice(1).toLowerCase().replace('_', ' '),
         }));

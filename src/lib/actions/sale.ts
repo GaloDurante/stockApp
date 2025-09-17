@@ -1,9 +1,9 @@
 'use server';
-import { getAllSells, createSellAndSellItems, deleteSellAndRestoreStock, updateSell } from '@/lib/services/sell';
-import { SellFormType } from '@/types/form';
-import { SellStatus } from '@/generated/prisma';
+import { getAllSales, createSaleAndSaleItems, deleteSaleAndRestoreStock, updateSale } from '@/lib/services/sale';
+import { SaleFormType } from '@/types/form';
+import { SaleStatus } from '@/generated/prisma';
 
-export async function loadMoreSellsAction({
+export async function loadMoreSalesAction({
     sortOrder,
     page,
     perPage,
@@ -13,27 +13,27 @@ export async function loadMoreSellsAction({
     perPage: number;
 }) {
     try {
-        const { sells, total } = await getAllSells({
+        const { sales, total } = await getAllSales({
             sortOrder,
             page,
             perPage,
         });
 
-        return { sells, total };
+        return { sales, total };
     } catch {
         throw new Error('No se pudieron cargar más productos');
     }
 }
 
-export async function deleteSellByIdAction(id: number) {
+export async function deleteSaleByIdAction(id: number) {
     try {
-        return await deleteSellAndRestoreStock(id);
+        return await deleteSaleAndRestoreStock(id);
     } catch {
         throw new Error('No se pudo eliminar la venta');
     }
 }
 
-export async function createSellAction(data: SellFormType) {
+export async function createSaleAction(data: SaleFormType) {
     if (!data.items || data.items.length === 0) {
         throw new Error('Debe seleccionar al menos un producto');
     }
@@ -49,19 +49,19 @@ export async function createSellAction(data: SellFormType) {
     });
 
     try {
-        return await createSellAndSellItems(data);
+        return await createSaleAndSaleItems(data);
     } catch {
         throw new Error('No se pudo crear la venta');
     }
 }
 
-export async function updateSellAction(id: number, data: SellFormType, status: SellStatus) {
+export async function updateSaleAction(id: number, data: SaleFormType, status: SaleStatus) {
     if (!data.payments || data.payments.length === 0) {
         throw new Error('Debe agregar al menos un pago');
     }
 
     try {
-        return await updateSell(id, data, status);
+        return await updateSale(id, data, status);
     } catch {
         throw new Error('No se pudo actualizar la venta');
     }

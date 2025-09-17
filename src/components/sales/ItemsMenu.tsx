@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { SellItemType } from '@/types/sellItem';
+import { SaleItemType } from '@/types/saleItem';
 import { formatQuantity, formatPrice } from '@/lib/helpers/components/utils';
 
 import { ChevronDown, ShoppingCartIcon, X } from 'lucide-react';
@@ -8,7 +8,7 @@ import Link from 'next/link';
 import Modal from '@/components/Modal';
 
 interface ItemsMenuProps {
-    items: SellItemType[];
+    items: SaleItemType[];
 }
 
 export default function ItemsMenu({ items }: ItemsMenuProps) {

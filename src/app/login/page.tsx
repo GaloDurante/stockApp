@@ -26,7 +26,7 @@ export default function LoginPage() {
         if (!res?.ok) {
             showErrorToast(String(res?.error));
         } else {
-            router.push('/admin/sells');
+            router.push('/admin/sales');
         }
     };
 

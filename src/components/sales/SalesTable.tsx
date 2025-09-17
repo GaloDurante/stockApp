@@ -4,69 +4,69 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from '@formkit/tempo';
 
-import { SellType } from '@/types/sell';
+import { SaleType } from '@/types/sale';
 import { formatQuantity, formatPrice } from '@/lib/helpers/components/utils';
-import { loadMoreSellsAction, deleteSellByIdAction } from '@/lib/actions/sell';
+import { loadMoreSalesAction, deleteSaleByIdAction } from '@/lib/actions/sale';
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
 
-import SellCard from '@/components/sells/SellCard';
+import SaleCard from '@/components/sales/SaleCard';
 import TableActionsButtons from '@/components/products/TableActionsButtons';
-import ItemsMenu from '@/components/sells/ItemsMenu';
-import SellMoreDetails from '@/components/sells/SellMoreDetails';
+import ItemsMenu from '@/components/sales/ItemsMenu';
+import SaleMoreDetails from '@/components/sales/SaleMoreDetails';
 import Link from 'next/link';
 
-interface SellsTableProps {
-    initialSells: SellType[];
+interface SalesTableProps {
+    initialSales: SaleType[];
     totalCount: number;
     sortOrder: 'id_asc' | 'id_desc' | 'date_asc' | 'date_desc' | 'price_asc' | 'price_desc';
     perPage: number;
 }
 
-export default function SellsTable({ initialSells, totalCount, sortOrder, perPage }: SellsTableProps) {
-    const [sells, setSells] = useState<SellType[]>(initialSells);
+export default function SalesTable({ initialSales, totalCount, sortOrder, perPage }: SalesTableProps) {
+    const [sales, setSales] = useState<SaleType[]>(initialSales);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(initialSells.length < totalCount);
+    const [hasMore, setHasMore] = useState(initialSales.length < totalCount);
     const [deleteModalId, setDeleteModalId] = useState<number | null>(null);
     const router = useRouter();
 
     const loader = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        setSells(initialSells);
+        setSales(initialSales);
         setPage(1);
-        setHasMore(initialSells.length < totalCount);
-    }, [initialSells, totalCount, sortOrder]);
+        setHasMore(initialSales.length < totalCount);
+    }, [initialSales, totalCount, sortOrder]);
 
-    const loadMoreSells = useCallback(async () => {
+    const loadMoreSales = useCallback(async () => {
         if (loading || !hasMore) return;
 
         setLoading(true);
         try {
             const nextPage = page + 1;
-            const { sells: newSells } = await loadMoreSellsAction({
+            const { sales: newSales } = await loadMoreSalesAction({
                 sortOrder,
                 page: nextPage,
                 perPage,
             });
-            setSells((prev) => [...prev, ...newSells]);
+            setSales((prev) => [...prev, ...newSales]);
             setPage(nextPage);
-            setHasMore(sells.length + newSells.length < totalCount);
+            setHasMore(sales.length + newSales.length < totalCount);
         } catch {
             showErrorToast('Error cargando más ventas');
         } finally {
             setLoading(false);
         }
-    }, [loading, hasMore, page, sortOrder, perPage, totalCount, sells.length]);
+    }, [loading, hasMore, page, sortOrder, perPage, totalCount, sales.length]);
 
     const handleObserver = useCallback(
         (entries: IntersectionObserverEntry[]) => {
             const target = entries[0];
             if (target.isIntersecting && !loading && hasMore) {
-                loadMoreSells();
+                loadMoreSales();
             }
         },
-        [loading, hasMore, loadMoreSells]
+        [loading, hasMore, loadMoreSales]
     );
 
     useEffect(() => {
@@ -84,7 +84,7 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
         if (!deleteModalId) return;
         setDeleteModalId(null);
         try {
-            await deleteSellByIdAction(deleteModalId);
+            await deleteSaleByIdAction(deleteModalId);
             showSuccessToast('Venta eliminada con éxito');
             router.refresh();
         } catch {
@@ -107,49 +107,49 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                     </tr>
                 </thead>
                 <tbody>
-                    {sells.length === 0 ? (
+                    {sales.length === 0 ? (
                         <tr>
                             <td colSpan={7} className="text-center py-6 text-muted">
                                 No hay ventas para mostrar.
                             </td>
                         </tr>
                     ) : (
-                        sells.map((sell) => (
-                            <tr key={sell.id} className="border-t border-border hover:bg-border-dark transition-colors">
+                        sales.map((sale) => (
+                            <tr key={sale.id} className="border-t border-border hover:bg-border-dark transition-colors">
                                 <td className="px-4 py-3 w-[1%]">
                                     <div className="flex gap-2">
                                         <TableActionsButtons
-                                            redirect={`/admin/sells/${sell.id}`}
+                                            redirect={`/admin/sales/${sale.id}`}
                                             handleDelete={handleDelete}
-                                            label={`la venta ID #${sell.id}`}
-                                            isModalOpen={deleteModalId === sell.id}
-                                            openModal={() => setDeleteModalId(sell.id)}
+                                            label={`la venta ID #${sale.id}`}
+                                            isModalOpen={deleteModalId === sale.id}
+                                            openModal={() => setDeleteModalId(sale.id)}
                                             closeModal={() => setDeleteModalId(null)}
                                             isTwoStep
-                                            confirmationText={`Venta-ID-${sell.id}`}
+                                            confirmationText={`Venta-ID-${sale.id}`}
                                             hideEditButton
                                         />
                                     </div>
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">
-                                    <Link className="hover:border-b transition-all" href={`/admin/sells/${sell.id}`}>
-                                        #{sell.id}
+                                    <Link className="hover:border-b transition-all" href={`/admin/sales/${sale.id}`}>
+                                        #{sale.id}
                                     </Link>
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">
-                                    {format({ date: sell.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
+                                    {format({ date: sale.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
                                 </td>
-                                <td className="px-4 py-3 whitespace-nowrap">{formatPrice(sell.totalPrice)}</td>
-                                {sell.items.length > 0 ? (
+                                <td className="px-4 py-3 whitespace-nowrap">{formatPrice(sale.totalPrice)}</td>
+                                {sale.items.length > 0 ? (
                                     <td className="px-2 py-1 whitespace-nowrap relative">
-                                        <ItemsMenu items={sell.items} />
+                                        <ItemsMenu items={sale.items} />
                                     </td>
                                 ) : (
-                                    <td className="px-4 py-3 whitespace-nowrap">{formatQuantity(sell.items.length)}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap">{formatQuantity(sale.items.length)}</td>
                                 )}
                                 <td className="px-4 py-3 whitespace-nowrap">
                                     <div className="flex gap-1">
-                                        {Array.from(new Set(sell.payments.map((p) => p.method))).map(
+                                        {Array.from(new Set(sale.payments.map((p) => p.method))).map(
                                             (method, index) => (
                                                 <span
                                                     key={index}
@@ -162,7 +162,7 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
                                     </div>
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">
-                                    <SellMoreDetails sell={sell} />
+                                    <SaleMoreDetails sale={sale} />
                                 </td>
                             </tr>
                         ))
@@ -171,21 +171,21 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
             </table>
 
             <div className="md:hidden">
-                {sells.length === 0 ? (
+                {sales.length === 0 ? (
                     <div className="text-center py-6 text-muted">No hay ventas para mostrar.</div>
                 ) : (
                     <div className="border border-border rounded-lg">
-                        {sells.map((sell, index) => (
-                            <SellCard
+                        {sales.map((sale, index) => (
+                            <SaleCard
                                 deleteModalId={deleteModalId}
                                 handleDelete={handleDelete}
                                 setDeleteModalId={setDeleteModalId}
-                                key={sell.id}
-                                sell={sell}
+                                key={sale.id}
+                                sale={sale}
                                 className={`
                                     ${index === 0 ? 'rounded-t-lg' : ''}
-                                    ${index === sells.length - 1 ? 'rounded-b-lg' : ''}
-                                    ${index !== sells.length - 1 ? 'border-b border-border' : ''}
+                                    ${index === sales.length - 1 ? 'rounded-b-lg' : ''}
+                                    ${index !== sales.length - 1 ? 'border-b border-border' : ''}
                                 `}
                             />
                         ))}
@@ -195,7 +195,7 @@ export default function SellsTable({ initialSells, totalCount, sortOrder, perPag
 
             <div ref={loader} className="h-10 flex justify-center items-center">
                 {loading && <span>Cargando más ventas...</span>}
-                {!hasMore && sells.length > 0 && <span className="text-muted">Todas las ventas cargadas.</span>}
+                {!hasMore && sales.length > 0 && <span className="text-muted">Todas las ventas cargadas.</span>}
             </div>
         </div>
     );

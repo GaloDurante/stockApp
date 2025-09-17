@@ -23,7 +23,7 @@ export type LoginFormType = {
     password: string;
 };
 
-export type ProductSellFormType = ProductType & {
+export type ProductSaleFormType = ProductType & {
     quantity: number;
     newSalePrice?: number;
     isBox: boolean;
@@ -35,8 +35,8 @@ export type PaymentFormType = {
     receiver?: Receiver | null;
 };
 
-export type SellFormType = {
-    items: ProductSellFormType[];
+export type SaleFormType = {
+    items: ProductSaleFormType[];
     date: Date;
     payments: PaymentFormType[];
     totalPrice: number;

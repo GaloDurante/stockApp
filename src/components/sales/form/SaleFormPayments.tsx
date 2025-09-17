@@ -3,35 +3,35 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 
-import { SellFormType, PaymentFormType } from '@/types/form';
-import { Receiver, PaymentMethod, SellStatus } from '@/generated/prisma';
+import { SaleFormType, PaymentFormType } from '@/types/form';
+import { Receiver, PaymentMethod, SaleStatus } from '@/generated/prisma';
 
 import { formatPrice } from '@/lib/helpers/components/utils';
-import { updateSellAction } from '@/lib/actions/sell';
+import { updateSaleAction } from '@/lib/actions/sale';
 
 import { Plus, Trash } from 'lucide-react';
 import { showSuccessToast, showErrorToast } from '@/components/Toast';
 import CustomSelect from '@/components/CustomSelect';
-import SellFormDetails from '@/components/sells/form/SellFormDetails';
-import DeleteSellButton from '@/components/sells/DeleteSellButton';
+import SaleFormDetails from '@/components/sales/form/SaleFormDetails';
+import DeleteSaleButton from '@/components/sales/DeleteSaleButton';
 
-interface SellFormPaymentsProps {
-    currentStatus: SellStatus;
-    sellId: number;
+interface SaleFormPaymentsProps {
+    currentStatus: SaleStatus;
+    saleId: number;
     totalPrice: number;
     previousPayments?: PaymentFormType[];
     previousNote?: string | null;
     previousDate?: Date;
 }
 
-export default function SellFormPayments({
+export default function SaleFormPayments({
     currentStatus,
-    sellId,
+    saleId,
     totalPrice,
     previousPayments,
     previousNote,
     previousDate,
-}: SellFormPaymentsProps) {
+}: SaleFormPaymentsProps) {
     const {
         control,
         register,
@@ -39,7 +39,7 @@ export default function SellFormPayments({
         watch,
         handleSubmit,
         formState: { errors, isDirty, isSubmitting },
-    } = useForm<SellFormType>({
+    } = useForm<SaleFormType>({
         defaultValues: {
             payments: previousPayments ?? [],
             totalPrice,
@@ -75,7 +75,7 @@ export default function SellFormPayments({
 
     const payments = useWatch({ control, name: 'payments' }) || [];
     register('payments', {
-        validate: (payments: SellFormType['payments']) => {
+        validate: (payments: SaleFormType['payments']) => {
             if (!payments || payments.length === 0) {
                 return 'Debe agregar al menos un pago';
             }
@@ -87,14 +87,14 @@ export default function SellFormPayments({
         },
     });
 
-    const onSubmitPayment = async (data: SellFormType) => {
+    const onSubmitPayment = async (data: SaleFormType) => {
         try {
             let newStatus = currentStatus;
             const total = totalPrice || 0;
             const sumPayments = payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
             newStatus = sumPayments === total ? 'Completada' : 'Pendiente';
 
-            await updateSellAction(sellId, data, newStatus);
+            await updateSaleAction(saleId, data, newStatus);
             showSuccessToast('Venta actualizada con éxito');
             router.refresh();
         } catch (error: unknown) {
@@ -246,10 +246,10 @@ export default function SellFormPayments({
             </div>
 
             <div className="bg-surface p-6 md:p-8 rounded-lg border border-border mt-8">
-                <SellFormDetails control={control} errors={errors} register={register} watch={watch} />
+                <SaleFormDetails control={control} errors={errors} register={register} watch={watch} />
             </div>
             <div className="flex w-full justify-end items-center gap-4 mt-4">
-                <DeleteSellButton sellId={sellId} />
+                <DeleteSaleButton saleId={saleId} />
                 <button
                     type="submit"
                     disabled={isSubmitting || !isDirty}

@@ -5,19 +5,19 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 import { ProductType } from '@/types/product';
-import { SellFormType, ProductSellFormType } from '@/types/form';
+import { SaleFormType, ProductSaleFormType } from '@/types/form';
 
-import { createSellAction } from '@/lib/actions/sell';
+import { createSaleAction } from '@/lib/actions/sale';
 import { formatPrice } from '@/lib/helpers/components/utils';
 
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
 import { LoaderCircle, X } from 'lucide-react';
 import Modal from '@/components/Modal';
-import SelectProducts from '@/components/sells/form/SelectProducts';
-import SellFormProducts from '@/components/sells/form/SellFormProducts';
-import SellFormDetails from '@/components/sells/form/SellFormDetails';
+import SelectProducts from '@/components/sales/form/SelectProducts';
+import SaleFormProducts from '@/components/sales/form/SaleFormProducts';
+import SaleFormDetails from '@/components/sales/form/SaleFormDetails';
 
-interface SellFormProductsType {
+interface SaleFormProductsType {
     initialProducts: ProductType[];
     search?: string;
     filterByCategory?: string;
@@ -25,13 +25,13 @@ interface SellFormProductsType {
     totalCount: number;
 }
 
-export default function SellForm({
+export default function SaleForm({
     initialProducts,
     search,
     filterByCategory,
     perPage,
     totalCount,
-}: SellFormProductsType) {
+}: SaleFormProductsType) {
     const {
         register,
         handleSubmit,
@@ -40,7 +40,7 @@ export default function SellForm({
         setValue,
         clearErrors,
         formState: { errors, isDirty, isSubmitting },
-    } = useForm<SellFormType>({
+    } = useForm<SaleFormType>({
         defaultValues: {
             items: [],
             payments: [],
@@ -48,7 +48,7 @@ export default function SellForm({
     });
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [tempSelectedItems, setTempSelectedItems] = useState<ProductSellFormType[]>([]);
+    const [tempSelectedItems, setTempSelectedItems] = useState<ProductSaleFormType[]>([]);
     const router = useRouter();
 
     const handleSaveSelection = () => {
@@ -80,11 +80,11 @@ export default function SellForm({
         }
     }, [items, clearErrors]);
 
-    const onSubmit = async (data: SellFormType) => {
+    const onSubmit = async (data: SaleFormType) => {
         try {
-            const newSell = await createSellAction(data);
+            const newSale = await createSaleAction(data);
             showSuccessToast('Venta creada con éxito');
-            router.push(`/admin/sells/${newSell.id}`);
+            router.push(`/admin/sales/${newSale.id}`);
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : 'No se pudo crear la venta';
             showErrorToast(errorMessage);
@@ -130,7 +130,7 @@ export default function SellForm({
             </div>
 
             <div className="flex-3">
-                <SellFormProducts
+                <SaleFormProducts
                     errors={errors}
                     items={items}
                     register={register}
@@ -170,7 +170,7 @@ export default function SellForm({
                     </Modal>
                 )}
                 <div className="bg-surface p-6 md:p-8 rounded-lg border border-border mt-8">
-                    <SellFormDetails control={control} errors={errors} register={register} watch={watch} />
+                    <SaleFormDetails control={control} errors={errors} register={register} watch={watch} />
                 </div>
                 <div className="flex justify-end items-center gap-4 mt-4">
                     <button

@@ -1,6 +1,6 @@
 import { Prisma } from '@/generated/prisma';
 
-export type SellType = Prisma.SellGetPayload<{
+export type SaleType = Prisma.SaleGetPayload<{
     include: {
         items: true;
         payments: {
