@@ -59,13 +59,20 @@ export default function ReduceStockButton({ productId, productStock }: ReduceSto
                 <Modal
                     onClose={() => {
                         setIsModalOpen(false);
+                        reset();
                     }}
                 >
                     <div className="flex justify-between items-center p-4 border-b border-border bg-main rounded-t-xl">
                         <span id="modal-title" className="text-lg font-semibold">
                             Actualizar inventario
                         </span>
-                        <button type="button" onClick={() => setIsModalOpen(false)}>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setIsModalOpen(false);
+                                reset();
+                            }}
+                        >
                             <X className="h-7 w-7 p-1 hover:bg-border rounded-full cursor-pointer transition-all" />
                         </button>
                     </div>
@@ -82,6 +89,10 @@ export default function ReduceStockButton({ productId, productStock }: ReduceSto
                                     min: {
                                         value: 0,
                                         message: 'El stock no puede ser menor a 0',
+                                    },
+                                    max: {
+                                        value: Number(productStock) ?? 0,
+                                        message: 'No puedes ingresar nuevas unidades en este formulario.',
                                     },
                                 })}
                                 className={`p-2 border rounded-md ${errors.stock ? 'border-red-700' : 'border-border'}`}

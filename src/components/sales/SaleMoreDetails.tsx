@@ -88,7 +88,7 @@ export default function SaleMoreDetails({ sale }: SaleMoreDetailsProps) {
                         <div className="p-4">
                             <h3 className="font-medium  mb-2">Resumen de pagos</h3>
                             <div className="flex justify-between text-sm">
-                                <span>Total pagado:</span>
+                                <span className="text-muted">Total pagado:</span>
                                 <span className="font-medium text-base">
                                     {formatPrice(sale.payments.reduce((sum, payment) => sum + payment.amount, 0))}
                                 </span>
