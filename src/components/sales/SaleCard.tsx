@@ -30,7 +30,7 @@ export default function SaleCard({ sale, className, handleDelete, deleteModalId,
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 flex-wrap">
                         {Array.from(new Set(sale.payments.map((p) => p.method))).map((method, index) => (
                             <span
                                 key={index}
