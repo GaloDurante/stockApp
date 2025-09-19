@@ -20,7 +20,7 @@ export default async function ProfitsPage({ searchParams }: ProfitsPageProps) {
             <div className="flex justify-between items-center pl-4 pb-4">
                 <div>
                     <h1 className="text-xl md:text-3xl font-bold">Ganancias Totales</h1>
-                    <p className="text-sm text-muted mt-1">Resumen anual de ingresos</p>
+                    <p className="text-sm text-muted mt-1">Resumen anual de ganancias</p>
                 </div>
                 <div className="min-w-32">
                     <YearSelector currentYear={selectedYear} maxYear={maxYear} />
