@@ -28,8 +28,9 @@ export default async function ProfitsPage({ searchParams }: ProfitsPageProps) {
             </div>
             <ProfitByMonthChart
                 data={investmentByMonthData}
-                productsSectionSubtitle="Los artículos más ingresados"
+                productsSectionSubtitle="Los artículos con más ingresos"
                 productsSectionLabel="Unidades ingresadas"
+                isInvestment
             />
         </div>
     );

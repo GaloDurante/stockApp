@@ -8,12 +8,14 @@ interface ProfitByMonthChartProps {
     data: ChartsData[];
     productsSectionSubtitle: string;
     productsSectionLabel: string;
+    isInvestment?: boolean;
 }
 
 export default function ProfitByMonthChart({
     data,
     productsSectionSubtitle,
     productsSectionLabel,
+    isInvestment = false,
 }: ProfitByMonthChartProps) {
     const [selectedMonth, setSelectedMonth] = useState<string | undefined>(undefined);
 
@@ -92,21 +94,61 @@ export default function ProfitByMonthChart({
                             <Tooltip
                                 trigger="click"
                                 cursor={{ fill: 'rgba(200, 200, 200, 0.05)' }}
-                                formatter={(value) => formatPrice(Number(value))}
-                                itemStyle={{ color: 'white' }}
-                                contentStyle={{
-                                    backgroundColor: '#2a2a2a',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+                                content={({ active, payload, label }) => {
+                                    if (active && payload && payload.length) {
+                                        const total = payload.find((p) => p.dataKey === 'total')?.value ?? 0;
+                                        const shippingTotal =
+                                            payload.find((p) => p.dataKey === 'shippingTotal')?.value ?? 0;
+
+                                        return (
+                                            <div className="bg-border rounded-md p-3 shadow-lg shadow-main/50 text-sm">
+                                                {isInvestment ? (
+                                                    <>
+                                                        <p className="font-medium capitalize mb-2">{label}</p>
+                                                        <p className="text-muted">
+                                                            Total de inversion:{' '}
+                                                            <span className="text-secondary font-medium">
+                                                                {formatPrice(Number(total))}
+                                                            </span>
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <p className="font-medium capitalize mb-2">{label}</p>
+                                                        <p className="text-muted">
+                                                            Total de ganancias:{' '}
+                                                            <span className="text-secondary font-medium">
+                                                                {formatPrice(Number(total))}
+                                                            </span>
+                                                        </p>
+                                                        <p className="text-muted">
+                                                            Total en envíos:{' '}
+                                                            <span className="text-secondary font-medium">
+                                                                {formatPrice(Number(shippingTotal))}
+                                                            </span>
+                                                        </p>
+                                                    </>
+                                                )}
+                                            </div>
+                                        );
+                                    }
+                                    return null;
                                 }}
                             />
                             <Bar
                                 dataKey="total"
                                 fill="#3b82f6"
                                 radius={[4, 4, 0, 0]}
-                                activeBar={<Rectangle fill="orange" />}
+                                activeBar={<Rectangle fill="#16a34a" />}
                             />
+                            {!isInvestment && (
+                                <Bar
+                                    dataKey="shippingTotal"
+                                    fill="#dc2626"
+                                    radius={[4, 4, 0, 0]}
+                                    activeBar={<Rectangle fill="orange" />}
+                                />
+                            )}
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
