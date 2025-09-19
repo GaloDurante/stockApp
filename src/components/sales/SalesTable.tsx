@@ -103,13 +103,14 @@ export default function SalesTable({ initialSales, totalCount, sortOrder, perPag
                         <th className="p-4">Precio Total</th>
                         <th className="p-4">Items</th>
                         <th className="p-4">Método Pago</th>
+                        <th className="p-4">Delivery</th>
                         <th className="p-4">Detalles</th>
                     </tr>
                 </thead>
                 <tbody>
                     {sales.length === 0 ? (
                         <tr>
-                            <td colSpan={7} className="text-center py-6 text-muted">
+                            <td colSpan={8} className="text-center py-6 text-muted">
                                 No hay ventas para mostrar.
                             </td>
                         </tr>
@@ -142,7 +143,7 @@ export default function SalesTable({ initialSales, totalCount, sortOrder, perPag
                                 <td className="px-4 py-3 whitespace-nowrap">{formatPrice(sale.totalPrice)}</td>
                                 {sale.items.length > 0 ? (
                                     <td className="px-2 py-1 whitespace-nowrap relative">
-                                        <ItemsMenu items={sale.items} />
+                                        <ItemsMenu items={sale.items} shippingPrice={sale.shippingPrice ?? 0} />
                                     </td>
                                 ) : (
                                     <td className="px-4 py-3 whitespace-nowrap">{formatQuantity(sale.items.length)}</td>
@@ -153,13 +154,24 @@ export default function SalesTable({ initialSales, totalCount, sortOrder, perPag
                                             (method, index) => (
                                                 <span
                                                     key={index}
-                                                    className={`${method === 'Efectivo' ? 'border-green-600 text-green-600' : 'border-accent text-accent'} border p-2 rounded-xl font-medium`}
+                                                    className={`${method === 'Efectivo' ? 'bg-green-600/30 text-green-600' : 'bg-accent/30 text-accent'} text-sm px-3 py-1.5 rounded-full font-medium`}
                                                 >
                                                     {method}
                                                 </span>
                                             )
                                         )}
                                     </div>
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                    {sale.shippingPrice ? (
+                                        <span className="px-3 py-1.5 bg-terciary/30 text-terciary text-sm font-medium rounded-full">
+                                            Envío incluido
+                                        </span>
+                                    ) : (
+                                        <span className="px-3 py-1.5 bg-muted/30 text-muted text-sm font-medium rounded-full">
+                                            Sin envío
+                                        </span>
+                                    )}
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">
                                     <SaleMoreDetails sale={sale} />

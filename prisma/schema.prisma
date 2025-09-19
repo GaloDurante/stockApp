@@ -52,16 +52,18 @@ enum Category {
 }
 
 model Sale {
-  id         Int        @id @default(autoincrement())
-  date       DateTime
-  note       String?
-  totalPrice Int
-  status     SaleStatus @default(Pendiente)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id                            Int        @id @default(autoincrement())
+  date                          DateTime
+  note                          String?
+  totalPrice                    Int
+  status                        SaleStatus @default(Pendiente)
+  shippingPrice                 Int?
+  supplierCoveredAmount Int?
+  createdAt                     DateTime   @default(now())
+  updatedAt                     DateTime   @updatedAt
 
-  items      SaleItem[]
-  payments   Payment[]
+  items                         SaleItem[]
+  payments                      Payment[]
 
   @@index([date])
 }

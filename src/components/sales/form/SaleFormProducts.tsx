@@ -136,20 +136,20 @@ export default function SaleFormProducts({
                                     <div className="w-10/12 sm:w-full flex flex-col gap-1">
                                         <span className="font-semibold mb-2">{item.name}</span>
 
-                                        <span className="text-xs bg-border text-muted px-3 py-1.5 rounded-md font-medium w-fit">
+                                        <span className="text-xs bg-border text-muted px-3 py-1.5 rounded-full font-medium w-fit">
                                             {isBox
                                                 ? `Compra caja: ${formatPrice(item.purchasePrice * item.unitsPerBox)}`
                                                 : `Compra unidad: ${formatPrice(item.purchasePrice)}`}
                                         </span>
 
-                                        <span className="text-xs bg-accent/30 text-accent px-3 py-1.5 rounded-md font-medium w-fit">
+                                        <span className="text-xs bg-accent/30 text-accent px-3 py-1.5 rounded-full font-medium w-fit">
                                             {isBox
                                                 ? `Venta caja: ${formatPrice(item.salePriceBox || item.salePrice * item.unitsPerBox)}`
                                                 : `Venta unidad: ${formatPrice(item.salePrice)}`}
                                         </span>
 
                                         <span
-                                            className={`text-xs ${stockColor} px-3 py-1.5 rounded-md font-medium w-fit`}
+                                            className={`text-xs ${stockColor} px-3 py-1.5 rounded-full font-medium w-fit`}
                                         >
                                             Stock:{' '}
                                             {isBox
@@ -235,7 +235,7 @@ export default function SaleFormProducts({
                                             type="button"
                                             onClick={() => handleRemoveItem(item.id)}
                                             aria-label={`Eliminar ${item.name}`}
-                                            className="p-1 md:p-2 hover:bg-border rounded-full transition-all cursor-pointer"
+                                            className="p-1 md:p-2 hover:bg-red-200 hover:text-red-700 rounded-full transition-all cursor-pointer"
                                         >
                                             <Trash size={18} />
                                         </button>

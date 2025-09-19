@@ -41,6 +41,8 @@ export type SaleFormType = {
     payments: PaymentFormType[];
     totalPrice: number;
     note?: string | null;
+    shippingPrice?: number | null;
+    supplierCoveredAmount?: number | null;
 };
 
 export type StockFormType = {

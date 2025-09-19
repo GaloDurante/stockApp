@@ -58,11 +58,14 @@ export default function SaleForm({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const items = watch('items') || [];
-    const totalVenta = items.reduce((acc, item) => {
-        const qty = Number(item.quantity) || 1;
-        const price = Number(item.newSalePrice) || 0;
-        return acc + qty * price;
-    }, 0);
+    const shippingPrice = watch('shippingPrice') || 0;
+    const totalVenta =
+        shippingPrice +
+        items.reduce((acc, item) => {
+            const qty = Number(item.quantity) || 1;
+            const price = Number(item.newSalePrice) || 0;
+            return acc + qty * price;
+        }, 0);
 
     useEffect(() => {
         setValue('totalPrice', totalVenta);
@@ -97,12 +100,12 @@ export default function SaleForm({
                 <div className="space-y-4">
                     <div className="flex justify-between items-center p-4 shadow-lg rounded-lg border border-border">
                         <span className="text-muted text-sm md:text-base">Total:</span>
-                        <span className="text-lg md:text-xl font-bold">{formatPrice(totalVenta)}</span>
+                        <span className="text-lg font-bold">{formatPrice(totalVenta)}</span>
                     </div>
 
                     <div className="flex justify-between items-center p-4 shadow-lg rounded-lg border border-border">
                         <span className="text-muted text-sm md:text-base">Seleccionados:</span>
-                        <span className="text-lg md:text-xl font-semibold">
+                        <span className="text-lg font-semibold">
                             {items.length} {items.length === 1 ? 'producto' : 'productos'}
                         </span>
                     </div>
@@ -123,6 +126,15 @@ export default function SaleForm({
                                         </div>
                                     );
                                 })}
+                            </div>
+                        </div>
+                    )}
+
+                    {shippingPrice > 0 && (
+                        <div className="pt-4 border-t border-border">
+                            <div className="flex justify-between text-sm">
+                                <span>Envío</span>
+                                <span className="font-medium">{formatPrice(shippingPrice)}</span>
                             </div>
                         </div>
                     )}
@@ -170,7 +182,13 @@ export default function SaleForm({
                     </Modal>
                 )}
                 <div className="bg-surface p-6 md:p-8 rounded-lg border border-border mt-8">
-                    <SaleFormDetails control={control} errors={errors} register={register} watch={watch} />
+                    <SaleFormDetails
+                        control={control}
+                        errors={errors}
+                        register={register}
+                        watch={watch}
+                        setValue={setValue}
+                    />
                 </div>
                 <div className="flex justify-end items-center gap-4 mt-4">
                     <button

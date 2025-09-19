@@ -73,7 +73,8 @@ WITH months AS (
 monthly_sales_summary AS (
     SELECT
         date_trunc('month', s.date) AS month,
-        SUM((si."unitPrice"::numeric - si."purchasePrice"::numeric) * si.quantity::numeric)::numeric AS total_profit
+        SUM((si."unitPrice"::numeric - si."purchasePrice"::numeric) * si.quantity::numeric)::numeric AS total_profit,
+        SUM(s."supplierCoveredAmount"::numeric) AS total_shipping
     FROM "Sale" s
     JOIN "SaleItem" si ON si."saleId" = s.id
     WHERE s.date BETWEEN ${yStart} AND ${yEnd}
@@ -109,6 +110,7 @@ top_products_by_month AS (
 SELECT
     TO_CHAR(m.month_start, 'YYYY-MM') AS month,
     COALESCE(mss.total_profit, 0)::numeric AS total,
+    COALESCE(mss.total_shipping, 0)::numeric AS "shippingTotal",
     COALESCE(tp."topProducts", '[]'::json) as "topProducts"
 FROM months m
 LEFT JOIN monthly_sales_summary mss
@@ -123,6 +125,7 @@ ORDER BY m.month_start;
         return {
             month: months[monthIndex],
             total: Number(r.total),
+            shippingTotal: Number(r.shippingTotal),
             topProducts: r.topProducts,
         };
     });

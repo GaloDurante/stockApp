@@ -14,20 +14,20 @@ const getPaymentIcon = (method: string) => {
     switch (method.toLowerCase()) {
         case 'efectivo':
             return (
-                <div className="p-2 border border-green-600 rounded-full shadow-sm">
+                <div className="p-2 bg-green-600/30 rounded-full shadow-sm">
                     <Banknote className="h-5 w-5 text-green-600" />
                 </div>
             );
         case 'transferencia':
             return (
-                <div className="p-2 border border-accent rounded-full shadow-sm">
+                <div className="p-2 bg-accent/30 rounded-full shadow-sm">
                     <CreditCard className="h-5 w-5 text-accent" />
                 </div>
             );
         default:
             return (
-                <div className="p-2 border border-terciary rounded-full shadow-sm">
-                    <Banknote className="h-5 w-5 text-terciary" />
+                <div className="p-2 bg-muted/30 rounded-full shadow-sm">
+                    <Banknote className="h-5 w-5 text-muted" />
                 </div>
             );
     }
@@ -85,7 +85,6 @@ export default function SaleMoreDetails({ sale }: SaleMoreDetailsProps) {
                                 </div>
                             </div>
                         ))}
-
                         <div className="p-4">
                             <h3 className="font-medium  mb-2">Resumen de pagos</h3>
                             <div className="flex justify-between text-sm">

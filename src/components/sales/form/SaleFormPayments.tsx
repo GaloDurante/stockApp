@@ -1,10 +1,12 @@
 'use client';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
+import { useSaleContext } from '@/context/SaleContext';
 
-import { SaleFormType, PaymentFormType } from '@/types/form';
-import { Receiver, PaymentMethod, SaleStatus } from '@/generated/prisma';
+import { SaleFormType } from '@/types/form';
+import { SaleType } from '@/types/sale';
+import { Receiver, PaymentMethod } from '@/generated/prisma';
 
 import { formatPrice } from '@/lib/helpers/components/utils';
 import { updateSaleAction } from '@/lib/actions/sale';
@@ -16,39 +18,31 @@ import SaleFormDetails from '@/components/sales/form/SaleFormDetails';
 import DeleteSaleButton from '@/components/sales/DeleteSaleButton';
 
 interface SaleFormPaymentsProps {
-    currentStatus: SaleStatus;
-    saleId: number;
-    totalPrice: number;
-    previousPayments?: PaymentFormType[];
-    previousNote?: string | null;
-    previousDate?: Date;
+    saleData: SaleType;
 }
 
-export default function SaleFormPayments({
-    currentStatus,
-    saleId,
-    totalPrice,
-    previousPayments,
-    previousNote,
-    previousDate,
-}: SaleFormPaymentsProps) {
+export default function SaleFormPayments({ saleData }: SaleFormPaymentsProps) {
     const {
         control,
         register,
         trigger,
         watch,
         handleSubmit,
+        setValue,
         formState: { errors, isDirty, isSubmitting },
     } = useForm<SaleFormType>({
         defaultValues: {
-            payments: previousPayments ?? [],
-            totalPrice,
-            note: previousNote ?? null,
-            date: previousDate ?? undefined,
+            payments: saleData.payments ?? [],
+            totalPrice: saleData.totalPrice,
+            note: saleData.note ?? null,
+            date: saleData.date ?? undefined,
+            shippingPrice: saleData.shippingPrice ?? null,
+            supplierCoveredAmount: saleData.supplierCoveredAmount ?? null,
         },
     });
 
     const router = useRouter();
+    const { setTotalPrice, setShippingPrice } = useSaleContext();
 
     const receiverOptions = useMemo(
         () =>
@@ -74,27 +68,37 @@ export default function SaleFormPayments({
     });
 
     const payments = useWatch({ control, name: 'payments' }) || [];
+    const shippingPrice = watch('shippingPrice') ?? 0;
+    const basePrice = saleData.totalPrice - (saleData.shippingPrice ?? 0);
+    const totalSalePrice = basePrice + shippingPrice;
+
     register('payments', {
         validate: (payments: SaleFormType['payments']) => {
             if (!payments || payments.length === 0) {
                 return 'Debe agregar al menos un pago';
             }
+
             const sumPayments = payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
-            if (sumPayments > totalPrice) {
-                return `El total de los pagos (${formatPrice(sumPayments)}) no debe superar el total de la venta (${formatPrice(totalPrice)})`;
+            if (sumPayments > totalSalePrice) {
+                return `El total de los pagos (${formatPrice(sumPayments)}) no debe superar el total de la venta (${formatPrice(totalSalePrice)})`;
             }
             return true;
         },
     });
 
+    useEffect(() => {
+        setValue('totalPrice', totalSalePrice);
+        setTotalPrice(totalSalePrice);
+        setShippingPrice(shippingPrice);
+    }, [totalSalePrice, shippingPrice, setTotalPrice, setShippingPrice, setValue]);
+
     const onSubmitPayment = async (data: SaleFormType) => {
         try {
-            let newStatus = currentStatus;
-            const total = totalPrice || 0;
+            let newStatus = saleData.status;
             const sumPayments = payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
-            newStatus = sumPayments === total ? 'Completada' : 'Pendiente';
+            newStatus = sumPayments === totalSalePrice ? 'Completada' : 'Pendiente';
 
-            await updateSaleAction(saleId, data, newStatus);
+            await updateSaleAction(saleData.id, data, newStatus);
             showSuccessToast('Venta actualizada con éxito');
             router.refresh();
         } catch (error: unknown) {
@@ -246,10 +250,17 @@ export default function SaleFormPayments({
             </div>
 
             <div className="bg-surface p-6 md:p-8 rounded-lg border border-border mt-8">
-                <SaleFormDetails control={control} errors={errors} register={register} watch={watch} />
+                <SaleFormDetails
+                    control={control}
+                    errors={errors}
+                    register={register}
+                    watch={watch}
+                    setValue={setValue}
+                    shippingActive={!!saleData.shippingPrice}
+                />
             </div>
             <div className="flex w-full justify-end items-center gap-4 mt-4">
-                <DeleteSaleButton saleId={saleId} />
+                <DeleteSaleButton saleId={saleData.id} />
                 <button
                     type="submit"
                     disabled={isSubmitting || !isDirty}

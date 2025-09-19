@@ -7,4 +7,5 @@ export type ChartsData = {
     month: string;
     total: number;
     topProducts: TopProduct[];
+    shippingTotal?: number;
 };
