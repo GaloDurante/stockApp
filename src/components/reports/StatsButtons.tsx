@@ -12,7 +12,7 @@ export default function StatsButtons({ totalMoney, profitTotal }: StatsButtonsPr
         <>
             <Link
                 href="/admin/reports/investments"
-                className="flex flex-col justify-center items-center order-2 md:order-3 p-6 bg-gradient-to-br from-blue-900/40 to-blue-800/30 rounded-xl border border-blue-700/30 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.01] group min-h-44"
+                className="flex flex-col justify-center items-center order-2 md:order-3 p-6 bg-gradient-to-br from-blue-900/40 to-blue-800/30 rounded-lg border border-blue-700/30 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.01] group min-h-44"
             >
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-600/20 mb-3 group-hover:bg-blue-500/30 transition-colors">
                     <CircleDollarSign />
@@ -27,7 +27,7 @@ export default function StatsButtons({ totalMoney, profitTotal }: StatsButtonsPr
 
             <Link
                 href="/admin/reports/profits"
-                className="flex flex-col justify-center items-center order-4 p-6 bg-gradient-to-br from-emerald-900/40 to-emerald-800/30 rounded-xl border border-emerald-700/30 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.01] group min-h-44"
+                className="flex flex-col justify-center items-center order-4 p-6 bg-gradient-to-br from-emerald-900/40 to-emerald-800/30 rounded-lg border border-emerald-700/30 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.01] group min-h-44"
             >
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-600/20 mb-3 group-hover:bg-emerald-500/30 transition-colors">
                     <ChartColumn />

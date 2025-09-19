@@ -34,11 +34,20 @@ export default function SaleCard({ sale, className, handleDelete, deleteModalId,
                         {Array.from(new Set(sale.payments.map((p) => p.method))).map((method, index) => (
                             <span
                                 key={index}
-                                className={`${method === 'Efectivo' ? 'border-green-600 text-green-600' : 'border-accent text-accent'} text-xs border p-2 rounded-xl font-medium`}
+                                className={`${method === 'Efectivo' ? 'bg-green-600/30 text-green-600' : 'bg-accent/30 text-accent'} text-xs px-3 py-1.5 rounded-full font-medium`}
                             >
                                 {method}
                             </span>
                         ))}
+                        {sale.shippingPrice ? (
+                            <span className="px-3 py-1.5 bg-terciary/30 text-terciary text-xs font-medium rounded-full">
+                                Envío incluido
+                            </span>
+                        ) : (
+                            <span className="px-3 py-1.5 bg-muted/30 text-muted text-xs font-medium rounded-full">
+                                Sin envío
+                            </span>
+                        )}
                     </div>
                 </div>
 

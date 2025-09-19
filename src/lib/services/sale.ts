@@ -162,6 +162,9 @@ export async function updateSale(id: number, data: SaleFormType, status: SaleSta
             data: {
                 note: data.note,
                 status: status,
+                shippingPrice: data.shippingPrice ?? null,
+                supplierCoveredAmount: data.supplierCoveredAmount ?? null,
+                totalPrice: data.totalPrice,
             },
         });
 
