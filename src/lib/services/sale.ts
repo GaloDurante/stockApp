@@ -104,6 +104,10 @@ export async function deleteSaleAndRestoreStock(id: number) {
             )
         );
 
+        await tx.accountMovement.deleteMany({
+            where: { saleId: id },
+        });
+
         return tx.sale.delete({
             where: { id },
         });
@@ -151,6 +155,18 @@ export async function createSaleAndSaleItems(data: SaleFormType) {
             })),
         });
 
+        await tx.accountMovement.createMany({
+            data: payments
+                .filter((p) => p.receiver)
+                .map((p) => ({
+                    receiver: p.receiver!,
+                    type: 'Ingreso',
+                    amount: Number(p.amount),
+                    description: `Ingreso por venta #${newSale.id}`,
+                    saleId: newSale.id,
+                })),
+        });
+
         return newSale;
     });
 }
@@ -172,6 +188,10 @@ export async function updateSale(id: number, data: SaleFormType, status: SaleSta
             where: { saleId: id },
         });
 
+        await tx.accountMovement.deleteMany({
+            where: { saleId: id },
+        });
+
         await tx.payment.createMany({
             data: data.payments.map((p) => ({
                 saleId: id,
@@ -179,6 +199,18 @@ export async function updateSale(id: number, data: SaleFormType, status: SaleSta
                 amount: Number(p.amount),
                 receiver: p.receiver ?? null,
             })),
+        });
+
+        await tx.accountMovement.createMany({
+            data: data.payments
+                .filter((p) => p.receiver)
+                .map((p) => ({
+                    saleId: id,
+                    receiver: p.receiver!,
+                    type: 'Ingreso',
+                    amount: Number(p.amount),
+                    description: `Ingreso por actualización de venta #${id}`,
+                })),
         });
 
         return updatedSale;

@@ -42,23 +42,19 @@ export async function getTotalProductsMoney(category?: string) {
     return Number(result[0]?.total ?? 0);
 }
 
-export async function getTotalReceivedByReceiver() {
-    const result = await prisma.payment.groupBy({
-        by: ['receiver'],
-        _sum: {
-            amount: true,
-        },
-        where: {
-            receiver: {
-                not: null,
-            },
-        },
+export async function getAccountBalances() {
+    const result = await prisma.accountMovement.groupBy({
+        by: ['receiver', 'type'],
+        _sum: { amount: true },
     });
 
-    return result.map((r) => ({
-        receiver: r.receiver as Receiver,
-        total: Number(r._sum.amount ?? 0),
-    }));
+    const balances: Record<Receiver, number> = { Walter: 0, Yanina: 0 };
+    result.forEach((r) => {
+        const total = Number(r._sum.amount ?? 0);
+        balances[r.receiver as Receiver] += r.type === 'Ingreso' ? total : -total;
+    });
+
+    return balances;
 }
 
 export async function getProfitByMonthForYear(year: number) {

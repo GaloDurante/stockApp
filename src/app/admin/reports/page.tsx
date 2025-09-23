@@ -1,5 +1,5 @@
 import { dayStart, dayEnd } from '@formkit/tempo';
-import { getProfitHistoric, getTotalProductsMoney, getTotalReceivedByReceiver } from '@/lib/services/report';
+import { getProfitHistoric, getTotalProductsMoney, getAccountBalances } from '@/lib/services/report';
 import Filters from '@/components/Filters';
 import ReceiverCard from '@/components/reports/ReceiverCard';
 import StatsButtons from '@/components/reports/StatsButtons';
@@ -15,14 +15,19 @@ interface ReportsPageProps {
 export default async function ReportsPage({ searchParams }: ReportsPageProps) {
     const { startDate, endDate, filterByCategory } = await searchParams;
 
-    const [profitTotal, totalProductsMoney, receiversMoney] = await Promise.all([
+    const [profitTotal, totalProductsMoney, balances] = await Promise.all([
         getProfitHistoric({
             start: startDate ? dayStart(startDate) : undefined,
             end: endDate ? dayEnd(endDate) : undefined,
         }),
         getTotalProductsMoney(filterByCategory),
-        getTotalReceivedByReceiver(),
+        getAccountBalances(),
     ]);
+
+    const receiversMoney = Object.entries(balances).map(([receiver, total]) => ({
+        receiver,
+        total,
+    }));
 
     return (
         <div className="space-y-8">
@@ -42,9 +47,9 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
             </div>
 
             {receiversMoney.length > 0 && (
-                <div className="">
-                    <h2 className="text-xl font-semibold mb-4">Montos recibidos por cuenta</h2>
-
+                <div>
+                    <h2 className="text-xl font-semibold">Saldos por cuenta</h2>
+                    <p className="text-muted mt-1 text-sm mb-4">Distribución porcentual de los fondos</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {receiversMoney.map((r, index) => {
                             const total = receiversMoney.reduce((sum, item) => sum + item.total, 0);
