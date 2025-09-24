@@ -1,19 +1,77 @@
 'use client';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { loadMoreMovementsAction } from '@/lib/actions/accountMovement';
 import { format } from '@formkit/tempo';
 import { formatPrice } from '@/lib/helpers/components/utils';
 import { AccountMovementType } from '@/types/accountMovement';
 
 import { Calendar, TrendingUp, ArrowUpRight, ArrowDownLeft, FileText } from 'lucide-react';
+import { showErrorToast } from '@/components/Toast';
 
 interface MovementsListProps {
-    movements: AccountMovementType[];
+    initialMovements: AccountMovementType[];
     totalCount: number;
     sortOrder: 'date_asc' | 'date_desc';
     perPage: number;
 }
 
-export default function MovementsList({ movements, totalCount, sortOrder, perPage }: MovementsListProps) {
+export default function MovementsList({ initialMovements, totalCount, sortOrder, perPage }: MovementsListProps) {
+    const [movements, setMovements] = useState<AccountMovementType[]>(initialMovements);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(initialMovements.length < totalCount);
+
+    const loader = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        setMovements(initialMovements);
+        setPage(1);
+        setHasMore(initialMovements.length < totalCount);
+    }, [initialMovements, totalCount, sortOrder]);
+
+    const loadMoreMovements = useCallback(async () => {
+        if (loading || !hasMore) return;
+
+        setLoading(true);
+        try {
+            const nextPage = page + 1;
+            const { movements: newMovements } = await loadMoreMovementsAction({
+                sortOrder,
+                page: nextPage,
+                perPage,
+            });
+            setMovements((prev) => [...prev, ...newMovements]);
+            setPage(nextPage);
+            setHasMore(movements.length + newMovements.length < totalCount);
+        } catch {
+            showErrorToast('Error cargando más movimientos');
+        } finally {
+            setLoading(false);
+        }
+    }, [loading, hasMore, page, sortOrder, perPage, totalCount, movements.length]);
+
+    const handleObserver = useCallback(
+        (entries: IntersectionObserverEntry[]) => {
+            const target = entries[0];
+            if (target.isIntersecting && !loading && hasMore) {
+                loadMoreMovements();
+            }
+        },
+        [loading, hasMore, loadMoreMovements]
+    );
+
+    useEffect(() => {
+        const options = { root: null, rootMargin: '0px', threshold: 0.1 };
+        const currentLoader = loader.current;
+        const observer = new IntersectionObserver(handleObserver, options);
+        if (currentLoader && hasMore) observer.observe(currentLoader);
+        return () => {
+            if (currentLoader) observer.unobserve(currentLoader);
+            observer.disconnect();
+        };
+    }, [handleObserver, hasMore]);
+
     return (
         <>
             {movements.length === 0 ? (
@@ -77,6 +135,12 @@ export default function MovementsList({ movements, totalCount, sortOrder, perPag
                     ))}
                 </div>
             )}
+            <div ref={loader} className="h-10 flex justify-center items-center">
+                {loading && <span>Cargando más movimientos...</span>}
+                {!hasMore && movements.length > 0 && (
+                    <span className="text-muted">Todos los movimientos cargados.</span>
+                )}
+            </div>
         </>
     );
 }

@@ -33,7 +33,7 @@ export default function RootLayout({
         <html lang="en" className="bg-main">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <Toaster />
-                <main>{children}</main>
+                <main id="main-top">{children}</main>
             </body>
         </html>
     );

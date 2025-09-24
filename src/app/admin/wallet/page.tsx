@@ -2,7 +2,7 @@ import { getAccountBalances } from '@/lib/services/report';
 import { getAccountMovements } from '@/lib/services/accountMovement';
 import { formatPrice } from '@/lib/helpers/components/utils';
 import { dayStart, dayEnd } from '@formkit/tempo';
-import { Wallet } from 'lucide-react';
+import { Wallet, ChevronsUp } from 'lucide-react';
 
 import Link from 'next/link';
 import ReceiverCard from '@/components/reports/ReceiverCard';
@@ -43,7 +43,7 @@ export default async function WalletPage({ searchParams }: WalletPageProps) {
 
     return (
         <div className="space-y-8">
-            <div className="space-y-4">
+            <section className="space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
                         <h1 className="text-xl font-semibold">Dashboard de Cuentas</h1>
@@ -51,19 +51,26 @@ export default async function WalletPage({ searchParams }: WalletPageProps) {
                     </div>
                 </div>
 
-                <div className="bg-surface p-4 md:p-6 rounded-lg border border-border">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div>
-                            <Wallet size={20} className="sm:w-6 sm:h-6" />
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                    <div className="bg-surface p-4 md:p-6 rounded-lg border border-border">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center bg-green-600/30`}>
+                            <Wallet size={20} className="text-green-600" />
                         </div>
-                        <span className="text-sm sm:text-base">Saldo total disponible</span>
-                    </div>
-                    <div className="text-2xl font-bold mb-2">{formatPrice(totalMoney)}</div>
-                    <div className="text-xs sm:text-sm text-muted">
-                        Distribuido en {receiversMoney.length} cuenta{receiversMoney.length !== 1 ? 's' : ''}
+                        <div className="mt-4">
+                            <div className="text-sm text-muted">Saldo total disponible</div>
+                            <div className="text-2xl font-bold">{formatPrice(totalMoney)}</div>
+                        </div>
+                        <div className="mt-4 pt-4 border-t border-border">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-muted">
+                                    Distribuido en {receiversMoney.length} cuenta
+                                    {receiversMoney.length !== 1 ? 's' : ''}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             {receiversMoney.length > 0 && (
                 <section className="space-y-4">
@@ -109,8 +116,20 @@ export default async function WalletPage({ searchParams }: WalletPageProps) {
                         Nuevo movimiento
                     </Link>
                 </div>
-                <MovementsList movements={movements} totalCount={total} sortOrder={sortOrder} perPage={perPage} />
+                <MovementsList
+                    initialMovements={movements}
+                    totalCount={total}
+                    sortOrder={sortOrder}
+                    perPage={perPage}
+                />
             </section>
+
+            <Link
+                href="#main-top"
+                className="fixed bottom-4 right-4 flex items-center justify-center w-9 h-9 rounded-full bg-accent/30 text-accent hover:bg-accent/50 transition"
+            >
+                <ChevronsUp height={18} />
+            </Link>
         </div>
     );
 }
