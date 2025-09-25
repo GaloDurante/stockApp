@@ -9,7 +9,7 @@ import { loadMoreProductsAction, deleteProductByIdAction } from '@/lib/actions/p
 import { formatCategory, formatPrice, renderStock } from '@/lib/helpers/components/utils';
 
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
-import TableActionsButtons from '@/components/products/TableActionsButtons';
+import ActionsButtons from '@/components/ActionsButtons';
 import ProductCard from '@/components/products/ProductCard';
 
 interface ProductsTableProps {
@@ -132,7 +132,7 @@ export default function ProductsTable({
                             >
                                 <td className="px-4 py-3 w-[1%]">
                                     <div className="flex gap-2">
-                                        <TableActionsButtons
+                                        <ActionsButtons
                                             redirect={`/admin/products/${product.id}`}
                                             handleDelete={handleDelete}
                                             label={`${product.name}`}

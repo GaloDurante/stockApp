@@ -82,9 +82,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
                     <h2 className="text-xl font-semibold mb-4">Saldos por cuenta</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {receiversMoney.map((r, index) => {
-                            const total = receiversMoney.reduce((sum, item) => sum + item.total, 0);
-                            const percentage = total > 0 ? ((r.total / total) * 100).toFixed(1) : 0;
-                            return <ReceiverCard key={index} r={r} percentage={percentage} />;
+                            return <ReceiverCard key={index} r={r} />;
                         })}
                     </div>
                 </div>

@@ -10,7 +10,7 @@ import { loadMoreSalesAction, deleteSaleByIdAction } from '@/lib/actions/sale';
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
 
 import SaleCard from '@/components/sales/SaleCard';
-import TableActionsButtons from '@/components/products/TableActionsButtons';
+import ActionsButtons from '@/components/ActionsButtons';
 import ItemsMenu from '@/components/sales/ItemsMenu';
 import SaleMoreDetails from '@/components/sales/SaleMoreDetails';
 import Link from 'next/link';
@@ -119,7 +119,7 @@ export default function SalesTable({ initialSales, totalCount, sortOrder, perPag
                             <tr key={sale.id} className="border-t border-border hover:bg-border-dark transition-colors">
                                 <td className="px-4 py-3 w-[1%]">
                                     <div className="flex gap-2">
-                                        <TableActionsButtons
+                                        <ActionsButtons
                                             redirect={`/admin/sales/${sale.id}`}
                                             handleDelete={handleDelete}
                                             label={`la venta ID #${sale.id}`}

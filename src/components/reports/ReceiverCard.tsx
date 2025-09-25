@@ -5,10 +5,9 @@ interface ReceiverProps {
         receiver: string;
         total: number;
     };
-    percentage: string | number;
 }
 
-export default function ReceiverCard({ r, percentage }: ReceiverProps) {
+export default function ReceiverCard({ r }: ReceiverProps) {
     return (
         <div key={r.receiver} className="bg-surface p-6 rounded-lg border border-border">
             <div className="flex items-center justify-between mb-4">
@@ -23,15 +22,7 @@ export default function ReceiverCard({ r, percentage }: ReceiverProps) {
             <h3 className="text-lg font-medium">{r.receiver}</h3>
             <div className="mt-4">
                 <div className="text-sm text-muted">Saldo actual</div>
-                <div className="text-2xl font-bold">{formatPrice(r.total)}</div>
-            </div>
-            <div className="mt-4 pt-4 border-t border-border">
-                <div className="flex justify-between text-sm">
-                    <span className="text-muted">Porcentaje del total</span>
-                    <span className={`font-semibold ${r.receiver == 'Walter' ? 'text-accent' : 'text-terciary'}`}>
-                        {percentage}%
-                    </span>
-                </div>
+                <div className={`text-2xl font-bold ${r.total < 0 && 'text-red-700'}`}>{formatPrice(r.total)}</div>
             </div>
         </div>
     );

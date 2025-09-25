@@ -77,14 +77,13 @@ export default async function WalletPage({ searchParams }: WalletPageProps) {
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div>
                             <h2 className="text-xl font-semibold">Saldos por cuenta</h2>
-                            <p className="text-muted mt-1 text-sm">Distribución porcentual de los fondos</p>
+                            <p className="text-muted mt-1 text-sm">Distribución de los fondos en cada cuenta</p>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                         {receiversMoney.map((r, index) => {
-                            const percentage = totalMoney > 0 ? ((r.total / totalMoney) * 100).toFixed(1) : 0;
-                            return <ReceiverCard key={index} r={r} percentage={percentage} />;
+                            return <ReceiverCard key={index} r={r} />;
                         })}
                     </div>
                 </section>

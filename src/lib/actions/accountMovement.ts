@@ -1,5 +1,5 @@
 'use server';
-import { getAccountMovements } from '@/lib/services/accountMovement';
+import { getAccountMovements, deleteAccountMovementById } from '@/lib/services/accountMovement';
 
 export async function loadMoreMovementsAction({
     sortOrder,
@@ -20,5 +20,13 @@ export async function loadMoreMovementsAction({
         return { movements, total };
     } catch {
         throw new Error('No se pudieron cargar más movimientos');
+    }
+}
+
+export async function deleteAccountMovementByIdAction(id: number) {
+    try {
+        return await deleteAccountMovementById(id);
+    } catch {
+        throw new Error('No se pudo eliminar el movimiento');
     }
 }

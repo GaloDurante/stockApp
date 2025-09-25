@@ -40,3 +40,9 @@ export async function getAccountMovements({
 
     return { movements, total };
 }
+
+export async function deleteAccountMovementById(id: number) {
+    return await prisma.accountMovement.delete({
+        where: { id },
+    });
+}
