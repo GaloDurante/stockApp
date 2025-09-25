@@ -1,5 +1,11 @@
 'use server';
-import { getAccountMovements, deleteAccountMovementById } from '@/lib/services/accountMovement';
+import {
+    getAccountMovements,
+    deleteAccountMovementById,
+    createAccountMovement,
+    updateAccountMovement,
+} from '@/lib/services/accountMovement';
+import { AccountMovementFormType } from '@/types/form';
 
 export async function loadMoreMovementsAction({
     sortOrder,
@@ -28,5 +34,21 @@ export async function deleteAccountMovementByIdAction(id: number) {
         return await deleteAccountMovementById(id);
     } catch {
         throw new Error('No se pudo eliminar el movimiento');
+    }
+}
+
+export async function createAccountMovementAction(data: AccountMovementFormType) {
+    try {
+        return await createAccountMovement(data);
+    } catch {
+        throw new Error('No se pudo crear el movimiento');
+    }
+}
+
+export async function updateAccountMovementAction(data: AccountMovementFormType, id: number) {
+    try {
+        return await updateAccountMovement(data, id);
+    } catch {
+        throw new Error('No se pudo actualizar el movimiento');
     }
 }
