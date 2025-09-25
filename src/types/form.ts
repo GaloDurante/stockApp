@@ -1,4 +1,4 @@
-import { Category, PaymentMethod, Receiver } from '@/generated/prisma';
+import { Category, PaymentMethod, Receiver, MovementType } from '@/generated/prisma';
 import { ProductType } from '@/types/product';
 
 export type OptionType = {
@@ -47,4 +47,12 @@ export type SaleFormType = {
 
 export type StockFormType = {
     newStock: number;
+};
+
+export type AccountMovementFormType = {
+    type: MovementType;
+    description?: string;
+    receiver: Receiver;
+    amount: number;
+    date: Date;
 };
