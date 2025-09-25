@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Modal from '@/components/Modal';
 import ConfirmModal from '@/components/ConfirmModal';
 
-interface TableActionsButtonsType {
+interface ActionsButtonsProps {
     handleDelete: () => void;
     isModalOpen: boolean;
     openModal: () => void;
@@ -16,9 +16,10 @@ interface TableActionsButtonsType {
     isTwoStep?: boolean;
     confirmationText?: string;
     hideEditButton?: boolean;
+    hideDeleteButton?: boolean;
 }
 
-export default function TableActionsButtons({
+export default function ActionsButtons({
     handleDelete,
     label,
     isModalOpen,
@@ -28,7 +29,8 @@ export default function TableActionsButtons({
     isTwoStep = false,
     confirmationText,
     hideEditButton = false,
-}: TableActionsButtonsType) {
+    hideDeleteButton = false,
+}: ActionsButtonsProps) {
     return (
         <>
             {!hideEditButton && (
@@ -41,13 +43,15 @@ export default function TableActionsButtons({
                 </Link>
             )}
 
-            <button
-                onClick={openModal}
-                className="hover:bg-red-200 hover:text-red-700 rounded-full p-2 transition cursor-pointer"
-                title="Eliminar"
-            >
-                <Trash size={16} />
-            </button>
+            {!hideDeleteButton && (
+                <button
+                    onClick={openModal}
+                    className="hover:bg-red-200 hover:text-red-700 rounded-full p-2 transition cursor-pointer"
+                    title="Eliminar"
+                >
+                    <Trash size={16} />
+                </button>
+            )}
 
             {isModalOpen && (
                 <Modal onClose={closeModal}>

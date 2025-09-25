@@ -3,7 +3,7 @@ import { format } from '@formkit/tempo';
 import { SaleType } from '@/types/sale';
 import { formatPrice } from '@/lib/helpers/components/utils';
 
-import TableActionsButtons from '@/components/products/TableActionsButtons';
+import ActionsButtons from '@/components/ActionsButtons';
 import SaleMoreDetails from '@/components/sales/SaleMoreDetails';
 import ItemsMenu from '@/components/sales/ItemsMenu';
 
@@ -55,7 +55,7 @@ export default function SaleCard({ sale, className, handleDelete, deleteModalId,
                 <span className="font-semibold">{formatPrice(sale.totalPrice)}</span>
             </div>
             <div className="flex items-center gap-2">
-                <TableActionsButtons
+                <ActionsButtons
                     redirect={`/admin/sales/${sale.id}`}
                     handleDelete={handleDelete}
                     label={`la venta ID #${sale.id}`}

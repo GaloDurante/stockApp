@@ -1,7 +1,7 @@
 import { ProductType } from '@/types/product';
 import { formatCategory, formatPrice, renderStock } from '@/lib/helpers/components/utils';
 
-import TableActionsButtons from '@/components/products/TableActionsButtons';
+import ActionsButtons from '@/components/ActionsButtons';
 
 interface ProductCardType {
     product: ProductType;
@@ -36,7 +36,7 @@ export default function ProductCard({
                 </div>
             </div>
             <div className="flex items-center gap-2">
-                <TableActionsButtons
+                <ActionsButtons
                     redirect={`/admin/products/${product.id}`}
                     handleDelete={handleDelete}
                     label={`${product.name}`}

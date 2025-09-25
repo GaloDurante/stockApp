@@ -125,7 +125,7 @@ export default function Filters({
 
             const queryString = buildQueryParams(queryParams);
 
-            router.replace(`${pathname}${queryString ? '?' + queryString : ''}`);
+            router.replace(`${pathname}${queryString ? '?' + queryString : ''}`, { scroll: false });
         }, 300);
 
         return () => clearTimeout(timeout);
