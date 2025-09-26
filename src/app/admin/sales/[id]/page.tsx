@@ -30,7 +30,11 @@ export default async function SalePage({ params }: SalePageProps) {
 
     return (
         <div className="flex flex-col xl:flex-row-reverse gap-8">
-            <SaleProvider initialTotal={sale.totalPrice} initialShipping={sale.shippingPrice}>
+            <SaleProvider
+                initialTotal={sale.totalPrice}
+                initialShipping={sale.shippingPrice}
+                initialSupplierCoveredAmount={sale.supplierCoveredAmount}
+            >
                 <SaleDetailsPanel sale={sale} />
                 <div className="flex-3">
                     <div className="bg-surface rounded-lg p-6 md:p-8 shadow-lg border border-border">

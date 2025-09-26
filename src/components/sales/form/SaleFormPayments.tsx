@@ -42,7 +42,7 @@ export default function SaleFormPayments({ saleData }: SaleFormPaymentsProps) {
     });
 
     const router = useRouter();
-    const { setTotalPrice, setShippingPrice } = useSaleContext();
+    const { setTotalPrice, setShippingPrice, setSupplierCoveredAmount } = useSaleContext();
 
     const receiverOptions = useMemo(
         () =>
@@ -69,15 +69,13 @@ export default function SaleFormPayments({ saleData }: SaleFormPaymentsProps) {
 
     const payments = useWatch({ control, name: 'payments' }) || [];
     const shippingPrice = watch('shippingPrice') ?? 0;
-    const basePrice = saleData.totalPrice - (saleData.shippingPrice ?? 0);
-    const totalSalePrice = basePrice + shippingPrice;
+    const supplierCoveredAmount = watch('supplierCoveredAmount') ?? 0;
+
+    const basePrice = saleData.totalPrice - (saleData.shippingPrice ?? 0) + (saleData.supplierCoveredAmount ?? 0);
+    const totalSalePrice = basePrice + (shippingPrice - supplierCoveredAmount);
 
     register('payments', {
         validate: (payments: SaleFormType['payments']) => {
-            if (!payments || payments.length === 0) {
-                return 'Debe agregar al menos un pago';
-            }
-
             const sumPayments = payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
             if (sumPayments > totalSalePrice) {
                 return `El total de los pagos (${formatPrice(sumPayments)}) no debe superar el total de la venta (${formatPrice(totalSalePrice)})`;
@@ -90,7 +88,16 @@ export default function SaleFormPayments({ saleData }: SaleFormPaymentsProps) {
         setValue('totalPrice', totalSalePrice);
         setTotalPrice(totalSalePrice);
         setShippingPrice(shippingPrice);
-    }, [totalSalePrice, shippingPrice, setTotalPrice, setShippingPrice, setValue]);
+        setSupplierCoveredAmount(supplierCoveredAmount);
+    }, [
+        totalSalePrice,
+        shippingPrice,
+        setTotalPrice,
+        setShippingPrice,
+        setValue,
+        supplierCoveredAmount,
+        setSupplierCoveredAmount,
+    ]);
 
     const onSubmitPayment = async (data: SaleFormType) => {
         try {

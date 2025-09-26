@@ -3,16 +3,17 @@ import { useState } from 'react';
 import { SaleItemType } from '@/types/saleItem';
 import { formatQuantity, formatPrice } from '@/lib/helpers/components/utils';
 
-import { Bike, ChevronDown, ShoppingCartIcon, X } from 'lucide-react';
+import { Bike, ChevronDown, ShoppingCartIcon, X, HandCoins } from 'lucide-react';
 import Link from 'next/link';
 import Modal from '@/components/Modal';
 
 interface ItemsMenuProps {
     items: SaleItemType[];
     shippingPrice: number;
+    supplierCoveredAmount: number;
 }
 
-export default function ItemsMenu({ items, shippingPrice = 0 }: ItemsMenuProps) {
+export default function ItemsMenu({ items, shippingPrice = 0, supplierCoveredAmount = 0 }: ItemsMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -96,6 +97,21 @@ export default function ItemsMenu({ items, shippingPrice = 0 }: ItemsMenuProps) 
                                 <span className="font-medium">Costo de envío</span>
                             </div>
                             <div className="font-semibold text-base">{formatPrice(shippingPrice)}</div>
+                        </div>
+                        <div className={`p-4 border-t border-border flex justify-between items-center`}>
+                            <div className="flex items-center gap-2">
+                                <div className="p-2 bg-accent/30 rounded-full shadow-sm">
+                                    <HandCoins className="h-5 w-5 text-accent" />
+                                </div>
+                                <span className="font-medium">Contribución del envío</span>
+                            </div>
+                            <div className={`font-semibold text-base ${supplierCoveredAmount > 0 && 'text-red-700'}`}>
+                                {supplierCoveredAmount > 0 ? (
+                                    <>- {formatPrice(supplierCoveredAmount)}</>
+                                ) : (
+                                    formatPrice(0)
+                                )}
+                            </div>
                         </div>
                     </div>
                 </Modal>

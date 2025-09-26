@@ -25,7 +25,11 @@ export default function SaleCard({ sale, className, handleDelete, deleteModalId,
                     {format({ date: sale.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
                     <span>•</span>
                     <div className="text-secondary">
-                        <ItemsMenu items={sale.items} shippingPrice={sale.shippingPrice ?? 0} />
+                        <ItemsMenu
+                            items={sale.items}
+                            shippingPrice={sale.shippingPrice ?? 0}
+                            supplierCoveredAmount={sale.supplierCoveredAmount ?? 0}
+                        />
                     </div>
                 </div>
 

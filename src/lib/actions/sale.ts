@@ -56,10 +56,6 @@ export async function createSaleAction(data: SaleFormType) {
 }
 
 export async function updateSaleAction(id: number, data: SaleFormType, status: SaleStatus) {
-    if (!data.payments || data.payments.length === 0) {
-        throw new Error('Debe agregar al menos un pago');
-    }
-
     try {
         return await updateSale(id, data, status);
     } catch {
