@@ -58,14 +58,14 @@ export default function ConfirmModal({
             <div className="p-4 border-t border-border flex justify-between gap-4 text-sm">
                 <button
                     type="button"
-                    className="font-semibold shadow-md p-3 rounded-md cursor-pointer border border-border hover:bg-border-dark transition-all"
+                    className="font-semibold shadow-md py-2 px-4 rounded-md cursor-pointer border border-border hover:bg-border-dark transition-all"
                     onClick={onClose}
                 >
                     Cancelar
                 </button>
                 <button
                     type="button"
-                    className={`transition-all shadow-md p-3 rounded-md ${
+                    className={`transition-all shadow-md py-2 px-4 rounded-md ${
                         isDelete ? 'bg-red-700 hover:bg-red-800' : 'bg-secondary hover:bg-muted text-main'
                     } font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
                     onClick={onTrigger}

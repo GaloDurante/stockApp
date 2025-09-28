@@ -59,8 +59,11 @@ export default function SaleForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const items = watch('items') || [];
     const shippingPrice = watch('shippingPrice') || 0;
+    const supplierCoveredAmount = watch('supplierCoveredAmount') || 0;
+    const totalShipping = shippingPrice - supplierCoveredAmount;
+
     const totalVenta =
-        shippingPrice +
+        totalShipping +
         items.reduce((acc, item) => {
             const qty = Number(item.quantity) || 1;
             const price = Number(item.newSalePrice) || 0;
@@ -84,6 +87,9 @@ export default function SaleForm({
     }, [items, clearErrors]);
 
     const onSubmit = async (data: SaleFormType) => {
+        const now = new Date();
+        data.date.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+
         try {
             const newSale = await createSaleAction(data);
             showSuccessToast('Venta creada con éxito');
@@ -134,7 +140,7 @@ export default function SaleForm({
                         <div className="pt-4 border-t border-border">
                             <div className="flex justify-between text-sm">
                                 <span>Envío</span>
-                                <span className="font-medium">{formatPrice(shippingPrice)}</span>
+                                <span className="font-medium">{formatPrice(totalShipping)}</span>
                             </div>
                         </div>
                     )}

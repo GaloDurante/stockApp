@@ -1,4 +1,4 @@
-import AccountMovementForm from '@/components/wallet/AccountMovement';
+import AccountMovementForm from '@/components/wallet/AccountMovementForm';
 
 export default function NewMovementPage() {
     return (

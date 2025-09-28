@@ -52,6 +52,9 @@ export default function AccountMovementForm({ selectedMovement, isEdit = false }
     }));
 
     const onSubmit = async (data: AccountMovementFormType) => {
+        const now = new Date();
+        data.date.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+
         if (isEdit && selectedMovement) {
             try {
                 await updateAccountMovementAction(data, selectedMovement.id);
