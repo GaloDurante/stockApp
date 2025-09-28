@@ -50,7 +50,7 @@ export default function MovementCard({ movement }: MovementCardProps) {
                     <span className={`text-sm font-medium`}>{movement.type}</span>
                     <div className="flex items-center gap-1 text-sm text-muted ml-2">
                         <Calendar size={12} />
-                        {format({ date: movement.date, format: 'DD/MM/YY', tz: 'UTC' })}
+                        {format({ date: movement.date, format: 'DD/MM/YY' })}
                     </div>
                 </div>
                 <div className="flex gap-1">

@@ -22,7 +22,7 @@ export default function SaleCard({ sale, className, handleDelete, deleteModalId,
                 <span className="font-medium">#{sale.id}</span>
 
                 <div className="flex gap-3 text-sm text-muted">
-                    {format({ date: sale.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
+                    {format({ date: sale.date, format: 'DD/MM/YYYY' })}
                     <span>•</span>
                     <div className="text-secondary">
                         <ItemsMenu

@@ -1,7 +1,7 @@
 import { getAccountMovementById } from '@/lib/services/accountMovement';
 
 import ErrorMessage from '@/components/ErrorMessage';
-import AccountMovementForm from '@/components/wallet/AccountMovement';
+import AccountMovementForm from '@/components/wallet/AccountMovementForm';
 
 interface MovementPageProps {
     params: Promise<{

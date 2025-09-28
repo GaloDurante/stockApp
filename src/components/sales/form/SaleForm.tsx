@@ -87,6 +87,9 @@ export default function SaleForm({
     }, [items, clearErrors]);
 
     const onSubmit = async (data: SaleFormType) => {
+        const now = new Date();
+        data.date.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+
         try {
             const newSale = await createSaleAction(data);
             showSuccessToast('Venta creada con éxito');

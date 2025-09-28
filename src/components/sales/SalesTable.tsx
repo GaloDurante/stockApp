@@ -138,7 +138,7 @@ export default function SalesTable({ initialSales, totalCount, sortOrder, perPag
                                     </Link>
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">
-                                    {format({ date: sale.date, format: 'DD/MM/YYYY', tz: 'UTC' })}
+                                    {format({ date: sale.date, format: 'DD/MM/YYYY' })}
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">{formatPrice(sale.totalPrice)}</td>
                                 {sale.items.length > 0 ? (
