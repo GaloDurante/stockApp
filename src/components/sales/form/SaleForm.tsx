@@ -159,7 +159,7 @@ export default function SaleForm({
                 />
                 {isModalOpen && (
                     <Modal isLarge onClose={() => setIsModalOpen(false)}>
-                        <div className="flex justify-between items-center p-4 border-b border-border shadow-lg rounded-t-xl">
+                        <div className="flex justify-between items-center p-4 border-b bg-main border-border shadow-lg rounded-t-xl">
                             <span className="text-lg font-semibold">Seleccione productos</span>
                             <button type="button" onClick={() => setIsModalOpen(false)}>
                                 <X className="h-7 w-7 p-1 hover:bg-border rounded-full cursor-pointer transition-all" />

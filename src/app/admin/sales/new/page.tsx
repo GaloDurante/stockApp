@@ -11,7 +11,7 @@ interface CreateSalePageType {
 export default async function CreateSalePage({ searchParams }: CreateSalePageType) {
     const { filterByCategory, search } = await searchParams;
     const pageNumber = 1;
-    const perPage = 20;
+    const perPage = 30;
 
     const { products: initialProducts, total } = await getProductsByCategory({
         filterByCategory,
