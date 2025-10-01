@@ -121,7 +121,7 @@ export default function SelectProducts({
                 </div>
             ) : (
                 <div className="max-h-[calc(60vh-5.5rem)] overflow-y-auto custom-scrollbar relative">
-                    <div className="grid grid-cols-[auto_2fr_1fr_1fr] gap-4 px-4 py-2 bg-border sticky top-0 text-xs font-semibold">
+                    <div className="grid grid-cols-[auto_2fr_1fr_1fr] gap-4 px-4 py-2 bg-border sticky -top-[1px] text-xs font-semibold">
                         <span></span>
                         <span>Producto</span>
                         <span>Inventario</span>
@@ -149,7 +149,7 @@ export default function SelectProducts({
                                     className={`${
                                         product.stock === 0
                                             ? 'text-red-700'
-                                            : product.stock > 0 && product.stock < 8
+                                            : product.stock > 0 && product.stock < 16
                                               ? 'text-terciary'
                                               : ''
                                     }`}

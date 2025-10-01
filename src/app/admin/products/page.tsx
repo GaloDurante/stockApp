@@ -15,7 +15,7 @@ interface ProductsPageType {
 export default async function ProductsPage({ searchParams }: ProductsPageType) {
     const { search, filterByCategory, sortOrder = 'asc' } = await searchParams;
     const pageNumber = 1;
-    const perPage = 20;
+    const perPage = 30;
 
     const { products: initialProducts, total } = await getProductsByCategory({
         search,

@@ -79,18 +79,18 @@ export default function Sidebar() {
 
     return (
         <>
-            <aside className="hidden lg:flex w-42 xl:w-64 flex-col bg-surface border-r border-border">
+            <aside className="hidden md:flex w-42 xl:w-64 flex-col bg-surface border-r border-border">
                 <nav className="flex flex-col gap-1 p-4 text-sm">{renderNavLinks()}</nav>
             </aside>
 
-            <header className="lg:hidden flex items-center justify-between px-4 py-3 bg-surface border-b border-border shadow-md">
+            <header className="md:hidden flex items-center justify-end px-4 py-3 bg-surface border-b border-border shadow-md">
                 <button onClick={toggleMenu} className="focus:outline-none cursor-pointer">
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </header>
 
             <div
-                className={`lg:hidden bg-surface transition-all duration-300 ease-in-out overflow-hidden ${
+                className={`md:hidden bg-surface transition-all duration-300 ease-in-out overflow-hidden ${
                     isOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'
                 }`}
             >

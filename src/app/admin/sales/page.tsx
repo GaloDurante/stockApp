@@ -18,7 +18,7 @@ export default async function SalesPage({ searchParams }: SalesPageType) {
     const { startDate, endDate, paymentMethod, sortOrder = 'date_desc', status = 'Completada' } = await searchParams;
 
     const pageNumber = 1;
-    const perPage = 20;
+    const perPage = 30;
 
     const { sales: initialSales, total } = await getAllSales({
         startDate: startDate ? dayStart(startDate).toISOString() : undefined,
@@ -58,7 +58,7 @@ export default async function SalesPage({ searchParams }: SalesPageType) {
                     href="/admin/sales/new"
                     className="self-end border border-border font-semibold bg-surface hover:bg-border-dark rounded-md px-4 py-2 transition-all"
                 >
-                    Registrar nueva venta
+                    Registrar venta
                 </Link>
             </div>
 

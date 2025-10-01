@@ -93,8 +93,8 @@ export default function SalesTable({ initialSales, totalCount, sortOrder, perPag
     };
 
     return (
-        <div className="relative w-full overflow-auto rounded-lg max-h-[calc(100vh-22rem)] md:max-h-[calc(100vh-24rem)] lg:max-h-[calc(100vh-12rem)] custom-scrollbar">
-            <table className="hidden md:table min-w-full border-t-2 border border-border bg-surface text-sm">
+        <div className="relative overflow-auto rounded-lg max-h-[calc(100vh-24rem)] lg:max-h-[calc(100vh-12rem)] custom-scrollbar">
+            <table className="hidden md:table border-t-2 border border-border bg-surface text-sm min-w-full">
                 <thead className="bg-border sticky -top-[1px]">
                     <tr className="text-left uppercase text-xs tracking-wider">
                         <th className="p-4">Acciones</th>
@@ -118,19 +118,17 @@ export default function SalesTable({ initialSales, totalCount, sortOrder, perPag
                         sales.map((sale) => (
                             <tr key={sale.id} className="border-t border-border hover:bg-border-dark transition-colors">
                                 <td className="px-4 py-3 w-[1%]">
-                                    <div className="flex gap-2">
-                                        <ActionsButtons
-                                            redirect={`/admin/sales/${sale.id}`}
-                                            handleDelete={handleDelete}
-                                            label={`la venta ID #${sale.id}`}
-                                            isModalOpen={deleteModalId === sale.id}
-                                            openModal={() => setDeleteModalId(sale.id)}
-                                            closeModal={() => setDeleteModalId(null)}
-                                            isTwoStep
-                                            confirmationText={`Venta-ID-${sale.id}`}
-                                            hideEditButton
-                                        />
-                                    </div>
+                                    <ActionsButtons
+                                        redirect={`/admin/sales/${sale.id}`}
+                                        handleDelete={handleDelete}
+                                        label={`la venta ID #${sale.id}`}
+                                        isModalOpen={deleteModalId === sale.id}
+                                        openModal={() => setDeleteModalId(sale.id)}
+                                        closeModal={() => setDeleteModalId(null)}
+                                        isTwoStep
+                                        confirmationText={`Venta-ID-${sale.id}`}
+                                        hideEditButton
+                                    />
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap">
                                     <Link className="hover:border-b transition-all" href={`/admin/sales/${sale.id}`}>
@@ -209,7 +207,7 @@ export default function SalesTable({ initialSales, totalCount, sortOrder, perPag
                 )}
             </div>
 
-            <div ref={loader} className="h-10 flex justify-center items-center">
+            <div ref={loader} className="h-10 flex justify-center items-center sticky left-0 right-0">
                 {loading && <span>Cargando más ventas...</span>}
                 {!hasMore && sales.length > 0 && <span className="text-muted">Todas las ventas cargadas.</span>}
             </div>

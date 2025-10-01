@@ -105,7 +105,7 @@ export default function ProductsTable({
     };
 
     return (
-        <div className="relative w-full overflow-auto rounded-lg max-h-[calc(100vh-22rem)] md:max-h-[calc(100vh-24rem)] lg:max-h-[calc(100vh-12rem)] custom-scrollbar">
+        <div className="relative w-full overflow-auto rounded-lg max-h-[calc(100vh-24rem)] lg:max-h-[calc(100vh-12rem)] custom-scrollbar">
             <table className="hidden md:table min-w-full border-t-2 border border-border bg-surface text-sm">
                 <thead className="bg-border sticky -top-[1px]">
                     <tr className="text-left uppercase text-xs tracking-wider">
@@ -180,7 +180,7 @@ export default function ProductsTable({
                     </div>
                 )}
             </div>
-            <div ref={loader} className="h-10 flex justify-center items-center">
+            <div ref={loader} className="h-10 flex justify-center items-center sticky left-0 right-0">
                 {loading && <span>Cargando más productos...</span>}
                 {!hasMore && products.length > 0 && <span className="text-muted">Todos los productos cargados.</span>}
             </div>

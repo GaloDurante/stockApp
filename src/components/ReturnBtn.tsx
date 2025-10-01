@@ -9,7 +9,7 @@ export default function ReturnBtn() {
         <button
             type="button"
             onClick={() => router.back()}
-            className="bg-surface rounded-full p-2 mb-4 cursor-pointer hover:bg-border border border-border transition-all"
+            className="bg-surface rounded-full p-2 mb-4 cursor-pointer hover:bg-border-dark border border-border transition-all"
             title="Volver"
         >
             <ChevronLeft size={20} />
