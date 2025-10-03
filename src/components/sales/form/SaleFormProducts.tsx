@@ -184,6 +184,7 @@ export default function SaleFormProducts({
                                                     value: item.quantity ?? 1,
                                                 })}
                                                 onBlur={handleQtyBlur(index, item.stock, isBox, item.unitsPerBox)}
+                                                onWheel={(e) => e.currentTarget.blur()}
                                             />
                                         </div>
                                     </div>
@@ -218,6 +219,7 @@ export default function SaleFormProducts({
                                                             ? item.salePriceBox || item.salePrice * item.unitsPerBox
                                                             : item.salePrice
                                                     }
+                                                    onWheel={(e) => e.currentTarget.blur()}
                                                 />
                                             </div>
                                         </div>

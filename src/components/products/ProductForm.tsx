@@ -130,6 +130,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                                 },
                             })}
                             className={`p-2 border rounded-md ${errors.unitsPerBox ? 'border-red-700' : 'border-border'}`}
+                            onWheel={(e) => e.currentTarget.blur()}
                         />
                         {errors.unitsPerBox && <p className="text-red-700 text-sm">{errors.unitsPerBox.message}</p>}
                     </div>
@@ -182,6 +183,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                                 },
                             })}
                             className={`p-2 pl-6 border rounded-md no-spinner w-full ${errors.purchasePrice ? 'border-red-700' : 'border-border'}`}
+                            onWheel={(e) => e.currentTarget.blur()}
                         />
                     </div>
                     {errors.purchasePrice && <p className="text-red-700 text-sm">{errors.purchasePrice.message}</p>}
@@ -204,6 +206,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                                 },
                             })}
                             className={`p-2 pl-6 border rounded-md no-spinner w-full ${errors.salePrice ? 'border-red-700' : 'border-border'}`}
+                            onWheel={(e) => e.currentTarget.blur()}
                         />
                     </div>
                     {errors.salePrice && <p className="text-red-700 text-sm">{errors.salePrice.message}</p>}
@@ -223,6 +226,7 @@ export default function ProductForm({ selectedProduct, isEdit = false }: Product
                                 },
                             })}
                             className={`p-2 pl-6 border rounded-md no-spinner w-full ${errors.salePriceBox ? 'border-red-700' : 'border-border'}`}
+                            onWheel={(e) => e.currentTarget.blur()}
                         />
                     </div>
                     {errors.salePriceBox && <p className="text-red-700 text-sm">{errors.salePriceBox.message}</p>}

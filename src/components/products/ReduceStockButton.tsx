@@ -96,6 +96,7 @@ export default function ReduceStockButton({ productId, productStock }: ReduceSto
                                     },
                                 })}
                                 className={`p-2 border rounded-md ${errors.stock ? 'border-red-700' : 'border-border'}`}
+                                onWheel={(e) => e.currentTarget.blur()}
                             />
                             {errors.stock && <p className="text-red-700 text-sm">{errors.stock.message}</p>}
                         </div>

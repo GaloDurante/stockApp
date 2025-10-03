@@ -144,6 +144,7 @@ export default function AccountMovementForm({ selectedMovement, isEdit = false }
                                 },
                             })}
                             className={`p-2 pl-6 border rounded-md no-spinner w-full ${errors.amount ? 'border-red-700' : 'border-border'}`}
+                            onWheel={(e) => e.currentTarget.blur()}
                         />
                     </div>
                     {errors.amount && <p className="text-red-700 text-sm">{errors.amount.message}</p>}

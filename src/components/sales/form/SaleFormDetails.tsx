@@ -97,6 +97,7 @@ export default function SaleFormDetails({
                                     className={`pl-6 border border-border rounded-lg py-2.5 px-3 w-full no-spinner ${
                                         errors.shippingPrice ? 'border-red-700' : 'border-border'
                                     }`}
+                                    onWheel={(e) => e.currentTarget.blur()}
                                 />
                             </div>
                             {errors.shippingPrice && (
@@ -105,7 +106,7 @@ export default function SaleFormDetails({
                         </div>
                         <div className="flex-1">
                             <label className="block font-semibold mb-1">
-                                Contribución del proveedor <span className="text-red-700">*</span>
+                                Contribución propia <span className="text-red-700">*</span>
                             </label>
                             <div className="relative">
                                 <span className="absolute left-3 top-1/2 -translate-y-1/2">$</span>
@@ -123,6 +124,7 @@ export default function SaleFormDetails({
                                     className={`pl-6 border border-border rounded-lg py-2.5 px-3 w-full no-spinner ${
                                         errors.supplierCoveredAmount ? 'border-red-700' : 'border-border'
                                     }`}
+                                    onWheel={(e) => e.currentTarget.blur()}
                                 />
                             </div>
                             {errors.supplierCoveredAmount && (

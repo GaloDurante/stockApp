@@ -108,6 +108,7 @@ export default function ReStockButton({
                                     },
                                 })}
                                 className={`p-2 border rounded-md ${errors.newStock ? 'border-red-700' : 'border-border'}`}
+                                onWheel={(e) => e.currentTarget.blur()}
                             />
                             {errors.newStock && <p className="text-red-700 text-sm">{errors.newStock.message}</p>}
                         </div>

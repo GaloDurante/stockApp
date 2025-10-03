@@ -206,6 +206,7 @@ export default function SaleFormPayments({ saleData }: SaleFormPaymentsProps) {
                                             className={`pl-6 border border-border rounded-lg py-2.5 px-3 w-full no-spinner ${
                                                 errors.payments?.[index]?.amount ? 'border-red-700' : 'border-border'
                                             }`}
+                                            onWheel={(e) => e.currentTarget.blur()}
                                         />
                                     </div>
                                     {errors.payments?.[index]?.amount && (
