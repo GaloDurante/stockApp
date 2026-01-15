@@ -28,7 +28,7 @@ export const getProductsByCategory = async ({
         }),
     };
 
-    const [products, total] = await Promise.all([
+    const [products, total] = await prisma.$transaction([
         prisma.product.findMany({
             where,
             orderBy: sortOrder

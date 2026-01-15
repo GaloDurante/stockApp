@@ -45,16 +45,16 @@ export const getAllSales = async ({
 
     const orderBy = orderByMap[sortOrder ?? 'id_asc'] ?? { id: 'asc' };
 
-    const [sales, total] = await Promise.all([
+    const [sales, total] = await prisma.$transaction([
         prisma.sale.findMany({
             where,
             include: {
                 items: true,
                 payments: {
                     select: {
+                        id: true,
                         receiver: true,
                         method: true,
-                        id: true,
                         amount: true,
                     },
                 },

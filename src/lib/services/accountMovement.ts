@@ -29,7 +29,7 @@ export async function getAccountMovements({
 
     const orderBy = orderByMap[sortOrder ?? 'date_desc'] ?? { date: 'desc' };
 
-    const [movements, total] = await Promise.all([
+    const [movements, total] = await prisma.$transaction([
         prisma.accountMovement.findMany({
             where,
             orderBy,
