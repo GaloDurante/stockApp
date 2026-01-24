@@ -42,7 +42,7 @@ export default function SaleFormPayments({ saleData }: SaleFormPaymentsProps) {
     });
 
     const router = useRouter();
-    const { setTotalPrice, setShippingPrice, setSupplierCoveredAmount } = useSaleContext();
+    const { setTotalPrice, setShippingPrice } = useSaleContext();
 
     const receiverOptions = useMemo(
         () =>
@@ -69,10 +69,9 @@ export default function SaleFormPayments({ saleData }: SaleFormPaymentsProps) {
 
     const payments = useWatch({ control, name: 'payments' }) || [];
     const shippingPrice = watch('shippingPrice') ?? 0;
-    const supplierCoveredAmount = watch('supplierCoveredAmount') ?? 0;
 
-    const basePrice = saleData.totalPrice - (saleData.shippingPrice ?? 0) + (saleData.supplierCoveredAmount ?? 0);
-    const totalSalePrice = basePrice + (shippingPrice - supplierCoveredAmount);
+    const basePrice = saleData.totalPrice - (saleData.shippingPrice ?? 0);
+    const totalSalePrice = basePrice + shippingPrice;
 
     register('payments', {
         validate: (payments: SaleFormType['payments']) => {
@@ -88,16 +87,7 @@ export default function SaleFormPayments({ saleData }: SaleFormPaymentsProps) {
         setValue('totalPrice', totalSalePrice);
         setTotalPrice(totalSalePrice);
         setShippingPrice(shippingPrice);
-        setSupplierCoveredAmount(supplierCoveredAmount);
-    }, [
-        totalSalePrice,
-        shippingPrice,
-        setTotalPrice,
-        setShippingPrice,
-        setValue,
-        supplierCoveredAmount,
-        setSupplierCoveredAmount,
-    ]);
+    }, [totalSalePrice, shippingPrice, setTotalPrice, setShippingPrice, setValue]);
 
     const onSubmitPayment = async (data: SaleFormType) => {
         try {

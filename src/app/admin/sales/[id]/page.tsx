@@ -30,11 +30,7 @@ export default async function SalePage({ params }: SalePageProps) {
 
     return (
         <div className="flex flex-col xl:flex-row-reverse gap-8">
-            <SaleProvider
-                initialTotal={sale.totalPrice}
-                initialShipping={sale.shippingPrice}
-                initialSupplierCoveredAmount={sale.supplierCoveredAmount}
-            >
+            <SaleProvider initialTotal={sale.totalPrice} initialShipping={sale.shippingPrice}>
                 <SaleDetailsPanel sale={sale} />
                 <div className="flex-3">
                     <div className="bg-surface rounded-lg p-6 md:p-8 shadow-lg border border-border">
@@ -65,7 +61,12 @@ export default async function SalePage({ params }: SalePageProps) {
 
                                             <div>
                                                 <p className="text-xl font-bold">
-                                                    {formatPrice(quantity * item.unitPrice)}
+                                                    {formatPrice(
+                                                        quantity *
+                                                            (item.isBox
+                                                                ? item.unitPrice * item.unitsPerBox
+                                                                : item.unitPrice)
+                                                    )}
                                                 </p>
                                             </div>
                                         </div>
@@ -74,7 +75,9 @@ export default async function SalePage({ params }: SalePageProps) {
                                             <p className="text-sm text-muted">
                                                 Precio de venta:{' '}
                                                 <span className="text-accent font-medium">
-                                                    {formatPrice(item.unitPrice)}
+                                                    {formatPrice(
+                                                        item.isBox ? item.unitPrice * item.unitsPerBox : item.unitPrice
+                                                    )}
                                                 </span>
                                             </p>
 

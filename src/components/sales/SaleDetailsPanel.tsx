@@ -4,7 +4,7 @@ import { useSaleContext } from '@/context/SaleContext';
 import { SaleType } from '@/types/sale';
 
 export default function SaleDetailsPanel({ sale }: { sale: SaleType }) {
-    const { totalPrice, shippingPrice, supplierCoveredAmount } = useSaleContext();
+    const { totalPrice, shippingPrice } = useSaleContext();
 
     return (
         <div className="p-6 md:p-8 bg-surface rounded-lg max-h-fit flex-1 xl:sticky top-8 border border-border shadow-lg">
@@ -32,7 +32,8 @@ export default function SaleDetailsPanel({ sale }: { sale: SaleType }) {
                         <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
                             {sale.items.map((item) => {
                                 const quantity = item.isBox ? item.quantity / item.unitsPerBox : item.quantity;
-                                const totalItem = quantity * item.unitPrice;
+                                const totalItem =
+                                    quantity * (item.isBox ? item.unitPrice * item.unitsPerBox : item.unitPrice);
 
                                 return (
                                     <div key={item.id} className="flex justify-between items-center text-sm rounded-md">
@@ -48,7 +49,7 @@ export default function SaleDetailsPanel({ sale }: { sale: SaleType }) {
                 {shippingPrice !== null && (
                     <div className="flex justify-between text-sm">
                         <span>Envío</span>
-                        <span className="font-medium">{formatPrice(shippingPrice - (supplierCoveredAmount ?? 0))}</span>
+                        <span className="font-medium">{formatPrice(shippingPrice)}</span>
                     </div>
                 )}
 

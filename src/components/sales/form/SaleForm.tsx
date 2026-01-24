@@ -59,8 +59,7 @@ export default function SaleForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const items = watch('items') || [];
     const shippingPrice = watch('shippingPrice') || 0;
-    const supplierCoveredAmount = watch('supplierCoveredAmount') || 0;
-    const totalShipping = shippingPrice - supplierCoveredAmount;
+    const totalShipping = shippingPrice;
 
     const totalVenta =
         totalShipping +
