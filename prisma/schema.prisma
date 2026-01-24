@@ -76,7 +76,8 @@ model SaleItem {
   productId     Int?
   productName   String
   quantity      Int
-  unitPrice     Int
+  unitPrice     String
+  totalSalePrice  Int     
   purchasePrice Int
   isBox         Boolean   @default(false)
   unitsPerBox   Int

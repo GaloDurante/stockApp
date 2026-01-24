@@ -125,16 +125,44 @@ export async function createSaleAndSaleItems(data: SaleFormType) {
         const newSale = await tx.sale.create({ data: formData });
 
         await tx.saleItem.createMany({
-            data: items.map((item) => ({
-                saleId: newSale.id,
-                productId: item.id,
-                productName: item.name,
-                quantity: item.quantity ?? 1,
-                unitPrice: item.newSalePrice ?? item.salePrice,
-                purchasePrice: item.purchasePrice,
-                isBox: item.isBox,
-                unitsPerBox: item.unitsPerBox,
-            })),
+            data: items.map((item) => {
+                const quantity = item.quantity;
+
+                let totalSalePrice: number;
+
+                if (item.isBox) {
+                    const boxesSold = quantity / item.unitsPerBox;
+
+                    if (!Number.isInteger(boxesSold)) {
+                        throw new Error(`Cantidad inválida para caja en ${item.name}`);
+                    }
+
+                    const boxPrice = item.newSalePrice ?? item.salePriceBox;
+
+                    if (!boxPrice) {
+                        throw new Error(`Falta precio de caja para ${item.name}`);
+                    }
+
+                    totalSalePrice = boxPrice * boxesSold;
+                } else {
+                    const unitPrice = item.newSalePrice ?? item.salePrice;
+                    totalSalePrice = unitPrice * quantity;
+                }
+
+                const unitPrice = (totalSalePrice / quantity).toFixed(2);
+
+                return {
+                    saleId: newSale.id,
+                    productId: item.id,
+                    productName: item.name,
+                    quantity,
+                    unitPrice,
+                    totalSalePrice,
+                    purchasePrice: item.purchasePrice,
+                    isBox: item.isBox,
+                    unitsPerBox: item.unitsPerBox,
+                };
+            }),
         });
 
         await Promise.all(

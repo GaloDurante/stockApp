@@ -31,14 +31,10 @@ export default function SaleDetailsPanel({ sale }: { sale: SaleType }) {
                         <h3 className="text-sm font-medium text-muted mb-2">Resumen:</h3>
                         <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
                             {sale.items.map((item) => {
-                                const quantity = item.isBox ? item.quantity / item.unitsPerBox : item.quantity;
-                                const totalItem =
-                                    quantity * (item.isBox ? item.unitPrice * item.unitsPerBox : item.unitPrice);
-
                                 return (
                                     <div key={item.id} className="flex justify-between items-center text-sm rounded-md">
                                         <span className="truncate max-w-[70%]">{item.productName}</span>
-                                        <span className="font-medium">{formatPrice(totalItem)}</span>
+                                        <span className="font-medium">{formatPrice(item.totalSalePrice)}</span>
                                     </div>
                                 );
                             })}

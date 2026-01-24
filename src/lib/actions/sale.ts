@@ -46,12 +46,6 @@ export async function createSaleAction(data: SaleFormType) {
         }
 
         item.quantity = totalQuantity;
-
-        if (item.isBox) {
-            const unitPrice = item.newSalePrice ? item.newSalePrice / item.unitsPerBox : item.salePrice;
-
-            item.newSalePrice = Math.floor(unitPrice);
-        }
     });
 
     try {

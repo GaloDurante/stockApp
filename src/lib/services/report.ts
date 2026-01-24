@@ -8,14 +8,24 @@ export async function getProfitHistoric({ start, end }: { start?: Date; end?: Da
 
     if (start && end) {
         result = await prisma.$queryRaw<{ total: string }[]>`
-        SELECT COALESCE(SUM(("unitPrice"::numeric - "purchasePrice"::numeric) * "quantity"::numeric), 0)::numeric AS total
+        SELECT COALESCE(SUM(
+            "totalSalePrice"::numeric
+            - ("purchasePrice"::numeric * "quantity"::numeric)
+          ),
+          0
+        )::numeric AS total
         FROM "SaleItem" si
         JOIN "Sale" s ON s.id = si."saleId"
         WHERE s.date BETWEEN ${start} AND ${end};
     `;
     } else {
         result = await prisma.$queryRaw<{ total: string }[]>`
-        SELECT COALESCE(SUM(("unitPrice"::numeric - "purchasePrice"::numeric) * "quantity"::numeric), 0)::numeric AS total
+        SELECT COALESCE(SUM(
+            "totalSalePrice"::numeric
+            - ("purchasePrice"::numeric * "quantity"::numeric)
+          ),
+          0
+        )::numeric AS total
         FROM "SaleItem";
     `;
     }
@@ -69,7 +79,7 @@ WITH months AS (
 monthly_sales_summary AS (
     SELECT
         date_trunc('month', s.date) AS month,
-        SUM((si."unitPrice"::numeric - si."purchasePrice"::numeric) * si.quantity::numeric)::numeric AS total_profit,
+        SUM(si."totalSalePrice"::numeric - (si."purchasePrice"::numeric * si.quantity::numeric))::numeric AS total_profit,
         SUM(s."supplierCoveredAmount"::numeric) AS total_shipping
     FROM "Sale" s
     JOIN "SaleItem" si ON si."saleId" = s.id

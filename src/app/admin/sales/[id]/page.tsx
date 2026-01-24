@@ -4,6 +4,7 @@ import { formatPrice } from '@/lib/helpers/components/utils';
 
 import { SaleProvider } from '@/context/SaleContext';
 
+import Link from 'next/link';
 import ErrorMessage from '@/components/ErrorMessage';
 import SaleFormPayments from '@/components/sales/form/SaleFormPayments';
 import SaleDetailsPanel from '@/components/sales/SaleDetailsPanel';
@@ -46,7 +47,18 @@ export default async function SalePage({ params }: SalePageProps) {
                                     >
                                         <div className="flex flex-col justify-between md:flex-row">
                                             <div className="flex-1">
-                                                <h3 className="font-semibold text-lg mb-2">{item.productName}</h3>
+                                                <h3 className="font-semibold text-lg mb-2">
+                                                    {item.productId ? (
+                                                        <Link
+                                                            href={`/admin/products/${item.productId}`}
+                                                            className="hover:underline font-medium"
+                                                        >
+                                                            {item.productName}
+                                                        </Link>
+                                                    ) : (
+                                                        <span>{item.productName}</span>
+                                                    )}
+                                                </h3>
                                                 <div className="flex flex-wrap items-center gap-2 mb-2">
                                                     {item.isBox && (
                                                         <span className="text-xs bg-accent/30 text-accent px-3 py-1.5 rounded-md font-medium">
@@ -60,14 +72,7 @@ export default async function SalePage({ params }: SalePageProps) {
                                             </div>
 
                                             <div>
-                                                <p className="text-xl font-bold">
-                                                    {formatPrice(
-                                                        quantity *
-                                                            (item.isBox
-                                                                ? item.unitPrice * item.unitsPerBox
-                                                                : item.unitPrice)
-                                                    )}
-                                                </p>
+                                                <p className="text-xl font-bold">{formatPrice(item.totalSalePrice)}</p>
                                             </div>
                                         </div>
 
@@ -76,7 +81,9 @@ export default async function SalePage({ params }: SalePageProps) {
                                                 Precio de venta:{' '}
                                                 <span className="text-accent font-medium">
                                                     {formatPrice(
-                                                        item.isBox ? item.unitPrice * item.unitsPerBox : item.unitPrice
+                                                        item.isBox
+                                                            ? item.totalSalePrice / (item.quantity / item.unitsPerBox)
+                                                            : Number(item.unitPrice)
                                                     )}
                                                 </span>
                                             </p>

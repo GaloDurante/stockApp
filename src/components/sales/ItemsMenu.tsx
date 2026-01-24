@@ -84,7 +84,7 @@ export default function ItemsMenu({ items, shippingPrice = 0, supplierCoveredAmo
                                         </span>
                                     </div>
 
-                                    <div className="font-semibold text-base">{formatPrice(item.unitPrice)}</div>
+                                    <div className="font-semibold text-base">{formatPrice(item.totalSalePrice)}</div>
                                 </div>
                             );
                         })}
