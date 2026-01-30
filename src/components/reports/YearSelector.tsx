@@ -22,7 +22,7 @@ export default function YearSelector({ currentYear, maxYear }: YearSelectorProps
         setIsClient(true);
     }, []);
 
-    const minYear = 2023;
+    const minYear = 2026;
     const options = useMemo(
         () =>
             Array.from({ length: maxYear - minYear + 1 }, (_, i) => {

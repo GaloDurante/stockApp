@@ -74,60 +74,86 @@ export async function getProfitByMonthForYear(year: number) {
 
     const rows = await prisma.$queryRaw<ChartsData[]>`
 WITH months AS (
-    SELECT generate_series(${yStart}::timestamp, ${yEnd}::timestamp, interval '1 month') AS month_start
+  SELECT generate_series(
+    ${yStart}::timestamp,
+    ${yEnd}::timestamp,
+    interval '1 month'
+  ) AS month_start
 ),
-monthly_sales_summary AS (
-    SELECT
-        date_trunc('month', s.date) AS month,
-        SUM(si."totalSalePrice"::numeric - (si."purchasePrice"::numeric * si.quantity::numeric))::numeric AS total_profit,
-        SUM(s."supplierCoveredAmount"::numeric) AS total_shipping
-    FROM "Sale" s
-    JOIN "SaleItem" si ON si."saleId" = s.id
-    WHERE s.date BETWEEN ${yStart} AND ${yEnd}
-    GROUP BY date_trunc('month', s.date)
+
+monthly_profit AS (
+  SELECT
+    date_trunc('month', s.date) AS month,
+    SUM(
+      si."totalSalePrice"::numeric
+      - (si."purchasePrice"::numeric * si.quantity::numeric)
+    ) AS total_profit
+  FROM "Sale" s
+  JOIN "SaleItem" si ON si."saleId" = s.id
+  WHERE s.date BETWEEN ${yStart} AND ${yEnd}
+  GROUP BY date_trunc('month', s.date)
 ),
+
+monthly_shipping AS (
+  SELECT
+    date_trunc('month', s.date) AS month,
+    SUM(s."supplierCoveredAmount"::numeric) AS total_shipping
+  FROM "Sale" s
+  WHERE s.date BETWEEN ${yStart} AND ${yEnd}
+  GROUP BY date_trunc('month', s.date)
+),
+
 monthly_product_sales AS (
-    SELECT
-        date_trunc('month', s.date) AS month,
-        si."productId",
-        si."productName" AS product_name,
-        SUM(si.quantity::numeric)::numeric AS total_quantity,
-        ROW_NUMBER() OVER (
-            PARTITION BY date_trunc('month', s.date)
-            ORDER BY SUM(si.quantity::numeric) DESC
-        ) as rank
-    FROM "Sale" s
-    JOIN "SaleItem" si ON si."saleId" = s.id
-    WHERE s.date BETWEEN ${yStart} AND ${yEnd}
-    GROUP BY date_trunc('month', s.date), si."productId", si."productName"
+  SELECT
+    date_trunc('month', s.date) AS month,
+    si."productId",
+    si."productName" AS product_name,
+    SUM(si.quantity::numeric)::numeric AS total_quantity,
+    ROW_NUMBER() OVER (
+      PARTITION BY date_trunc('month', s.date)
+      ORDER BY SUM(si.quantity::numeric) DESC
+    ) as rank
+  FROM "Sale" s
+  JOIN "SaleItem" si ON si."saleId" = s.id
+  WHERE s.date BETWEEN ${yStart} AND ${yEnd}
+  GROUP BY
+    date_trunc('month', s.date),
+    si."productId",
+    si."productName"
 ),
+
 top_products_by_month AS (
-    SELECT
-        month,
-        json_agg(
-            json_build_object(
-                'productName', product_name,
-                'quantity', total_quantity
-            ) ORDER BY total_quantity DESC
-        ) FILTER (WHERE rank <= 3) as "topProducts"
-    FROM monthly_product_sales
-    GROUP BY month
+  SELECT
+    month,
+    json_agg(
+      json_build_object(
+        'productName', product_name,
+        'quantity', total_quantity
+      )
+      ORDER BY total_quantity DESC
+    ) FILTER (WHERE rank <= 3) as "topProducts"
+  FROM monthly_product_sales
+  GROUP BY month
 )
+
 SELECT
-    TO_CHAR(m.month_start, 'YYYY-MM') AS month,
-    COALESCE(mss.total_profit, 0)::numeric AS total,
-    COALESCE(mss.total_shipping, 0)::numeric AS "shippingTotal",
-    COALESCE(tp."topProducts", '[]'::json) as "topProducts"
+  TO_CHAR(m.month_start, 'YYYY-MM') AS month,
+  COALESCE(mp.total_profit, 0)::numeric AS total,
+  COALESCE(ms.total_shipping, 0)::numeric AS "shippingTotal",
+  COALESCE(tp."topProducts", '[]'::json) as "topProducts"
 FROM months m
-LEFT JOIN monthly_sales_summary mss
-    ON mss.month = m.month_start
+LEFT JOIN monthly_profit mp
+  ON mp.month = m.month_start
+LEFT JOIN monthly_shipping ms
+  ON ms.month = m.month_start
 LEFT JOIN top_products_by_month tp
-    ON tp.month = m.month_start
+  ON tp.month = m.month_start
 ORDER BY m.month_start;
 `;
 
     return rows.map((r) => {
         const monthIndex = parseInt(r.month.split('-')[1], 10) - 1;
+
         return {
             month: months[monthIndex],
             total: Number(r.total),
