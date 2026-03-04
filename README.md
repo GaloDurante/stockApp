@@ -1,36 +1,124 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StockApp
 
-## Getting Started
+StockApp is a web application to manage inventory and sales operations for a small business. It includes product control, sales records, purchases, cash/account movements, and business reports.
 
-First, run the development server:
+## What this project does
+
+- Manages products (create, edit, stock updates, categories, prices).
+- Registers sales with items, payment methods, receivers, and status.
+- Registers purchases/inventory entries.
+- Tracks account movements (`Ingreso` / `Gasto`) by receiver.
+- Provides reports for profits, investments, and top products.
+- Protects admin routes with credential-based authentication.
+
+## Tech stack
+
+- Next.js 15 (App Router)
+- React 19 + TypeScript
+- Prisma ORM
+- PostgreSQL
+- NextAuth (Credentials provider)
+- Tailwind CSS 4
+
+## Main routes
+
+- `/login`: authentication screen
+- `/admin/sales`: sales list and management
+- `/admin/products`: product list and management
+- `/admin/wallet`: account movements
+- `/admin/reports`: business reports
+
+## Prerequisites
+
+Install these tools on your machine:
+
+- Node.js 20+
+- npm 10+
+- PostgreSQL database (local or cloud)
+
+## Environment variables
+
+Create a `.env` file in the project root with:
+
+```env
+NEXTAUTH_SECRET="your_random_secret"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+DIRECT_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+```
+
+Notes:
+
+- `DATABASE_URL` is used by Prisma Client.
+- `DIRECT_URL` is used by Prisma for direct DB operations.
+- `NEXTAUTH_SECRET` must be a long random value.
+
+To generate a secure secret you can run:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+## Commands required before using the app
+
+Run these commands once after cloning and after setting `.env`:
+
+```bash
+npm install
+npx prisma generate
+npx prisma db push
+```
+
+Why this is required:
+
+- `npm install` installs dependencies.
+- `prisma generate` creates the Prisma client in `src/generated/prisma`.
+- `prisma db push` creates/updates database tables from `prisma/schema.prisma`.
+
+## Run locally
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `http://localhost:3000` (redirects to login)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Create the first user (required to log in)
 
-## Learn More
+This project does not include a public registration flow, so create a user manually:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+node -e "const bcrypt=require('bcrypt'); const {PrismaClient}=require('./src/generated/prisma'); (async()=>{const prisma=new PrismaClient(); const password=await bcrypt.hash('admin12345',10); await prisma.user.create({data:{username:'admin',password}}); await prisma.$disconnect(); console.log('User created');})();"
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Then log in with:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- username: `admin`
+- password: `admin12345`
 
-## Deploy on Vercel
+Change the password immediately in your own workflow.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Available npm scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev`: start development server (Turbopack)
+- `npm run build`: generate Prisma client and build production app
+- `npm run start`: run production build
+- `npm run lint`: run ESLint
+
+## Production notes
+
+- Use strong secrets and never commit real credentials in `.env`.
+- Run `npm run build` before deploying.
+- Ensure database connectivity from your hosting environment.
+
+## Project structure (high level)
+
+- `src/app`: Next.js routes/pages
+- `src/components`: UI and feature components
+- `src/lib/actions`: server actions
+- `src/lib/services`: database/service layer
+- `prisma/schema.prisma`: data models
+- `src/generated/prisma`: generated Prisma client
