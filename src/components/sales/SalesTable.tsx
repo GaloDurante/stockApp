@@ -93,9 +93,9 @@ export default function SalesTable({ initialSales, totalCount, sortOrder, perPag
     };
 
     return (
-        <div className="relative overflow-auto rounded-lg max-h-[calc(100vh-24rem)] lg:max-h-[calc(100vh-12rem)] custom-scrollbar">
+        <div className="relative overflow-auto isolate rounded-lg max-h-[calc(100vh-24rem)] lg:max-h-[calc(100vh-12rem)] custom-scrollbar">
             <table className="hidden md:table border-t-2 border border-border bg-surface text-sm min-w-full">
-                <thead className="bg-border sticky -top-[1px] z-50">
+                <thead className="bg-border sticky -top-[1px] z-10">
                     <tr className="text-left uppercase text-xs tracking-wider">
                         <th className="p-4">Acciones</th>
                         <th className="p-4">ID</th>
